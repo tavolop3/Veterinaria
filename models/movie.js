@@ -37,5 +37,5 @@ function validateMovie(movie){
     return schema.validate(movie);
 }
 
-exports.Customer = Customer;
-exports.validate = validateCustomer;
+exports.Movie = Movie;
+exports.validate = validateMovie;
