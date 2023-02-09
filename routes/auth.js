@@ -29,4 +29,3 @@ function validate(req){
 }
 
 module.exports = router;
-//exports.User = authUser;
