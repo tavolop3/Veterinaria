@@ -1,4 +1,5 @@
 require('express-async-errors');
+const winston = require('winston');
 const error = require('./middleware/error')
 const mongoose = require('mongoose');
 const Joi = require('joi');
@@ -12,6 +13,8 @@ const users = require('./routes/users');
 const auth = require('./routes/auth');
 const express = require('express');
 const app = express();    
+
+winston.add(new winston.transports.File({ filename: 'logfile.log' }));
 
 //set vidly_jwtPrivateKey=exampleKey    in cmd
 if (!config.get('jwtPrivateKey')){
