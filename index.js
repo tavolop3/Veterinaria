@@ -1,4 +1,5 @@
 require('express-async-errors');
+require('winston-mongodb');
 const winston = require('winston');
 const error = require('./middleware/error')
 const mongoose = require('mongoose');
@@ -14,7 +15,10 @@ const auth = require('./routes/auth');
 const express = require('express');
 const app = express();    
 
+mongoose.set('strictQuery', false);
+
 winston.add(new winston.transports.File({ filename: 'logfile.log' }));
+winston.add(new winston.transports.MongoDB({ db: 'mongodb://localhost/vidly', level: 'info', options: { useUnifiedTopology: true } }));
 
 //set vidly_jwtPrivateKey=exampleKey    in cmd
 if (!config.get('jwtPrivateKey')){
@@ -25,6 +29,7 @@ if (!config.get('jwtPrivateKey')){
 mongoose.connect('mongodb://localhost/vidly')
     .then(() => console.log('Succesfully connected to the database.'))
     .catch(err => console.error('Conection failed:',err));
+mongoose.set('strictQuery', false);
 
 app.use(express.json());
 app.use('/api/genres', genres);
