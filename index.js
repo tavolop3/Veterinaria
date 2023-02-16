@@ -15,6 +15,8 @@ const auth = require('./routes/auth');
 const express = require('express');
 const app = express();    
 
+winston.exceptions.handle(new winston.transports.File({ filename: 'uncaughtExceptions.log' }));
+
 mongoose.set('strictQuery', false);
 
 winston.add(new winston.transports.File({ filename: 'logfile.log' }));
