@@ -44,6 +44,13 @@ describe('/api/genres', () => {
 
             expect(res.status).toBe(400);
         });
+
+        it('should return 404 if no genre with the given id exists', async() => {
+            const id = new mongoose.Types.ObjectId();
+            const res = await request(server).get(`/api/genres/`+ id);
+
+            expect(res.status).toBe(400);
+        });
     });
 
     describe('POST /', () => {
