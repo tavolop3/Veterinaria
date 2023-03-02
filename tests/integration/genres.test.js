@@ -42,7 +42,7 @@ describe('/api/genres', () => {
         it('should return 404 if invalid id is passed', async() => {
             const res = await request(server).get(`/api/genres/1`);
 
-            expect(res.status).toBe(400);
+            expect(res.status).toBe(404);
         });
 
         it('should return 404 if no genre with the given id exists', async() => {
@@ -56,9 +56,9 @@ describe('/api/genres', () => {
     describe('POST /', () => {
         let token;
         let name; 
-
-        const exec = async() => {
-            return await request(server)
+        
+        const exec = () => {
+            return request(server)
                 .post('/api/genres')
                 .set('x-auth-token', token)
                 .send({ name });
@@ -106,5 +106,139 @@ describe('/api/genres', () => {
 
             expect(res.body).toHaveProperty('name', 'genre1');
         });
+    });
+
+    describe('PUT /:id', () => {
+        let token;
+        let newName; 
+        let id;
+
+        const exec = async() => {
+            return await request(server)
+                .put('/api/genres/' + id)
+                .set('x-auth-token', token)
+                .send({ name: newName });
+        }
+
+        beforeEach(async() => {
+            token = new User().generateAuthToken()
+            newName = 'updated';
+
+            genre = new Genre({ name: 'genre1' });
+            await genre.save();     
+            id = genre._id; 
+        })
+
+        it('should return 404 if name is less than 3 characters', async() => {
+            newName = '1'; 
+
+            const res = await exec();
+
+            expect(res.status).toBe(400);
+        });
+
+        it('should return 404 if name is greater than 15 characters', async() => {
+            newName = new Array(17).join('a'); 
+
+            const res = await exec();
+
+            expect(res.status).toBe(400);
+        });
+
+        it('should return 404 if name is not a string', async() => {
+            newName = 1; 
+
+            const res = await exec();
+
+            expect(res.status).toBe(400);
+        });
+
+        it('should return 404 if id is not valid', async() => { 
+            id = 1;
+
+            const res = await exec();
+
+            expect(res.status).toBe(404);
+        });
+
+        it('should return 404 if id is not found', async() => { 
+            id = mongoose.Types.ObjectId();
+
+            const res = await exec();
+
+            expect(res.status).toBe(404);
+        });
+
+        it('should return 401 if user is not logged in', async() => { 
+            token = '';
+
+            const res = await exec();
+
+            expect(res.status).toBe(401);
+        });
+
+        it('should return the modified genre if valid', async() => { 
+            const res = await exec();
+
+            expect(res.body).toMatchObject({ _id: id.toHexString(), name: newName});
+        });
+    });
+
+    describe('DELETE /:id', () => {
+        let id;
+        
+        const exec = async() => {
+            return await request(server)
+                .delete('/api/genres/' + id)
+                .set('x-auth-token', token);
+        }
+
+        beforeEach(async() => {
+            token = new User({ isAdmin: true }).generateAuthToken();
+
+            genre = new Genre({ name: 'genre1' });
+            await genre.save();     
+            id = genre._id; 
+        })
+
+        it('should return 401 if user is not logged in', async() => {
+            token = '';
+
+            const res = await exec();
+
+            expect(res.status).toBe(401);
+        });
+
+        it('should return 403 if not admin', async() => {
+            token = new User({ isAdmin: false }).generateAuthToken();
+
+            const res = await exec();
+
+            expect(res.status).toBe(403);
+        });
+
+        it('should delete the genre given a valid id', async() => {
+            const res = await exec();
+
+            expect(res.body).toMatchObject({ _id: id.toHexString(), name: 'genre1'});
+        });
+
+        it('should return 400 if id is not found', async() => {
+            id = mongoose.Types.ObjectId();
+
+            const res = await exec();
+
+            expect(res.status).toBe(400);
+        });
+
+        it('should return 404 if id is not valid', async() => {
+            id = 1;
+
+            const res = await exec();
+
+            expect(res.status).toBe(404);
+        });
+
+
     });
 });
