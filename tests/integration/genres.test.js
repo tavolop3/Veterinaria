@@ -9,7 +9,7 @@ describe('/api/genres', () => {
     beforeEach(() => { server = require('../../index'); });
     afterEach(async() => { 
         await Genre.deleteMany({});
-        server.close();
+        await server.close();
     });
 
     describe('GET /', () => {
@@ -65,7 +65,7 @@ describe('/api/genres', () => {
         }
 
         beforeEach(() => {
-            token = new User().generateAuthToken()
+            token = new User().generateAuthToken();
             name = 'genre1';
         })
 

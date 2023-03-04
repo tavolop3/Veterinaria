@@ -22,7 +22,7 @@ router.post('/', auth, async (req,res) => {
 router.put('/:id', [auth,validateObjectId], async (req,res) => {
     const {error} = validate(req.body.name);
     if(error) return res.status(400).send(error.details[0].message);
-    //validacion de nombre, auth, id y ver si se guardó o no --> 4 caminos
+
     const genre = await Genre.findByIdAndUpdate(req.params.id, { name: req.body.name }, { new: true });
     if(!genre) return res.status(404).send('The genre with the given ID was not found.'); 
     
