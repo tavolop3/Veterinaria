@@ -5,7 +5,7 @@ const error = require('../middleware/error');
 
 module.exports = function(app) {
     app.use(express.json());
-    app.use('/users',users);
-    app.use('/auth',auth);
+    app.use('/usuarios',users);
+    app.use('/login',auth);
     app.use(error);
 }
