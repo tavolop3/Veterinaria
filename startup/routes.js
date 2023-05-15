@@ -1,6 +1,6 @@
 const express = require('express');
-const users = require('../routes/users');
-const auth = require('../routes/auth');
+const users = require('../routes/users.routes');
+const auth = require('../routes/auth.routes');
 const error = require('../middleware/error');
 
 module.exports = function(app) {
