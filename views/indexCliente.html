@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+	
+<!-- encabezado -->
+<head>
+	<meta charset="utf-8">
+	<title> OhMyDog </title>
+    <link rel="stylesheet" href="/style/index.css">
+</head>
+
+<!-- cuerpo -->
+<body>
+	
+	<!-- encabezado -->
+	<header id="encabezado">	
+		<a id="logo" href="#">
+			<span class="titulo">OhMyDog</span>
+		</a>
+		<nav>
+			<ul>
+                <li> 
+                	<select title="Cuenta" onchange="redirectToPage(this)">
+					    <option> Cuenta </option>
+					    <option value="/usuarios/perros"> Mis perros </option>
+					</select>
+                </li>
+			</ul>
+		</nav>
+	</header>
+	
+	<!-- indice -->
+    <header id="indice">
+		<nav>
+			<ul id="lista-funciones">
+				<li><a href="#"> Adoptar </a></li>
+                <li><a href="#"> Busqueda </a></li>
+                <li><a href="#"> Cruza </a></li>
+                <li><a href="#"> Servicios </a></li>
+                <li><a href="#"> Donaciones </a></li>
+                <li><a href="#"> Turnos </a></li>
+                <li><a href="#"> Urgencias </a></li>
+			</ul>
+		</nav>
+	</header>
+	
+	<!-- contenido principal -->
+	<section id="pantalla">
+		<article class="columna">
+			<header>
+				<h1>Campañas de donaciones activas</h1>
+			</header>
+			<div class="contenido">
+				<p> Actualmente no se encuentran campañas de donaciones activas.</p>
+			</div>	
+		</article> 
+		<article class="columna">
+			<header>
+				<h1> Proximos turnos </h1>
+			</header>
+			<div class="contenido">
+				<p> Inicia sesion o acercate a la veterinaria para crear una cuenta y poder solicitar turnos desde
+					la pagina web
+				</p>			
+			</div>
+		</article>
+	</section> 	
+	
+	<script>
+	  function redirectToPage(selectElement) {
+	    var selectedValue = selectElement.value;
+	    if (selectedValue) {
+	      window.location.href = selectedValue;
+	    }
+	  }
+	</script>
+	
+</body>
+</html>

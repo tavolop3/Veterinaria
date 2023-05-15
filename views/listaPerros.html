@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Lista de perros</title>
+</head>
+<body>
+	<div th:unless="${#lists.isEmpty(perros)}">
+	    <h1>Lista de perros </h1>
+	    <ul th:if="${not #lists.isEmpty(perros)}">
+	        <li th:each="perro: ${perros}" th:text="${perro.nombre}"></li>
+	    </ul>
+	</div>
+	<h1 th:if="${#lists.isEmpty(perros)}"> No hay perros cargados en su cuenta </h1>
+</body>
+</html>
