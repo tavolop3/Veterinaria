@@ -7,7 +7,7 @@
     "test": "jest --watchAll --verbose --detectOpenHandles --coverage",
     "start": "node index.js"
   },
-  "engines":{
+  "engines": {
     "node": "v16.14.0"
   },
   "keywords": [],
@@ -28,6 +28,7 @@
     "mongodb": "^4.8.0",
     "mongoose": "^6.9.1",
     "nodemon": "^2.0.19",
+    "pug": "^3.0.2",
     "winston": "^3.8.2",
     "winston-mongodb": "^5.1.1"
   },
