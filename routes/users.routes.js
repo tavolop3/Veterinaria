@@ -12,7 +12,7 @@ router.get('/me', auth, async(req,res) => {
     res.send(user);
 })
 
-.post('/', async (req,res) => {
+.post('/login', async (req,res) => {
     const { error } = validate(req.body);  
     if(error) return res.status(400).send(error.details[0].message);
     
@@ -27,10 +27,6 @@ router.get('/me', auth, async(req,res) => {
     const token = user.generateAuthToken();
 
     res.header('x-auth-token', token).send(_.pick(user, ['_id','name','email']));
-})
-
-.get('/',async(req,res) => {
-    res.render('index');
 });
 
 module.exports = router;

@@ -1,0 +1,18 @@
+doctype html
+html
+  head
+    meta(charset="UTF-8")
+    title Iniciar sesión
+    link(rel="stylesheet", href="/style/login.css")
+
+  body
+    form(action="/usuarios/login", method="post")
+      ul
+        li
+          label(for="mail") Mail
+          input(type="email", id="mail", name="mail")
+        li
+          label(for="contraseña") Contraseña
+          input(type="password", id="password", name="contraseña")
+        li.button
+          button(type="submit") Iniciar Sesión
