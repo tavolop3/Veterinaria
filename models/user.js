@@ -5,13 +5,13 @@ const jwt = require('jsonwebtoken');
 const { ObjectId } = require('mongodb');
 
 const userSchema = new mongoose.Schema({
-    name:{
+    nombre:{
         type: String,
         required: true,
         minlength: 3,
         maxlength: 15
     },
-    lastName:{
+    apellido:{
         type: String,
         required: true,
         minlength: 3,
@@ -23,20 +23,20 @@ const userSchema = new mongoose.Schema({
         minlength: 8,
         maxlength: 8
     },
-    phone:{
+    telefono:{
         type: String,
         required: true,
         minlength: 6,
         maxlength: 50
     },
-    email:{
+    mail:{
         type: String,
         unique: true,
         required: true,
         minlength: 3,
         maxlength: 50
     },
-    password:{
+    contraseña:{
         type: String,
         required: true,
         min:3,
@@ -55,17 +55,26 @@ userSchema.methods.generateAuthToken = function() {
 const User = mongoose.model('User', userSchema);
 
 //actualizar, esto es para validar del lado del backend lo que te llega del front, no de la bd
-function validateUser(user){
+function validateCreate(user){
     const schema = Joi.object({
-        name: Joi.string().min(3).max(15).required(),
-        lastName: Joi.string().min(3).max(15).required(),
-        email: Joi.string().min(3).max(50).required().email(),
-        password: Joi.string().min(3).max(255).required(),
+        nombre: Joi.string().min(3).max(15).required(),
+        apellido: Joi.string().min(3).max(15).required(),
+        mail: Joi.string().min(3).max(50).required().email(),
+        contraseña: Joi.string().min(3).max(255).required(),
         dni: Joi.string().min(8).max(8).required(),
-        phone: Joi.string().min(6).max(50).required()
+        telefono: Joi.string().min(6).max(50).required()
+    });
+    return schema.validate(user);
+}
+
+function validateLogin(user){
+    const schema = Joi.object({
+        mail: Joi.string().min(3).max(50).required().email(),
+        contraseña: Joi.string().min(3).max(255).required(),
     });
     return schema.validate(user);
 }
 
 exports.User = User;
-exports.validate = validateUser;
+exports.validateCreate = validateCreate;
+exports.validateLogin = validateLogin

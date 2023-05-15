@@ -10,9 +10,12 @@ html
       ul
         li
           label(for="mail") Mail
-          input(type="email", id="mail", name="mail")
+          input(type="email", id="mail", name="mail", required)
         li
           label(for="contraseña") Contraseña
-          input(type="password", id="password", name="contraseña")
+          input(type="password", id="password", name="contraseña", required)
         li.button
           button(type="submit") Iniciar Sesión
+
+    if error
+      li.error= error
