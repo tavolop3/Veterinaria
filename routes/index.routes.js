@@ -7,6 +7,10 @@ router.get('', (req,res) => {
 
 .get('/usuarios/login', (req,res) => {
     res.render('login');
-});
+})
+
+.get('/usuarios/registrar', (req,res) => {
+    res.render('registro');
+})
 
 module.exports = router;
