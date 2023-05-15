@@ -4,6 +4,8 @@ const express = require('express');
 const _ = require('lodash');
 const router = express.Router();
 const auth = require('../middleware/auth');
+const { Admin } = require('mongodb');
+const pug = require('pug');
 
 router.get('/me', auth, async(req,res) => {
     const user = await User.findById(req.user._id).select('-password');
@@ -11,7 +13,6 @@ router.get('/me', auth, async(req,res) => {
 })
 
 .post('/', async (req,res) => {
-    console.log(req.body)
     const { error } = validate(req.body);  
     if(error) return res.status(400).send(error.details[0].message);
     
@@ -26,6 +27,10 @@ router.get('/me', auth, async(req,res) => {
     const token = user.generateAuthToken();
 
     res.header('x-auth-token', token).send(_.pick(user, ['_id','name','email']));
+})
+
+.get('/',async(req,res) => {
+    res.render('index');
 });
 
 module.exports = router;
