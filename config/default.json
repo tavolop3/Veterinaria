@@ -1,4 +1,4 @@
 {
     "jwtPrivateKey": "1",
-    "db": "mongodb://localhost/veterinariaNode"
+    "db": "mongodb://127.0.0.1/veterinariaNode"
 }
