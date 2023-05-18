@@ -60,7 +60,6 @@ function validateCreate(user){
         nombre: Joi.string().min(3).max(15).required(),
         apellido: Joi.string().min(3).max(15).required(),
         mail: Joi.string().min(3).max(50).required().email(),
-        contraseña: Joi.string().min(3).max(255).required(),
         dni: Joi.string().min(8).max(8).required(),
         telefono: Joi.string().min(6).max(50).required()
     });
