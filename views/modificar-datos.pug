@@ -1,0 +1,23 @@
+doctype html
+html
+  head
+    meta(charset="utf-8")
+    title Modificar mis datos
+    link(rel="stylesheet", href="/style/login.css")
+  body
+    form(action="/usuario/modificar", method="post")
+      ul
+        li
+          label(for="mail1") Mail actual:
+          input(type="email", id="mail1", name="mail1")
+        li
+          label(for="mail2") Mail nuevo:
+          input(type="email", id="mail2", name="mail2")
+        li
+          label(for="contraseña1") Contraseña actual:
+          input(type="password", id="contraseña1", name="contraseña1")
+        li
+          label(for="contraseña2") Contraseña nueva:
+          input(type="password", id="contraseña2", name="contraseña2")
+        li.button
+          button(type="submit") Modificar
