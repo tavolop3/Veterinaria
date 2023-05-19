@@ -5,12 +5,10 @@ require('./startup/passportInit')(app);
 require('./startup/pug')(app);
 require('./startup/routes')(app);
 require('./startup/db')();
-require('./startup/config')();
-require('./startup/validation')();
 
 const port = process.env.PORT || 8080;
 const server = app.listen(port, () => {
-    console.info(`Listening on port ${port}...`);
+    console.info(`Servidor pendiente al puerto ${port}...`);
 });
 
 module.exports = server;

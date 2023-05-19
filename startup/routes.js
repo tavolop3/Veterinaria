@@ -1,15 +1,19 @@
 const express = require('express');
-const users = require('../routes/users.routes');
-const auth = require('../routes/auth.routes');
+const usuarios = require('../routes/usuarios.routes');
 const error = require('../middleware/error');
-const index = require('../routes/index.routes');
+const vistas = require('../routes/vistas.routes');
 const bodyParser = require('body-parser');
+const admins = require('../routes/admins.routes');
+const clientes = require('../routes/clientes.routes');
 
 module.exports = function(app) {
     app.use(express.json());
     app.use(bodyParser.urlencoded({ extended: true }));
-    app.use('/usuarios',users);
-    app.use('/login',auth);
-    app.use('/',index);
+    
+    app.use('/usuarios',usuarios);
+    app.use('/',vistas);
+    app.use('/admin',admins);
+    app.use('/clientes',clientes);
+    
     app.use(error);
 }

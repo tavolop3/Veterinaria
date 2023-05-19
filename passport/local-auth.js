@@ -27,4 +27,4 @@ passport.use(new LocalStrategy({
     if(!validPassword) return done(null, false, req.flash('signinMessage', 'Contraseña o mail invalido'));
 
     return done(null, user);
-  }));
+}));
