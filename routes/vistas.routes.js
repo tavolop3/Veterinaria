@@ -9,8 +9,12 @@ router.get('', (req,res) => {
     res.render('login');
 })
 
-.get('/usuarios/registrar', (req,res) => {
-    res.render('registro');
+.get('/admin/registrar-usuario', (req,res) => {
+    res.render('registro-usuario');
+})
+
+.get('/admin', (req,res) => {
+    res.render('indexAdmin');
 })
 
 module.exports = router;

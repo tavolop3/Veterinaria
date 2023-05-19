@@ -3,6 +3,7 @@ const Joi = require('joi');
 const config = require('config');
 const jwt = require('jsonwebtoken');
 const { ObjectId } = require('mongodb');
+const bcrypt = require('bcrypt');
 
 const userSchema = new mongoose.Schema({
     nombre:{
@@ -43,6 +44,7 @@ const userSchema = new mongoose.Schema({
         max:255
     },
     isAdmin: Boolean,
+    primerLogin: Boolean,
     montoDescuento: Number,
     perrosId: [ObjectId]
 });
@@ -74,6 +76,12 @@ function validateLogin(user){
     return schema.validate(user);
 }
 
+async function encriptarContraseña (contraseña){
+    const salt = await bcrypt.genSalt(10);
+    return await bcrypt.hash(contraseña, salt);
+}
+
 exports.User = User;
 exports.validateCreate = validateCreate;
-exports.validateLogin = validateLogin
+exports.validateLogin = validateLogin;
+exports.encriptarContraseña = encriptarContraseña;
