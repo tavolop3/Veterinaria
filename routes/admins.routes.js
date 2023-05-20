@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 var crypto = require("crypto");
 const {User, validateCreate, encriptarContraseña} = require('../models/user');
+const {Perro} = require('../models/perro')
 const _ = require('lodash');
 const { sendEmail } = require('../emails');
 
@@ -32,11 +33,11 @@ router.post('/registrar-usuario', async (req,res) => {
     let user = await User.findById( { _id: usuario._id} );
     if (!user) return res.status(400).send('No se encontro el usuario');
     let updatedFields = {};
-    if (usuario.mail !== '') updatedFields.mail = mail;
-    if (usuario.nombre !== '') updatedFields.nombre = nombre;
-    if (usuario.apellido !== '') updatedFields.apellido = apellido;
-    if (usuario.dni !== '') updatedFields.dni = dni;
-    if (usuario.telefono !== '') updatedFields.telefono = telefono;
+    if (usuario.mail !== '') updatedFields.mail = usuario.mail;
+    if (usuario.nombre !== '') updatedFields.nombre = usuario.nombre;
+    if (usuario.apellido !== '') updatedFields.apellido = usuario.apellido;
+    if (usuario.dni !== '') updatedFields.dni = usuario.dni;
+    if (usuario.telefono !== '') updatedFields.telefono = usuario.telefono;
     try {
         await User.updateOne({ mail: mail1 }, { $set: updatedFields });
         return res.redirect('/indexAdmin');
@@ -47,6 +48,28 @@ router.post('/registrar-usuario', async (req,res) => {
           error
         });
       }
+})
+
+.post('modificar-perro', async (req, res) => {
+  const { perro } = req.body.perro;
+  let updatedFields = {};
+  if (perro.nombre !== '') updatedFields.nombre = perro.nombre;
+  if (perro.sexo !== '') updatedFields.sexo = perro.sexo;
+  if (perro.fecha !== null) updatedFields.fecha = perro.fecha;
+  if (perro.raza !== '') updatedFields.dni = perro.raza;
+  if (perro.color !== '') updatedFields.color = perro.color;
+  if (perro.observaciones !== '') updatedFields.observaciones = perro.observaciones;
+  if (perro.color !== '') updatedFields.color = perro.color;
+  try {
+      await Perro.updateOne({ _id: req.body._id }, { $set: updatedFields });
+      return res.redirect('/indexAdmin');
+    } catch (error) {
+      return res.json({
+        resultado: false,
+        msg: 'El perro no se pudo modificar',
+        error
+      });
+    }
 })
 
 module.exports = router;
