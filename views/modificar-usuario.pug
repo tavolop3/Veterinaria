@@ -1,0 +1,26 @@
+doctype html
+html
+  head
+    meta(charset="utf-8")
+    title Modificar usuario
+    link(rel="stylesheet", href="/style/login.css")
+  body
+    form(action="admin/modificar-usuario", method="post")
+      ul
+        li
+          label(for="mail") Mail:
+          input(type="email", id="mail", name="mail", value=usuario.mail)
+        li
+          label(for="nombre") Nombre:
+          input(type="text", id="nombre", name="nombre", value=usuario.nombre)
+        li
+          label(for="apellido") Apellido:
+          input(type="text", id="apellido", name="apellido", value=usuario.apellido)
+        li
+          label(for="dni") DNI:
+          input(type="text", id="dni", name="dni", value=usuario.dni)
+        li
+          label(for="telefono") Telefono:
+          input(type="text", id="telefono", name="telefono", value=usuario.telefono)
+        li.button
+          button(type="submit") Modificar

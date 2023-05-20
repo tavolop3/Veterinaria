@@ -27,4 +27,26 @@ router.post('/registrar-usuario', async (req,res) => {
     res.redirect('/admin'); 
 })
 
+.post('modificar-usuario', async (req, res) => {
+    const { usuario } = req.body.usuario;
+    let user = await User.findById( { _id: usuario._id} );
+    if (!user) return res.status(400).send('No se encontro el usuario');
+    let updatedFields = {};
+    if (usuario.mail !== '') updatedFields.mail = mail;
+    if (usuario.nombre !== '') updatedFields.nombre = nombre;
+    if (usuario.apellido !== '') updatedFields.apellido = apellido;
+    if (usuario.dni !== '') updatedFields.dni = dni;
+    if (usuario.telefono !== '') updatedFields.telefono = telefono;
+    try {
+        await User.updateOne({ mail: mail1 }, { $set: updatedFields });
+        return res.redirect('/indexAdmin');
+      } catch (error) {
+        return res.json({
+          resultado: false,
+          msg: 'El usuario no se pudo modificar',
+          error
+        });
+      }
+})
+
 module.exports = router;

@@ -58,12 +58,12 @@ router.get('/yo', isAuthenticated, async(req,res) => {
   if (user.contraseña != contraseña1) return res.status(400).send('La contraseña ingresada no es correcta');
   if (mail2 === "") mail2 = mail1;
   if (contraseña2 === "") contraseña2 = contraseña1;
-  const updatedFields = {};
+  let updatedFields = {};
   if (mail2 !== "") updatedFields.mail = mail2;
   if (contraseña2 !== "") updatedFields.contraseña = contraseña2;
   try {
     await User.updateOne({ mail: mail1 }, { $set: updatedFields });
-    return res.redirect('/');
+    return res.redirect('/indexCliente');
   } catch (error) {
     return res.json({
       resultado: false,
