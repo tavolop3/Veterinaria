@@ -1,0 +1,44 @@
+doctype html
+html
+  head
+    meta(charset="UTF-8")
+    title Registrar usuario
+    link(rel="stylesheet", href="/style/registro.css")
+  body
+    form(action="/admin/registrar-perro", method="post")
+      ul
+        li
+          label(for="id") Nombre
+          input(type="ObjectId", id="id", name="id", required)
+        li
+        li
+          label(for="mail") Mail
+          input(type="email", id="mail", name="mail", required)
+        li
+        li
+          label(for="nombre") Nombre
+          input(type="text", id="nombre", name="nombre", required)
+        li
+          label(for="sexo") sexo
+          input(type="text", id="sexo", name="sexo", required)
+        li
+          label(for="fechaDeNacimiento") fechaDeNacimiento
+          input(type="Date", id="fechaDeNacimiento", name="fechaDeNacimiento", required)
+        li
+          label(for="raza") raza
+          input(type="text", id="raza", name="raza", required)
+        li
+          label(for="color") color
+          input(type="text", id="color", name="color", required)
+        li
+          label(for="observaciones") observaciones
+          input(type="text", id="observaciones", name="observaciones", required)
+        li
+        li
+          label(for="foto") foto
+          input(type="Buffer", id="foto", name="foto", required)
+        li
+        li.button
+          button(type="submit") Registrar
+        if error
+          li.error= error|  
