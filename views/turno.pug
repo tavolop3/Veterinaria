@@ -1,0 +1,30 @@
+doctype html
+html
+  head
+    meta(charset="UTF-8")
+    title Solicitar turno
+    link(rel="stylesheet", href="/style/registro.css")
+  body
+    form(action="/clientes/solicitar-turno", method="post")
+      ul
+        li
+          label(for="dni") DNI:
+          input(type="text", id="dni", name="dni", required)
+        li
+          label(for="nombreDelPerro") Nombre del perro:
+          input(type="text", id="nombreDelPerro", name="nombreDelPerro", required)
+        li
+          label(for="rango") Rango horario:
+          select(name="rango", id="rango")
+            option(value="manana") Mañana
+            option(value="tarde") Tarde
+        li
+          label(for="fecha") Fecha:
+          input(type="date", id="fecha", name="fecha", required)
+        li
+          label(for="motivo") Motivo:
+          input(type="text", id="motivo", name="motivo", required)
+        li.button
+          button(type="submit") Solicitar turno
+        if error
+          li.error= error

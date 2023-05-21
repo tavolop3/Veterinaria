@@ -17,4 +17,8 @@ router.get('', (req,res) => {
     res.render('indexAdmin');
 })
 
+.get('/cliente/turno', (req, res) => {
+    res.render('turno')
+})
+
 module.exports = router;
