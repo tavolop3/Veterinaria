@@ -21,6 +21,7 @@ const userSchema = new mongoose.Schema({
     dni:{
         type: String,
         required: true,
+        unique: true,
         minlength: 8,
         maxlength: 8
     },

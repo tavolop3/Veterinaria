@@ -8,10 +8,13 @@ const { sendEmail } = require('../emails');
 
 router.post('/registrar-usuario', async (req, res) => {
   const { error } = validateCreate(req.body);
-  if (error) return res.status(400).render('registro-usuario', { error });
+  if (error) return res.status(400).render('registro-usuario', { error }); // TODO Traducir mensajes a español
 
   let user = await User.findOne({ mail: req.body.mail });
-  if (user) return res.status(400).send('User already registered.');
+  if (user) return res.status(400).render('registro-usuario', { error : 'El mail ya está en uso.' });
+
+  user = await User.findOne({ dni: req.body.dni });
+  if (user) return res.status(400).render('registro-usuario', { error : 'El dni ya está registrado.' });
 
   user = new User(_.pick(req.body, ['nombre', 'apellido', 'mail', 'telefono', 'dni']));
 
