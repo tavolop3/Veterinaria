@@ -13,6 +13,10 @@ router.get('', (req,res) => {
     res.render('registro-usuario');
 })
 
+.get('/cliente', (req, res) => {
+    res.render('indexCliente')
+})
+
 .get('/admin', (req,res) => {
     res.render('indexAdmin');
 })
@@ -21,7 +25,7 @@ router.get('', (req,res) => {
     res.render('turno')
 })
 
-.get('/usuario/modificar/datos', (req, res) => {
+.get('/usuarios/modificar/datos', (req, res) => {
     res.render('modificar-datos')
 })
 
