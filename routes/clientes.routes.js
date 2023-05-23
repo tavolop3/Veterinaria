@@ -9,7 +9,7 @@ const Turno = require('../models/turno')
 /* Endpoint para
    guardar un turno solicitado
 */
-.post('/solicitar-turno', async(req, res) => {
+router.post('/solicitar-turno', async(req, res) => {
   const nuevoTurno = {
     nombreDelPerro: req.body.nombreDelPerro,
     rangoHorario: req.body.rango,
