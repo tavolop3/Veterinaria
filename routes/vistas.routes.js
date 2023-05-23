@@ -13,7 +13,7 @@ router.get('', (req,res) => {
     res.render('registro-usuario');
 })
 
-.get('/cliente', (req, res) => {
+.get('/clientes', (req, res) => {
     res.render('indexCliente')
 })
 
@@ -21,12 +21,16 @@ router.get('', (req,res) => {
     res.render('indexAdmin');
 })
 
-.get('/cliente/turno', (req, res) => {
+.get('/clientes/turno', (req, res) => {
     res.render('turno')
 })
 
 .get('/usuarios/modificar/datos', (req, res) => {
     res.render('modificar-datos')
+})
+
+.get('/clientes/modificar-pass', (req,res) => {
+    res.render('modificar-pass');
 })
 
 module.exports = router;

@@ -1,10 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const autenticado = require('../middleware/autenticado');
-const { default: mongoose } = require('mongoose');
 const Turno = require('../models/turno')
-
-
+const User = require('../models/user');
 
 /* Endpoint para
    guardar un turno solicitado

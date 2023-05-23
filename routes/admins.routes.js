@@ -11,14 +11,14 @@ router.post('/registrar-usuario', async (req, res) => {
   if (error) return res.status(400).render('registro-usuario', { error }); // TODO Traducir mensajes a español
 
   let user = await User.findOne({ mail: req.body.mail });
-  if (user) return res.status(400).render('registro-usuario', { error : 'El mail ya está en uso.' });
+  if (user) return res.status(400).render('registro-usuario', { error : 'El mail ya está en uso.' }); // TODO Popup
 
   user = await User.findOne({ dni: req.body.dni });
-  if (user) return res.status(400).render('registro-usuario', { error : 'El dni ya está registrado.' });
+  if (user) return res.status(400).render('registro-usuario', { error : 'El dni ya está registrado.' }); 
 
   user = new User(_.pick(req.body, ['nombre', 'apellido', 'mail', 'telefono', 'dni']));
 
-  user.primerLogin = true;
+
   const contraRandom = crypto.randomBytes(8).toString('hex');
   // Activar para testear un par de veces o en demo para no gastar la cuota de mails (son 100)
   // sendEmail(user.mail,'OhMyDog - Contraseña predefinida',
@@ -26,6 +26,7 @@ router.post('/registrar-usuario', async (req, res) => {
   // );
   console.log('Contraseña generada:' + contraRandom);
   user.contraseña = await encriptarContraseña(contraRandom);
+  user.contraseñaDefault = user.contraseña;
   await user.save();
 
   res.redirect('/admin');

@@ -14,11 +14,13 @@ router.get('/yo', autenticado, async(req,res) => {
 // Endpoint para la autenticación
 .post('/login', passport.authenticate('local', {
     successRedirect: '/',
-    failureRedirect: '/usuarios/login',
+    failWithError: true,
     failureFlash: true,
-    passReqToCallback: true
     // TODO ver si es admin o usuario comun y redireccionar acorde
-}))
+    // TODO redirigir a /usuarios/modificar/datos si tiene la contraseña default
+}), (req,res) => {
+    res.render("login", { error: "Unable to login, the password or the username are wrong" });// TODO arreglar esto
+})
 
 .post('/modificar-datos', async (req, res) => {
     let { mailNuevo, contraseña1, contraseña2 } = req.body;
@@ -46,6 +48,7 @@ router.get('/yo', autenticado, async(req,res) => {
           error
         });
       }
+      // TODO(tavo): Chequear si contraseña = contraseñaDefault y mandar error en ese caso
   })
 
 module.exports = router;

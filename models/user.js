@@ -44,8 +44,13 @@ const userSchema = new mongoose.Schema({
         min:3,
         max:255
     },
+    contraseñaDefault:{
+        type: String,
+        required: true,
+        min:3,
+        max:255
+    },
     isAdmin: Boolean,
-    primerLogin: Boolean,
     montoDescuento: Number,
     perrosId: [ObjectId]
 });

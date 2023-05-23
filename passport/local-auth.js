@@ -17,7 +17,7 @@ passport.use(new LocalStrategy({
     passwordField: 'contraseña',
     passReqToCallback: true
   }, async (req, email, password, done) => {
-    const { error } = validateLogin({ mail: email, contraseña: password});  
+    const { error } = validateLogin({ mail: email, contraseña: password});  // TODO Traducir mensajes a español
     if(error) return done(null, false, req.flash('signinMessage', error));
 
     let user = await User.findOne({ mail: email });
