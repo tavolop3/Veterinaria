@@ -1,0 +1,32 @@
+doctype html
+html
+  head
+    meta(charset="utf-8")
+    title Modificar perro
+    link(rel="stylesheet", href="/style/login.css")
+  body
+    form(action="admin/modificar-perro", method="post")
+      ul
+        li
+          label(for="nombre") Nombre:
+          input(type="text", id="nombre", name="nombre", value=perro.mail)
+        li
+          label(for="sexo") Sexo:
+          input(type="text", id="sexo", name="sexo", value=perro.nombre)
+        li
+          label(for="fecha") Fecha de nacimiento:
+          input(type="date", id="fecha", name="fecha", value=perro.apellido)
+        li
+          label(for="raza") Raza:
+          input(type="text", id="raza", name="raza", value=perro.raza)
+        li
+          label(for="color") Color:
+          input(type="text", id="color", name="color", value=perro.color)
+        li
+          label(for="observacioens") Observaciones:
+          input(type="text", id="observaciones", name="observaciones", value=perro.color)
+        li
+          label(for="color") Foto:
+          input(type="text", id="foto", name="foto", value=perro.color)
+        li.button
+          button(type="submit") Modificar

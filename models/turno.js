@@ -12,7 +12,7 @@ const turnoSchema = new mongoose.Schema({
         type: String
     },
     rangoHorario:{
-        type: Date
+        type: String
     },
     dni:{
         type: String
@@ -29,3 +29,5 @@ const turnoSchema = new mongoose.Schema({
 })
 
 const Turno = mongoose.model('Turno', turnoSchema);
+
+module.exports = Turno;

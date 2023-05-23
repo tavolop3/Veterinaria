@@ -1,0 +1,11 @@
+doctype html
+html
+head
+title Usuarios
+body
+div(ng-unless="#{#lists.isEmpty(usuarios)}")
+h1 Lista de usuarios
+table
+tr(ng-repeat="usuario in usuarios")
+td(ng-bind="usuario.mail")
+h1(ng-if="#{#lists.isEmpty(usuarios)}") No hay usuarios cargados en el sistema
