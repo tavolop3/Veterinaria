@@ -25,12 +25,8 @@ router.get('', (req,res) => {
     res.render('turno')
 })
 
-.get('/usuarios/modificar/datos', (req, res) => {
+.get('/clientes/modificar-datos', (req, res) => {
     res.render('modificar-datos')
-})
-
-.get('/clientes/modificar-pass', (req,res) => {
-    res.render('modificar-pass');
 })
 
 module.exports = router;

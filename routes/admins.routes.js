@@ -19,7 +19,6 @@ router.post('/registrar-usuario', async (req, res) => {
 
   user = new User(_.pick(req.body, ['nombre', 'apellido', 'mail', 'telefono', 'dni']));
 
-
   const contraRandom = crypto.randomBytes(8).toString('hex');
   // Activar para testear un par de veces o en demo para no gastar la cuota de mails (son 100)
   // sendEmail(user.mail,'OhMyDog - Contraseña predefinida',
