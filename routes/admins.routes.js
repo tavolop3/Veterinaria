@@ -3,6 +3,7 @@ const router = express.Router();
 var crypto = require("crypto");
 const { User, validateCreate, encriptarContraseña } = require('../models/user');
 const { Perro } = require('../models/perro')
+const { Turno } = require('../models/turno')
 const _ = require('lodash');
 const { sendEmail } = require('../emails');
 
@@ -121,5 +122,21 @@ router.post('/registrar-perro', async (req, res) => {
 
   res.redirect('/admin');
 })
+
+/*  permite visualizar al administrador
+    los turnos asignados para el dia
+*/
+.get('/turnos-diarios', async (req, res) => {
+  let hoy = new Date();
+  try {
+    let turnos = await Turno.find({});
+    let turnosDiarios = turnos.filter(turno => turno.fecha.getDate() === hoy.getDate());
+    res.render('turnos-hoy', { turnosDiarios })
+  } catch (error) {
+    console.log('Error al obtener los turnos:', error);
+    return res.status(400).send('Error al obtener los turnos');
+  }
+})
+
 
 module.exports = router;
