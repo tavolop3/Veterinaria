@@ -52,7 +52,8 @@ const userSchema = new mongoose.Schema({
     },
     isAdmin: Boolean,
     montoDescuento: Number,
-    perrosId: [ObjectId]
+    perrosId: [ObjectId],
+    turnosId: [ObjectId]
 });
 
 userSchema.methods.generateAuthToken = function() {
