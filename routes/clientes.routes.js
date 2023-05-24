@@ -1,8 +1,10 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const router = express.Router();
 const autenticado = require('../middleware/autenticado');
-const Turno = require('../models/turno')
-const User = require('../models/user');
+const { Turno }= require('../models/turno')
+const { User } = require('../models/user');
+const { Perro } = require('../models/perro')
 
 /* Endpoint para
    guardar un turno solicitado
@@ -17,8 +19,8 @@ router.post('/solicitar-turno', autenticado, async(req, res) => {
     fecha: req.body.fecha
   };
   // encuentra el usuario logueado
-  let usuario = await User.findById({ id: req.user._id});
-  if (usuario === undefined) return res.status(400).send('No se encontro el usuario.');
+  let usuario = await User.findById(req.user._id);
+  if (!usuario) return res.status(400).send('No se encontro el usuario.');
   // verifica que el perro para el cual se solicita el turno existe y este asignado en usuario
   let perrosDelUsuario = await Perro.find({ _id: { $in: usuario.perrosId } });
   let perroEncontrado = perrosDelUsuario.find(perro => perro.nombre === nuevoTurno.nombreDelPerro);
@@ -31,7 +33,7 @@ router.post('/solicitar-turno', autenticado, async(req, res) => {
   try {
     const turno = new Turno(nuevoTurno);
     await turno.save();
-    usuario.turnosId.push(turno);
+    usuario.turnosId.push(turno._id);
     res.redirect('/');
   } catch (error) {
     console.log(error)
@@ -41,7 +43,6 @@ router.post('/solicitar-turno', autenticado, async(req, res) => {
       error: error
     });
   }
-  
 })
 
 module.exports = router;
