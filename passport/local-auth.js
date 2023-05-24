@@ -1,7 +1,6 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
-const {User, validateLogin} = require('../models/user');
-const bcrypt = require('bcrypt');
+const {User, validateLogin, compararContraseñas} = require('../models/user');
 
 passport.serializeUser((user, done) => {
   done(null, user.id);
@@ -23,7 +22,7 @@ passport.use(new LocalStrategy({
     let user = await User.findOne({ mail: email });
     if(!user) return done(null, false, req.flash('signinMessage', 'Contraseña o mail invalido'));
 
-    const validPassword = await bcrypt.compare(password, user.contraseña);
+    const validPassword = await compararContraseñas(password, user.contraseña);
     if(!validPassword) return done(null, false, req.flash('signinMessage', 'Contraseña o mail invalido'));
 
     return done(null, user);

@@ -3,9 +3,8 @@ const mongoose = require('mongoose');
 const router = express.Router();
 const autenticado = require('../middleware/autenticado');
 const { Turno } = require('../models/turno')
-const { User, encriptarContraseña } = require('../models/user');
+const { User, encriptarContraseña, compararContraseñas } = require('../models/user');
 const { Perro } = require('../models/perro')
-const bcrypt = require('bcrypt');
 
 /* Endpoint para
    guardar un turno solicitado
@@ -50,7 +49,7 @@ router.post('/solicitar-turno', autenticado, async(req, res) => {
   let { mailNuevo, contraseña1, contraseña2 } = req.body;
   let mailActual = req.user.mail;
   let user = await User.findOne({ mail: mailActual });
-  if (!await bcrypt.compare(contraseña1, user.contraseña)) return res.status(400).json('La contraseña ingresada no es correcta')
+  if (!await compararContraseñas(contraseña1, user.contraseña)) return res.status(400).json('La contraseña ingresada no es correcta')
   try {
       if (mailNuevo === "") mailNuevo = mailActual;
       if (contraseña2 !== "") {

@@ -91,7 +91,12 @@ async function encriptarContraseña (contraseña){
     return await bcrypt.hash(contraseña, salt);
 }
 
+function compararContraseñas(contraseña1,contraseña2){
+    return bcrypt.compare(contraseña1,contraseña2);
+}
+
 exports.User = User;
 exports.validateCreate = validateCreate;
 exports.validateLogin = validateLogin;
 exports.encriptarContraseña = encriptarContraseña;
+exports.compararContraseñas = compararContraseñas;
