@@ -50,7 +50,10 @@ const userSchema = new mongoose.Schema({
         min:3,
         max:255
     },
-    isAdmin: Boolean,
+    isAdmin:{
+        type: Boolean,
+        default: false
+    },
     montoDescuento: Number,
     perrosId: [ObjectId],
     turnosId: [ObjectId]

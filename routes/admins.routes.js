@@ -27,6 +27,7 @@ router.post('/registrar-usuario', async (req, res) => {
   console.log('Contraseña generada:' + contraRandom);
   user.contraseña = await encriptarContraseña(contraRandom);
   user.contraseñaDefault = user.contraseña;
+  user.isAdmin = false;
   await user.save();
 
   res.redirect('/admin');
