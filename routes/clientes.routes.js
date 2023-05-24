@@ -2,7 +2,8 @@ const express = require('express');
 const router = express.Router();
 const autenticado = require('../middleware/autenticado');
 const Turno = require('../models/turno')
-const User = require('../models/user');
+const { User, encriptarContraseña } = require('../models/user');
+const bcrypt = require('bcrypt');
 
 /* Endpoint para
    guardar un turno solicitado
@@ -42,6 +43,35 @@ router.post('/solicitar-turno', autenticado, async(req, res) => {
     });
   }
   
+})
+
+.post('/modificar-datos', autenticado, async (req, res) => {
+  let { mailNuevo, contraseña1, contraseña2 } = req.body;
+  let mailActual = req.user.mail;
+  let user = await User.findOne({ mail: mailActual });
+  if (!await bcrypt.compare(contraseña1, user.contraseña)) return res.status(400).json('La contraseña ingresada no es correcta')
+  try {
+      if (mailNuevo === "") mailNuevo = mailActual;
+      if (contraseña2 !== "") {
+        contraseña2 = await encriptarContraseña(contraseña2);
+      }
+      else {
+        contraseña2 = contraseña1;
+        contraseña2 = await encriptarContraseña(contraseña2);
+      }
+      await User.updateOne({ mail: mailActual }, { $set: {
+        mail: mailNuevo,
+        contraseña: contraseña2
+      }});
+      return res.redirect('/');
+  } catch (error) {
+      return res.json({
+        resultado: false,
+        msg: 'El usuario no se pudo modificar',
+        error
+      });
+    }
+    // TODO(tavo): Chequear si contraseña = contraseñaDefault y mandar error en ese caso
 })
 
 module.exports = router;
