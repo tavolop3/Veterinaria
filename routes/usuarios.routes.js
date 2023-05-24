@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const passport = require('passport');
 const autenticado = require('../middleware/autenticado');
-const {compararContraseñas} = require('../models/user');
 
 // Para ver el usuario actual
 router.get('/yo', autenticado, async(req,res) => {
@@ -17,16 +16,15 @@ router.get('/yo', autenticado, async(req,res) => {
     if (!user) {
       return res.render('login', { error: req.flash('signinMessage')});
     }
-    // TODO redirigir a /usuarios/modificar-datos si tiene la contraseña default
     req.login(user, async loginErr => {
       if (loginErr) {
         return next(loginErr);
       } else {
-        tieneContraseñaOriginal = await compararContraseñas(user.contraseña,user.contraseñaDefault);
-        if(tieneContraseñaOriginal) {
-          res.render('modificar-datos',{ error: 'Debe modificar su contraseña por seguridad.', primerLogin: true})
-        }
-        res.redirect('/');     
+        if(user.contraseña === user.contraseñaDefault) {
+          res.render('modificar-datos',{ error : 'Debe modificar su contraseña por seguridad.', primerLogin: true})
+        } else {
+          res.redirect('/');
+        }     
       }
     });      
   })(req, res, next);

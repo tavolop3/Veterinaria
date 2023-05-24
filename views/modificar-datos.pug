@@ -9,7 +9,7 @@ html
       ul
         li
           label(for="contraseña1") Contraseña actual:
-          input(type="password", id="contraseña1", name="contraseña1")
+          input(type="password", id="contraseña1", name="contraseña1", required)
         if !primerLogin
           li
             label(for="mailNuevo") Mail nuevo:
@@ -20,4 +20,4 @@ html
         li.button
           button(type="submit") Guardar cambios
     if error 
-      li.error = error
+      li.error= error

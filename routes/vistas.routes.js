@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.get('', (req,res) => {
     if(!req.user)
-    res.render('index');
+        res.render('index');
     else {
         if(req.user.isAdmin)
             res.redirect('/admin');
@@ -14,20 +14,16 @@ router.get('', (req,res) => {
     }  
 })
 
+// ------------------- USUARIOS -------------------------
+
 .get('/usuarios/login', (req,res) => {
     res.render('login');
 })
 
-.get('/admin/registrar-usuario',[autenticado,esAdmin], (req,res) => {
-    res.render('registro-usuario');
-})
+// ------------------- CLIENTES -------------------------
 
 .get('/clientes', autenticado, (req, res) => {
     res.render('indexCliente')
-})
-
-.get('/admin', autenticado,(req,res) => {
-    res.render('indexAdmin');
 })
 
 .get('/clientes/turno', autenticado, (req, res) => {
@@ -36,6 +32,16 @@ router.get('', (req,res) => {
 
 .get('/clientes/modificar-datos',autenticado, (req, res) => {
     res.render('modificar-datos')
+})
+
+// ------------------- ADMIN -------------------------
+
+.get('/admin', [autenticado,esAdmin],(req,res) => {
+    res.render('indexAdmin');
+})
+
+.get('/admin/registrar-usuario', [autenticado,esAdmin], (req,res) => {
+    res.render('registro-usuario');
 })
 
 module.exports = router;
