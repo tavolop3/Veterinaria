@@ -1,11 +1,42 @@
 doctype html
 html
-head
-title Usuarios
-body
-div(ng-unless="#{#lists.isEmpty(usuarios)}")
-h1 Lista de usuarios
-table
-tr(ng-repeat="usuario in usuarios")
-td(ng-bind="usuario.mail")
-h1(ng-if="#{#lists.isEmpty(usuarios)}") No hay usuarios cargados en el sistema
+  head
+    title Usuarios
+
+    style.
+      table {
+        border-collapse: collapse;
+        width: 30%;
+      }
+      th, td {
+        padding: 2px;
+        text-align: left;
+      }
+       td.buttons {
+        display: flex;
+        gap: 10px;
+      }
+
+  body
+    div(ng-unless="usuarios.length === 0")
+      h1 Lista de usuarios
+      table
+        tr
+          th DNI
+          th Mail
+          th Nombre
+          th Apellido
+        each usuario in usuarios
+          tr
+            td= usuario.dni
+            td= usuario.mail
+            td= usuario.nombre
+            td= usuario.apellido
+            td.buttons
+              form(action="/usuarios/modificar-datos", method="POST")
+                input(type="hidden", name="dato", value=usuario.mail)
+                button(type="submit") Modificar usuario
+              form(action="/clientes/listar-perros", method="POST")
+                input(type="hidden", name="dato", value=usuario.mail)
+                button(type="submit") Listar perros
+            

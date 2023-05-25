@@ -11,10 +11,10 @@ router.post('/registrar-usuario', async (req, res) => {
   if (error) return res.status(400).render('registro-usuario', { error }); // TODO Traducir mensajes a español
 
   let user = await User.findOne({ mail: req.body.mail });
-  if (user) return res.status(400).render('registro-usuario', { error : 'El mail ya está en uso.' }); // TODO Popup
+  if (user) return res.status(400).render('registro-usuario', { error: 'El mail ya está en uso.' }); // TODO Popup
 
   user = await User.findOne({ dni: req.body.dni });
-  if (user) return res.status(400).render('registro-usuario', { error : 'El dni ya está registrado.' }); 
+  if (user) return res.status(400).render('registro-usuario', { error: 'El dni ya está registrado.' });
 
   user = new User(_.pick(req.body, ['nombre', 'apellido', 'mail', 'telefono', 'dni']));
 
@@ -82,9 +82,10 @@ router.get('/listar-usuarios', async (req, res) => {
     let users = await User.find({});
     const lista = users.map(usuario => ({ dni: usuario.dni, mail: usuario.mail, nombre: usuario.nombre, apellido: usuario.apellido }))
     if (lista.length === 0) {
-      res.status(404).json({ mensaje: 'No hay usuarios cargados en el sistema' });
+      res.render('listaUsuarios', { error: 'La lista esta vacia' });
+      //res.status(404).json({ mensaje: 'No hay usuarios cargados en el sistema' });
     } else {
-      res.json(lista);
+      res.render('listaUsuarios', { usuarios: lista });
     }
   } catch (err) {
     console.log('Hola')
@@ -93,7 +94,7 @@ router.get('/listar-usuarios', async (req, res) => {
 });
 
 router.post('/registrar-perro', async (req, res) => {
-  const { error } = validateCreate(req.body);
+  const { error } = validateCreatePerro(req.body);//crear
   if (error) return res.status(400).render('registro-perro', { error });
 
   let user = await User.findOne({ mail: req.body.mail });//tengo al user, ahora le agregamos al perro , si no existe
@@ -111,11 +112,6 @@ router.post('/registrar-perro', async (req, res) => {
     console.log('El perro ya está en la lista del usuario');
     return res.status(400).send('perro already registered.');
   }
-
-  // Activar para testear un par de veces o en demo para no gastar la cuota de mails (son 100)
-  // sendEmail(user.mail,'OhMyDog - Contraseña predefinida',
-  //     'Bienvenido a OhMyDog, tu cuenta fue creada con exito. Tu contraseña para el primer ingreso va a ser '+ contraRandom + ' es importante que la cambies ni bien accedas por motivos de seguridad, gracias.'
-  // );
 
   await user.save();
 
