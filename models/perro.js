@@ -32,3 +32,5 @@ const perroSchema = new mongoose.Schema({
 })
 
 const Perro = mongoose.model('Perro', perroSchema);
+
+exports.Perro = Perro;

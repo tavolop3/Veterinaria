@@ -30,4 +30,4 @@ const turnoSchema = new mongoose.Schema({
 
 const Turno = mongoose.model('Turno', turnoSchema);
 
-module.exports = Turno;
+exports.Turno = Turno;

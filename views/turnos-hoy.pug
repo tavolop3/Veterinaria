@@ -1,0 +1,13 @@
+html
+  head
+    title Listado de turnos del día
+  body
+    h1 Listado de turnos del día
+    ul
+      each turno in turnosDiarios
+        li= turno.nombreDelPerro
+        li= turno.rangoHorario 
+        li= turno.dni
+        li= turno.motivo
+        li= turno.estado
+        li= turno.fecha

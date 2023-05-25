@@ -1,36 +1,47 @@
 const express = require('express');
+const autenticado = require('../middleware/autenticado');
+const esAdmin = require('../middleware/esAdmin');
 const router = express.Router();
 
 router.get('', (req,res) => {
-    res.render('index');
+    if(!req.user)
+        res.render('index');
+    else {
+        if(req.user.isAdmin)
+            res.redirect('/admin');
+        else
+            res.redirect('/clientes');
+    }  
 })
+
+// ------------------- USUARIOS -------------------------
 
 .get('/usuarios/login', (req,res) => {
     res.render('login');
 })
 
-.get('/admin/registrar-usuario', (req,res) => {
-    res.render('registro-usuario');
-})
+// ------------------- CLIENTES -------------------------
 
-.get('/clientes', (req, res) => {
+.get('/clientes', autenticado, (req, res) => {
     res.render('indexCliente')
 })
 
-.get('/admin', (req,res) => {
-    res.render('indexAdmin');
-})
-
-.get('/clientes/turno', (req, res) => {
+.get('/clientes/turno', autenticado, (req, res) => {
     res.render('turno')
 })
 
-.get('/usuarios/modificar/datos', (req, res) => {
+.get('/clientes/modificar-datos',autenticado, (req, res) => {
     res.render('modificar-datos')
 })
 
-.get('/clientes/modificar-pass', (req,res) => {
-    res.render('modificar-pass');
+// ------------------- ADMIN -------------------------
+
+.get('/admin', [autenticado,esAdmin],(req,res) => {
+    res.render('indexAdmin');
+})
+
+.get('/admin/registrar-usuario', [autenticado,esAdmin], (req,res) => {
+    res.render('registro-usuario');
 })
 
 module.exports = router;

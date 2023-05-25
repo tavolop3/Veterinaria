@@ -5,6 +5,8 @@ const vistas = require('../routes/vistas.routes');
 const bodyParser = require('body-parser');
 const admins = require('../routes/admins.routes');
 const clientes = require('../routes/clientes.routes');
+const autenticado = require('../middleware/autenticado');
+const esAdmin = require('../middleware/esAdmin');
 
 module.exports = function(app) {
     app.use(express.json());
@@ -12,8 +14,8 @@ module.exports = function(app) {
     
     app.use('/usuarios',usuarios);
     app.use('/',vistas);
-    app.use('/admin',admins);
-    app.use('/clientes',clientes);
+    app.use('/admin',[autenticado,esAdmin],admins);
+    app.use('/clientes',autenticado,clientes);
     
     app.use(error);
 }
