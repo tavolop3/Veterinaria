@@ -12,23 +12,26 @@ html
         padding: 2px;
         text-align: left;
       }
-
+  
   body
-    div(ng-unless="perros.length === 0")
-      h1 Lista de perros
-      table
-        tr
-          th Nombre
-          th Sexo
-          th Fecha de nacimiento
-          th Raza
-          th Color 
-          th Observaciones
-        each perro in perros
+    if !perros.length
+      h1 No hay perros cargados en su cuenta.
+    else
+      div
+        h1 Lista de perros
+        table
           tr
-            td= perro.nombre
-            td= perro.sexo
-            td= perro.fechaDeNacimiento
-            td= perro.raza 
-            td= perro.color 
-            td= perro.observaciones
+            th Nombre
+            th Sexo
+            th Fecha de nacimiento
+            th Raza
+            th Color 
+            th Observaciones
+          each perro in perros
+            tr
+              td= perro.nombre
+              td= perro.sexo
+              td= perro.fechaDeNacimiento
+              td= perro.raza 
+              td= perro.color 
+              td= perro.observaciones

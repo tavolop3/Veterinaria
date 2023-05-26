@@ -130,23 +130,20 @@ router.post('/registrar-perro', async (req, res) => {
   }
 })
 
-
-
-
-  /*  permite visualizar al administrador
-      los turnos asignados para el dia
-  */
-  .get('/turnos-diarios', async (req, res) => {
-    let hoy = new Date();
-    try {
-      let turnos = await Turno.find({});
-      let turnosDiarios = turnos.filter(turno => turno.fecha.getDate() === hoy.getDate());
-      res.render('turnos-hoy', { turnosDiarios })
-    } catch (error) {
-      console.log('Error al obtener los turnos:', error);
-      return res.status(400).send('Error al obtener los turnos');
-    }
-  })
+/*  permite visualizar al administrador
+    los turnos asignados para el dia
+*/
+.get('/turnos-diarios', async (req, res) => {
+  let hoy = new Date();
+  try {
+    let turnos = await Turno.find({});
+    let turnosDiarios = turnos.filter(turno => turno.fecha.getDate() === hoy.getDate());
+    res.render('turnos-hoy', { turnosDiarios })
+  } catch (error) {
+    console.log('Error al obtener los turnos:', error);
+    return res.status(400).send('Error al obtener los turnos');
+  }
+})
 
 
 module.exports = router;

@@ -55,8 +55,8 @@ const userSchema = new mongoose.Schema({
         default: false
     },
     montoDescuento: Number,
-    perrosId: [{ type : ObjectId, ref: 'perros' }],
-    turnosId: [{ type : ObjectId, ref: 'turnos' }]
+    perrosId: [{ type : ObjectId, ref: 'Perro' }],
+    turnosId: [{ type : ObjectId, ref: 'Turno' }]
 });
 
 userSchema.methods.generateAuthToken = function () {

@@ -44,18 +44,6 @@ router.post('/solicitar-turno', async (req, res) => {
   }
 })
 
-.get('/mis-perros', (req,res) => {
-  User.find(req.body.mail)
-      .populate('perrosId')
-      .exec((err,perros) => {
-        if(err)
-          console.error(err);
-        else
-          console.log(perros);
-      })
-    res.render('listaPerros', { perros : [] })
-})
-
 .post('/modificar-datos', async (req, res) => {
     let { mailNuevo, contraseña1, contraseña2 } = req.body;
     let mailActual = req.user.mail;
@@ -84,6 +72,13 @@ router.post('/solicitar-turno', async (req, res) => {
         error
       });
     }
+})
+
+.get('/mis-perros', async(req,res) => {
+  const usuario = await User.findById(req.user.id)
+                            .populate('perrosId')
+  const perros = usuario.perrosId;
+  res.render('listaPerros', { perros })
 })
 
 module.exports = router;
