@@ -3,7 +3,7 @@ include mixins/bannerCliente.pug
 doctype html
 html
   head
-    title Usuarios
+    title Perros
 
     style.
       table {
@@ -14,10 +14,14 @@ html
         padding: 2px;
         text-align: left;
       }
+      td.buttons {
+        display: flex;
+        gap: 10px;
+      }
 
 +bannerCliente()  
 if !perros.length
-  h1 No hay perros cargados en su cuenta.
+  h1 No tiene perros cargados todavía.
 else
   div
     h1 Lista de perros
@@ -37,3 +41,12 @@ else
           td= perro.raza 
           td= perro.color 
           td= perro.observaciones
+          if admin
+            td.buttons
+              form(action="/admin/modificar-perro", method="POST")
+                input(type="hidden", name="id", value=perro._id)
+                button(type="submit") Modificar perro
+              form(action="/admin/eliminar-usuario", method="POST")
+                input(type="hidden", name="id", value=perro._id)
+                button(type="submit") Eliminar perro
+                

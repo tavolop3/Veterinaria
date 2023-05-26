@@ -148,7 +148,7 @@ router.post('/registrar-perro', async (req, res) => {
   }
 })
 
-router.post('/eliminar-usuario', async (req, res) => {
+.post('/eliminar-usuario', async (req, res) => {
   try {
     // Obtener el usuario que deseas eliminar
     const usuario = await User.findOne({ mail: req.body.dato });
@@ -172,7 +172,14 @@ router.post('/eliminar-usuario', async (req, res) => {
   } catch (err) {
     res.json({ error: err.message || err.toString() });
   }
-});
+})
+
+.post('/listar-perros',async(req,res) => {
+    const usuario = await User.findOne({ mail: req.body.dato })
+                              .populate('perrosId')
+    const perros = usuario.perrosId;
+    res.render('listaPerros', { perros , admin: true })
+})
 
 
 
