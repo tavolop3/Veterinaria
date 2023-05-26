@@ -2,7 +2,7 @@
 const autenticado = (req, res, next) => {
     if (req.isAuthenticated()) {
       if(req.user.contraseña === req.user.contraseñaDefault) {
-        res.render('modificar-datos',{ error : 'Debe modificar su contraseña por seguridad.', primerLogin: true})
+        res.render('modificar-pass', { error : 'Debe modificar su contraseña por seguridad.' })
       }else{
         return next();
       }

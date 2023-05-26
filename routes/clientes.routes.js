@@ -44,36 +44,41 @@ router.post('/solicitar-turno', async (req, res) => {
   }
 })
 
-  .post('/modificar-datos', async (req, res) => {
-    if (req.isAuthenticated()) {
-      let { mailNuevo, contraseña1, contraseña2 } = req.body;
-      let mailActual = req.user.mail;
-      let user = await User.findOne({ mail: mailActual });
-      if (!await compararContraseñas(contraseña1, user.contraseña)) return res.status(400).json('La contraseña ingresada no es correcta')
-      try {
-        if (mailNuevo === "") mailNuevo = mailActual;
-        if (contraseña2 !== "") {
-          contraseña2 = await encriptarContraseña(contraseña2);
-        }
-        else {
-          contraseña2 = contraseña1;
-          contraseña2 = await encriptarContraseña(contraseña2);
-        }
-        await User.updateOne({ mail: mailActual }, {
-          $set: {
-            mail: mailNuevo,
-            contraseña: contraseña2
-          }
-        });
-        return res.redirect('/');
-      } catch (error) {
-        return res.json({
-          resultado: false,
-          msg: 'El usuario no se pudo modificar',
-          error
-        });
+.post('/modificar-datos', async (req, res) => {
+    let { mailNuevo, contraseña1, contraseña2 } = req.body;
+    let mailActual = req.user.mail;
+    let user = await User.findOne({ mail: mailActual });
+    if (!await compararContraseñas(contraseña1, user.contraseña)) return res.status(400).json('La contraseña ingresada no es correcta')
+    try {
+      if (mailNuevo === "") mailNuevo = mailActual;
+      if (contraseña2 !== "") {
+        contraseña2 = await encriptarContraseña(contraseña2);
       }
+      else {
+        contraseña2 = contraseña1;
+        contraseña2 = await encriptarContraseña(contraseña2);
+      }
+      await User.updateOne({ mail: mailActual }, {
+        $set: {
+          mail: mailNuevo,
+          contraseña: contraseña2
+        }
+      });
+      return res.redirect('/');
+    } catch (error) {
+      return res.json({
+        resultado: false,
+        msg: 'El usuario no se pudo modificar',
+        error
+      });
     }
-  })
+})
+
+.get('/mis-perros', async(req,res) => {
+  const usuario = await User.findById(req.user.id)
+                            .populate('perrosId')
+  const perros = usuario.perrosId;
+  res.render('listaPerros', { perros })
+})
 
 module.exports = router;
