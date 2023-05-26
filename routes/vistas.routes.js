@@ -27,11 +27,11 @@ router.get('', (req, res) => {
     })
 
     .get('/clientes/turno', autenticado, (req, res) => {
-        res.render('turno')
+        res.render('turno');
     })
 
     .get('/clientes/modificar-datos', autenticado, (req, res) => {
-        res.render('modificar-datos')
+        res.render('modificar-datos');
     })
 
     // ------------------- ADMIN -------------------------

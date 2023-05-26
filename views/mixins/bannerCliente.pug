@@ -13,6 +13,7 @@ mixin bannerCliente
               option Cuenta
               option(value="/clientes/mis-perros") Mis perros
               option(value="/clientes/modificar-datos") Modificar datos
+              option(value="/clientes/turno") Solicitar turno
               option(value="/usuarios/cerrar-sesion") Cerrar sesion
     header#indice
       nav
@@ -28,7 +29,7 @@ mixin bannerCliente
           li
             a(href="#") Donaciones
           li
-            a(href="#") Turnos
+            a(href="/clientes/turno") Turnos
           li
             a(href="#") Urgencias
     script.

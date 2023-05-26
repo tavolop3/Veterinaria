@@ -15,7 +15,7 @@ router.post('/solicitar-turno', async (req, res) => {
     dni: req.body.dni,
     motivo: req.body.motivo,
     estado: 'Pendiente',
-    fecha: req.body.fecha
+    fecha: new Date(req.body.fecha)
   };
   // encuentra el usuario logueado
   let usuario = await User.findById(req.user._id);

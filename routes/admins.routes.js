@@ -8,8 +8,6 @@ const _ = require('lodash');
 const { sendEmail } = require('../emails');
 const { ObjectId } = require('mongoose').Types;
 
-
-
 router.post('/registrar-usuario', async (req, res) => {
   const { error } = validateCreate(req.body);
   if (error) return res.status(400).render('registro-usuario', { error }); // TODO Traducir mensajes a español
