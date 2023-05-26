@@ -48,6 +48,8 @@ router.get('', (req, res) => {
         res.render('registro-perro');
     })
 
-
+    .get('/admin/eliminar-perro', [autenticado, esAdmin], (req, res) => {
+        res.render('eliminar-perro');
+    })
 
 module.exports = router;

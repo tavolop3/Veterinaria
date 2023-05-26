@@ -6,6 +6,9 @@ const { Perro, validateCreatePerro } = require('../models/perro')
 const { Turno } = require('../models/turno')
 const _ = require('lodash');
 const { sendEmail } = require('../emails');
+const { ObjectId } = require('mongoose').Types;
+
+
 
 router.post('/registrar-usuario', async (req, res) => {
   const { error } = validateCreate(req.body);
@@ -79,7 +82,7 @@ router.post('/registrar-usuario', async (req, res) => {
 //route for user list
 router.get('/listar-usuarios', async (req, res) => {
   try {
-    let users = await User.find({});
+    let users = await User.find({ isAdmin: false });
     const lista = users.map(usuario => ({ dni: usuario.dni, mail: usuario.mail, nombre: usuario.nombre, apellido: usuario.apellido }))
     if (lista.length === 0) {
       res.render('listaUsuarios', { error: 'La lista esta vacia' });
@@ -144,6 +147,36 @@ router.post('/registrar-perro', async (req, res) => {
     return res.status(400).send('Error al obtener los turnos');
   }
 })
+
+router.post('/eliminar-usuario', async (req, res) => {
+  try {
+    // Obtener el usuario que deseas eliminar
+    const usuario = await User.findOne({ mail: req.body.dato });
+    if (!usuario) {
+      return res.status(400).send('User not registered.');
+    }
+
+    // Recopilar los IDs de los perros y turnos asociados al usuario
+    const idPerros = usuario.perrosId.map(perro => ObjectId(perro));
+    const idTurnos = usuario.turnosId.map(turno => ObjectId(turno));
+
+    // Eliminar los perros asociados al usuario
+    await Perro.deleteMany({ _id: { $in: idPerros.map(id => new ObjectId(id)) } });
+    // Eliminar los turnos asociados al usuario
+    await Turno.deleteMany({ _id: { $in: idTurnos } });
+
+    // Eliminar el usuario
+    await User.deleteOne({ mail: req.body.dato });
+    //console.log('Usuario y sus perros/turnos eliminados exitosamente');
+    res.render('eliminacion-confirmada');
+  } catch (err) {
+    res.json({ error: err.message || err.toString() });
+  }
+});
+
+
+
+
 
 
 module.exports = router;
