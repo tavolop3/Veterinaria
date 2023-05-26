@@ -29,7 +29,7 @@ router.post('/registrar-usuario', async (req, res) => {
   user.contraseñaDefault = user.contraseña;
   await user.save();
 
-  res.redirect('/admin');
+  res.redirect('/'); // TODO Enviar mensaje con confirmación de creación 
 })
 
   .post('modificar-usuario', async (req, res) => {
@@ -112,14 +112,9 @@ router.post('/registrar-perro', async (req, res) => {
     return res.status(400).send('perro already registered.');
   }
 
-  // Activar para testear un par de veces o en demo para no gastar la cuota de mails (son 100)
-  // sendEmail(user.mail,'OhMyDog - Contraseña predefinida',
-  //     'Bienvenido a OhMyDog, tu cuenta fue creada con exito. Tu contraseña para el primer ingreso va a ser '+ contraRandom + ' es importante que la cambies ni bien accedas por motivos de seguridad, gracias.'
-  // );
-
   await user.save();
 
-  res.redirect('/admin');
+  res.redirect('/');
 })
 
 /*  permite visualizar al administrador
@@ -137,5 +132,19 @@ router.post('/registrar-perro', async (req, res) => {
   }
 })
 
+.patch('modificar-turno', (req,res) => { // TODO testearlo
+    const turno = Turno.findByIdAndUpdate(
+                req.body.id,
+                _.pick(req.body, ['nombre', 'rangoHorario', 'dni', 'motivo', 'estado', 'fecha'])
+    );
+    if(!turno) res.status(400).send('El turno no fue encontrado');
+
+  // Activar para testear un par de veces o en demo para no gastar la cuota de mails (son 100)
+  // sendEmail(user.mail,'OhMyDog - Modificación de turno',
+  //     'Uno de tus turnos fue modificado por la veterinaria, por favor, revisa en tus turnos.'
+  // );
+
+    res.redirect('/'); // TODO Enviar mensaje con confirmación de modificación 
+})
 
 module.exports = router;

@@ -44,4 +44,8 @@ router.get('', (req,res) => {
     res.render('registro-usuario');
 })
 
+.get('/admin/modificar-turno', [autenticado,esAdmin], (req,res) => {
+    res.render('modificar-turno');
+})
+
 module.exports = router;
