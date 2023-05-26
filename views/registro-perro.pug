@@ -5,7 +5,7 @@ html
     title Registrar usuario
     link(rel="stylesheet", href="/style/registro.css")
   body
-    form(action="/admin/registro-perro", method="post")
+    form(action="/admin/registrar-perro", method="post")
       ul
         li
           label(for="id") Nombre
@@ -36,9 +36,9 @@ html
         li
         li
           label(for="foto") foto
-          input(type="Buffer", id="foto", name="foto", required)
+          input(type="String", id="foto", name="foto", required)
         li
         li.button
           button(type="submit") Registrar
         if error
-          li.error= error|  
+          li.error= error  

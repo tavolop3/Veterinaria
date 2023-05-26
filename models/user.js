@@ -6,51 +6,51 @@ const { ObjectId } = require('mongodb');
 const bcrypt = require('bcrypt');
 
 const userSchema = new mongoose.Schema({
-    nombre:{
+    nombre: {
         type: String,
         required: true,
         minlength: 3,
         maxlength: 15
     },
-    apellido:{
+    apellido: {
         type: String,
         required: true,
         minlength: 3,
         maxlength: 15
     },
-    dni:{
+    dni: {
         type: String,
         required: true,
         unique: true,
         minlength: 8,
         maxlength: 8
     },
-    telefono:{
+    telefono: {
         type: String,
         required: true,
         minlength: 6,
         maxlength: 50
     },
-    mail:{
+    mail: {
         type: String,
         unique: true,
         required: true,
         minlength: 3,
         maxlength: 50
     },
-    contraseña:{
+    contraseña: {
         type: String,
         required: true,
-        min:3,
-        max:255
+        min: 3,
+        max: 255
     },
-    contraseñaDefault:{
+    contraseñaDefault: {
         type: String,
         required: true,
-        min:3,
-        max:255
+        min: 3,
+        max: 255
     },
-    isAdmin:{
+    isAdmin: {
         type: Boolean,
         default: false
     },
@@ -59,7 +59,7 @@ const userSchema = new mongoose.Schema({
     turnosId: [ObjectId]
 });
 
-userSchema.methods.generateAuthToken = function() {
+userSchema.methods.generateAuthToken = function () {
     const token = jwt.sign({ _id: this._id, isAdmin: this.isAdmin }, config.get('jwtPrivateKey'));
     return token;
 }
@@ -67,7 +67,7 @@ userSchema.methods.generateAuthToken = function() {
 const User = mongoose.model('User', userSchema);
 
 //actualizar, esto es para validar del lado del backend lo que te llega del front, no de la bd
-function validateCreate(user){
+function validateCreate(user) {
     const schema = Joi.object({
         nombre: Joi.string().min(3).max(15).required(),
         apellido: Joi.string().min(3).max(15).required(),
@@ -78,7 +78,7 @@ function validateCreate(user){
     return schema.validate(user);
 }
 
-function validateLogin(user){
+function validateLogin(user) {
     const schema = Joi.object({
         mail: Joi.string().min(3).max(50).required().email(),
         contraseña: Joi.string().min(3).max(255).required(),
@@ -86,13 +86,13 @@ function validateLogin(user){
     return schema.validate(user);
 }
 
-async function encriptarContraseña (contraseña){
+async function encriptarContraseña(contraseña) {
     const salt = await bcrypt.genSalt(10);
     return await bcrypt.hash(contraseña, salt);
 }
 
-function compararContraseñas(contraseña1,contraseña2){
-    return bcrypt.compare(contraseña1,contraseña2);
+function compararContraseñas(contraseña1, contraseña2) {
+    return bcrypt.compare(contraseña1, contraseña2);
 }
 
 exports.User = User;

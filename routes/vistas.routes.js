@@ -3,45 +3,51 @@ const autenticado = require('../middleware/autenticado');
 const esAdmin = require('../middleware/esAdmin');
 const router = express.Router();
 
-router.get('', (req,res) => {
-    if(!req.user)
+router.get('', (req, res) => {
+    if (!req.user)
         res.render('index');
     else {
-        if(req.user.isAdmin)
+        if (req.user.isAdmin)
             res.redirect('/admin');
         else
             res.redirect('/clientes');
-    }  
+    }
 })
 
-// ------------------- USUARIOS -------------------------
+    // ------------------- USUARIOS -------------------------
 
-.get('/usuarios/login', (req,res) => {
-    res.render('login');
-})
+    .get('/usuarios/login', (req, res) => {
+        res.render('login');
+    })
 
-// ------------------- CLIENTES -------------------------
+    // ------------------- CLIENTES -------------------------
 
-.get('/clientes', autenticado, (req, res) => {
-    res.render('indexCliente')
-})
+    .get('/clientes', autenticado, (req, res) => {
+        res.render('indexCliente')
+    })
 
-.get('/clientes/turno', autenticado, (req, res) => {
-    res.render('turno')
-})
+    .get('/clientes/turno', autenticado, (req, res) => {
+        res.render('turno')
+    })
 
-.get('/clientes/modificar-datos',autenticado, (req, res) => {
-    res.render('modificar-datos')
-})
+    .get('/clientes/modificar-datos', autenticado, (req, res) => {
+        res.render('modificar-datos')
+    })
 
-// ------------------- ADMIN -------------------------
+    // ------------------- ADMIN -------------------------
 
-.get('/admin', [autenticado,esAdmin],(req,res) => {
-    res.render('indexAdmin');
-})
+    .get('/admin', [autenticado, esAdmin], (req, res) => {
+        res.render('indexAdmin');
+    })
 
-.get('/admin/registrar-usuario', [autenticado,esAdmin], (req,res) => {
-    res.render('registro-usuario');
-})
+    .get('/admin/registrar-usuario', [autenticado, esAdmin], (req, res) => {
+        res.render('registro-usuario');
+    })
+
+    .get('/admin/registrar-perro', (req, res) => {
+        res.render('registro-perro');
+    })
+//.get('/admin/registrar-perro', [autenticado, esAdmin], (req, res) => {
+
 
 module.exports = router;
