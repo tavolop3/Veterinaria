@@ -1,0 +1,42 @@
+head
+    link(rel="stylesheet", href="/style/banner.css")
+
+mixin bannerAdmin
+  body.cuerpoBanner
+    header#encabezado
+      a#logo(href="/")
+        span.titulo OhMyDog
+      nav#navBanner
+        ul
+          li
+            select(title="Cuenta", onchange="redirectToPage(this)")
+              option Operaciones
+              option(value="/admin/registrar-usuario") Registrar Usuario
+              option(value="/admin/registrar-perro") Registrar Perro
+              option(value="/usuario/modificar-datos") Modificar datos
+              option(value='/usuarios/cerrar-sesion') Cerrar sesion
+              option(value="/admin") Operacion x
+    header#indice
+      nav
+        ul#lista-funciones
+          li
+            a(href="/admin/listar-usuarios") Listar usuarios
+          li
+            a(href="#") Autodestruir
+          li
+            a(href="#") Evadir impuestos
+          li
+            a(href="#") Servicios
+          li
+            a(href="#") Donaciones
+          li
+            a(href="#") Turnos
+          li
+            a(href="#") Urgencias
+    script.
+      function redirectToPage(selectElement) {
+        var selectedValue = selectElement.value;
+        if (selectedValue) {
+          window.location.href = selectedValue;
+        }
+      }

@@ -1,43 +1,20 @@
+include mixins/bannerUsuario.pug
+
 doctype html
-html
+html(lang="es")
   head
+    meta(charset="utf-8")
     title OhMyDog
     link(rel="stylesheet", href="/style/index.css")
 
-  body
-    header#encabezado
-      a#logo(href="#")
-        span.titulo OhMyDog
-      nav
-        ul
-          li
-            a(href="/usuarios/login") Iniciar sesión
++bannerUsuario()
+section#pantalla
+  article.columna
+    header
+      h1 Campañas de donaciones activas
+    div.contenido Actualmente no se encuentran campañas de donaciones activas.
 
-    header#indice
-      nav
-        ul#lista-funciones
-          li
-            a(href="#") Adoptar
-          li
-            a(href="#") Búsqueda
-          li
-            a(href="#") Cruza
-          li
-            a(href="#") Servicios
-          li
-            a(href="#") Donaciones
-          li
-            a(href="#") Turnos
-          li
-            a(href="#") Urgencias
-
-    section#pantalla
-      article.columna
-        header
-          h1 Campañas de donaciones activas
-        div.contenido Actualmente no se encuentran campañas de donaciones activas.
-
-      article.columna
-        header
-          h1 Próximos turnos
-        div.contenido Inicia sesión o acércate a la veterinaria para crear una cuenta y poder solicitar turnos desde la página web.
+  article.columna
+    header
+      h1 Próximos turnos
+    div.contenido Inicia sesión o acércate a la veterinaria para crear una cuenta y poder solicitar turnos desde la página web.

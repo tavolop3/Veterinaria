@@ -1,55 +1,22 @@
+include mixins/bannerAdmin.pug
+
 doctype html
 html(lang="es")
   head
     meta(charset="utf-8")
     title OhMyDog
     link(rel="stylesheet", href="/style/index.css")
-  body
-    header#encabezado
-      a#logo(href="#")
-        span.titulo OhMyDog
-      nav
-        ul
-          li
-            select(title="Cuenta", onchange="redirectToPage(this)")
-              option Operaciones
-              option(value="/admin/registrar-usuario") Registrar Usuario
-              option(value="/admin/registrar-perro") Registrar Perro
-              option(value="/usuario/modificar/datos") Modificar datos
-              option(value='/usuarios/cerrar-sesion') Cerrar sesion
-              option(value="/admin") Operacion x
-    header#indice
-      nav
-        ul#lista-funciones
-          li
-            a(href="#") Adoptar
-          li
-            a(href="#") Busqueda
-          li
-            a(href="#") Cruza
-          li
-            a(href="#") Servicios
-          li
-            a(href="#") Donaciones
-          li
-            a(href="#") Turnos
-          li
-            a(href="#") Urgencias
-    section#pantalla
-      article.columna
-        header
-          h1 Campañas de donaciones activas
-        div.contenido
-          p Actualmente no se encuentran campañas de donaciones activas.
-      article.columna
-        header
-          h1 Proximos turnos
-        div.contenido
-          p Inicia sesión o acércate a la veterinaria para crear una cuenta y poder solicitar turnos desde la página web.
-    script.
-      function redirectToPage(selectElement) {
-        var selectedValue = selectElement.value;
-        if (selectedValue) {
-          window.location.href = selectedValue;
-        }
-      }
+
++bannerAdmin()
+body 
+  section#pantalla
+    article.columna
+      header
+        h1 Campañas de donaciones activas
+      div.contenido
+        p Actualmente no se encuentran campañas de donaciones activas.
+    article.columna
+      header
+        h1 Proximos turnos
+      div.contenido
+        p Inicia sesión o acércate a la veterinaria para crear una cuenta y poder solicitar turnos desde la página web.

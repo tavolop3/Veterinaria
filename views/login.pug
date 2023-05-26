@@ -1,3 +1,5 @@
+include mixins/bannerUsuario.pug
+
 doctype html
 html
   head
@@ -5,16 +7,17 @@ html
     title Iniciar sesión
     link(rel="stylesheet", href="/style/login.css")
 
-  body
-    form(action="/usuarios/login", method="post")
-      ul
-        li
-          label(for="mail") Mail
-          input(type="email", id="mail", name="mail", required)
-        li
-          label(for="contraseña") Contraseña
-          input(type="password", id="password", name="contraseña", required)
-        li.button
-          button(type="submit") Iniciar Sesión
-    if error
-      li.error= error
++bannerUsuario()
+body
+  form(action="/usuarios/login", method="post")
+    ul
+      li
+        label(for="mail") Mail
+        input(type="email", id="mail", name="mail", required)
+      li
+        label(for="contraseña") Contraseña
+        input(type="password", id="password", name="contraseña", required)
+      li.button
+        button(type="submit") Iniciar Sesión
+  if error
+    li.error= error

@@ -1,0 +1,30 @@
+head
+    link(rel="stylesheet", href="/style/banner.css")
+
+mixin bannerUsuario 
+  body.cuerpoBanner
+    header#encabezado
+      a#logo(href="/")
+        span.titulo OhMyDog
+      nav#navBanner
+        ul
+          li
+            a(href="/usuarios/login") Iniciar sesión
+
+    header#indice
+      nav
+        ul#lista-funciones
+          li
+            a(href="#") Adoptar
+          li
+            a(href="#") Búsqueda
+          li
+            a(href="#") Cruza
+          li
+            a(href="#") Servicios
+          li
+            a(href="#") Donaciones
+          li
+            a(href="#") Turnos
+          li
+            a(href="#") Urgencias
