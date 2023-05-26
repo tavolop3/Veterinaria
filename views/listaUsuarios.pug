@@ -9,7 +9,7 @@ html
         width: 30%;
       }
       th, td {
-        padding: 2px;
+        padding: 12px;
         text-align: left;
       }
        td.buttons {
@@ -39,4 +39,7 @@ html
               form(action="/clientes/listar-perros", method="POST")
                 input(type="hidden", name="dato", value=usuario.mail)
                 button(type="submit") Listar perros
+              form(action="/admin/eliminar-usuario", method="POST")
+                input(type="hidden", name="dato", value=usuario.mail)
+                button(type="submit") Eliminar usuario
             
