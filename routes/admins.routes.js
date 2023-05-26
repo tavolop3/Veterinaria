@@ -92,41 +92,46 @@ router.get('/listar-usuarios', async (req, res) => {
 });
 
 router.post('/registrar-perro', async (req, res) => {
-  /*const { error } = validateCreatePerro(req.body);//crear
-  if (error) return res.status(400).render('registro-perro', { error });*/
+  try {
+    let user = await User.findOne({ mail: req.body.mail });
 
-  let user = await User.findOne({ mail: req.body.mail });//tengo al user, ahora le agregamos al perro , si no existe
-  if (!user) return res.status(400).send('User not registered.');
-  console.log(user);
-  //esta linea de abajo me da dudas
-  /*const perro = {
-    nombre: req.body.nombre,
-    sexo: req.body.sexo,
-    fechaDeNacimiento: req.body.fechaDeNacimiento,
-    raza: req.body.raza,
-    color: req.body.color,
-    observaciones: req.body.observaciones,
-    foto: req.body.foto
-  };*/
+    if (!user) {
+      return res.status(400).send('User not registered.');
+    }
 
-  perro = new Perro(_.pick(req.body, ['nombre', 'sexo', 'fechaDeNacimiento', 'raza', 'color', 'observaciones', 'foto']));
-  console.log(perro);
-  const perros = user.perrosId; // Array de perros del usuario
-  console.log(perros);
-  let perroNoEncontrado = !perros.includes(req.body._id);
-  if (perroNoEncontrado) {
-    console.log('El perro no se encuentra en la lista del usuario');
-    user.perrosId.push(perro._id);
-    console.log("paseeeeeeeeeeeeeeeee");
-  } else {
-    console.log('El perro ya está en la lista del usuario');
-    return res.status(400).send('perro already registered.');
+    console.log(user);
+
+    const perro = new Perro(_.pick(req.body, ['nombre', 'sexo', 'fechaDeNacimiento', 'raza', 'color', 'observaciones', 'foto']));
+
+    console.log(perro);
+
+    const perros = user.perrosId; // Array de perros del usuario
+
+    console.log(perros);
+
+    let perroEncontrado = perros.find(perroId => perroId && perroId.toString() === perro._id.toString());
+
+    if (!perroEncontrado) {
+      console.log('El perro no se encuentra en la lista del usuario');
+      user.perrosId.push(perro._id);
+      await user.save();
+      console.log("Perro agregado al usuario");
+    } else {
+      console.log('El perro ya está en la lista del usuario');
+      return res.status(400).send('Perro already registered.');
+    }
+
+    await perro.save();
+
+    res.redirect('/admin');
+  } catch (error) {
+    console.log('Error al registrar el perro:', error);
+    return res.status(500).send('Internal Server Error');
   }
-  //await user.save();
-  await user.updateOne();
-  await perro.save();
-  res.redirect('/admin');
 })
+
+
+
 
   /*  permite visualizar al administrador
       los turnos asignados para el dia

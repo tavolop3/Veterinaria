@@ -44,10 +44,10 @@ router.get('', (req, res) => {
         res.render('registro-usuario');
     })
 
-    .get('/admin/registrar-perro', (req, res) => {
+    .get('/admin/registrar-perro', [autenticado, esAdmin], (req, res) => {
         res.render('registro-perro');
     })
-//.get('/admin/registrar-perro', [autenticado, esAdmin], (req, res) => {
+
 
 
 module.exports = router;

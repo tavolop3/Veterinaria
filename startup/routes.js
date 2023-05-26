@@ -14,8 +14,7 @@ module.exports = function (app) {
 
     app.use('/usuarios', usuarios);
     app.use('/', vistas);
-    app.use('/admin', admins);
-    //app.use('/admin', [autenticado, esAdmin], admins);
+    app.use('/admin', [autenticado, esAdmin], admins);
     app.use('/clientes', autenticado, clientes);
 
     app.use(error);
