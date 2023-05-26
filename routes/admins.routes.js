@@ -133,53 +133,75 @@ router.post('/registrar-perro', async (req, res) => {
   }
 })
 
-/*  permite visualizar al administrador
-    los turnos asignados para el dia
-*/
-.get('/turnos-diarios', async (req, res) => {
-  let hoy = new Date();
-  try {
-    let turnos = await Turno.find({});
-    let turnosDiarios = turnos.filter(turno => turno.fecha.getDate() === hoy.getDate());
-    res.render('turnos-hoy', { turnosDiarios })
-  } catch (error) {
-    console.log('Error al obtener los turnos:', error);
-    return res.status(400).send('Error al obtener los turnos');
-  }
-})
-
-.post('/eliminar-usuario', async (req, res) => {
-  try {
-    // Obtener el usuario que deseas eliminar
-    const usuario = await User.findOne({ mail: req.body.dato });
-    if (!usuario) {
-      return res.status(400).send('User not registered.');
+  /*  permite visualizar al administrador
+      los turnos asignados para el dia
+  */
+  .get('/turnos-diarios', async (req, res) => {
+    let hoy = new Date();
+    try {
+      let turnos = await Turno.find({});
+      let turnosDiarios = turnos.filter(turno => turno.fecha.getDate() === hoy.getDate());
+      res.render('turnos-hoy', { turnosDiarios })
+    } catch (error) {
+      console.log('Error al obtener los turnos:', error);
+      return res.status(400).send('Error al obtener los turnos');
     }
+  })
 
-    // Recopilar los IDs de los perros y turnos asociados al usuario
-    const idPerros = usuario.perrosId.map(perro => ObjectId(perro));
-    const idTurnos = usuario.turnosId.map(turno => ObjectId(turno));
+  .post('/eliminar-usuario', async (req, res) => {
+    try {
+      // Obtener el usuario que deseas eliminar
+      const usuario = await User.findOne({ mail: req.body.dato });
+      if (!usuario) {
+        return res.status(400).send('User not registered.');
+      }
 
-    // Eliminar los perros asociados al usuario
-    await Perro.deleteMany({ _id: { $in: idPerros.map(id => new ObjectId(id)) } });
-    // Eliminar los turnos asociados al usuario
-    await Turno.deleteMany({ _id: { $in: idTurnos } });
+      // Recopilar los IDs de los perros y turnos asociados al usuario
+      const idPerros = usuario.perrosId.map(perro => ObjectId(perro));
+      const idTurnos = usuario.turnosId.map(turno => ObjectId(turno));
 
-    // Eliminar el usuario
-    await User.deleteOne({ mail: req.body.dato });
-    //console.log('Usuario y sus perros/turnos eliminados exitosamente');
-    res.render('eliminacion-confirmada');
-  } catch (err) {
-    res.json({ error: err.message || err.toString() });
-  }
-})
+      // Eliminar los perros asociados al usuario
+      await Perro.deleteMany({ _id: { $in: idPerros.map(id => new ObjectId(id)) } });
+      // Eliminar los turnos asociados al usuario
+      await Turno.deleteMany({ _id: { $in: idTurnos } });
 
-.post('/listar-perros',async(req,res) => {
+      // Eliminar el usuario
+      await User.deleteOne({ mail: req.body.dato });
+      //console.log('Usuario y sus perros/turnos eliminados exitosamente');
+      res.render('eliminacion-confirmada');
+    } catch (err) {
+      res.json({ error: err.message || err.toString() });
+    }
+  })
+
+  .post('/eliminar-perro', async (req, res) => {
+    try {
+      const usuario = await User.findOne({ mail: req.body.mail });
+      const index = usuario.perrosId.indexOf(req.body.id);
+      if (index !== -1) {
+        usuario.perrosId.splice(index, 1); // Elimina 1 elemento en el índice especificado
+      }
+      await usuario.save();
+      // Obtener el perro a eliminar
+      const perro = await Perro.findByIdAndDelete({ _id: req.body.id });
+      if (!perro) {
+        return res.status(400).send('El perro no estaba en el sistema.');
+      }
+      //console.log('Usuario y sus perros/turnos eliminados exitosamente');
+
+      res.render('eliminacion-perro-confirmada');
+    } catch (err) {
+      res.json({ error: err.message || err.toString() });
+    }
+  })
+
+  .post('/listar-perros', async (req, res) => {
     const usuario = await User.findOne({ mail: req.body.dato })
-                              .populate('perrosId')
+      .populate('perrosId')
     const perros = usuario.perrosId;
-    res.render('listaPerros', { perros , admin: true })
-})
+    let mail = usuario.mail;
+    res.render('listaPerros', { perros, admin: true, mail })
+  })
 
 
 
