@@ -2,20 +2,23 @@ const express = require('express');
 const router = express.Router();
 var crypto = require("crypto");
 const { User, validateCreate, encriptarContraseña } = require('../models/user');
-const { Perro } = require('../models/perro')
+const { Perro, validateCreatePerro } = require('../models/perro')
 const { Turno } = require('../models/turno')
 const _ = require('lodash');
 const { sendEmail } = require('../emails');
+const { ObjectId } = require('mongoose').Types;
+
+
 
 router.post('/registrar-usuario', async (req, res) => {
   const { error } = validateCreate(req.body);
   if (error) return res.status(400).render('registro-usuario', { error }); // TODO Traducir mensajes a español
 
   let user = await User.findOne({ mail: req.body.mail });
-  if (user) return res.status(400).render('registro-usuario', { error : 'El mail ya está en uso.' }); // TODO Popup
+  if (user) return res.status(400).render('registro-usuario', { error: 'El mail ya está en uso.' }); // TODO Popup
 
   user = await User.findOne({ dni: req.body.dni });
-  if (user) return res.status(400).render('registro-usuario', { error : 'El dni ya está registrado.' }); 
+  if (user) return res.status(400).render('registro-usuario', { error: 'El dni ya está registrado.' });
 
   user = new User(_.pick(req.body, ['nombre', 'apellido', 'mail', 'telefono', 'dni']));
 
@@ -79,42 +82,55 @@ router.post('/registrar-usuario', async (req, res) => {
 //route for user list
 router.get('/listar-usuarios', async (req, res) => {
   try {
-    let users = await User.find({});
+    let users = await User.find({ isAdmin: false });
     const lista = users.map(usuario => ({ dni: usuario.dni, mail: usuario.mail, nombre: usuario.nombre, apellido: usuario.apellido }))
     if (lista.length === 0) {
-      res.status(404).json({ mensaje: 'No hay usuarios cargados en el sistema' });
+      res.render('listaUsuarios', { error: 'La lista esta vacia' });
     } else {
-      res.json(lista);
+      res.render('listaUsuarios', { usuarios: lista });
     }
   } catch (err) {
-    console.log('Hola')
     res.json({ error: err.message || err.toString() });
   }
 });
 
 router.post('/registrar-perro', async (req, res) => {
-  const { error } = validateCreate(req.body);
-  if (error) return res.status(400).render('registro-perro', { error });
+  try {
+    let user = await User.findOne({ mail: req.body.mail });
 
-  let user = await User.findOne({ mail: req.body.mail });//tengo al user, ahora le agregamos al perro , si no existe
-  if (!user) return res.status(400).send('User not registered.');
+    if (!user) {
+      return res.status(400).send('User not registered.');
+    }
 
-  //esta linea de abajo me da dudas
-  perro = new Perro(_.pick(req.body, ['id', 'nombre', 'sexo', 'fechaDeNacimiento', 'raza', 'color', 'observaciones', 'foto']));
-  const perros = user.perrosId; // Array de perros del usuario
-  const perroNoEncontrado = !perros.includes(perro.id);
-  if (perroNoEncontrado) {
-    console.log('El perro no se encuentra en la lista del usuario');
-    user.perrosId.push(perro.id)
-    //return user.save();
-  } else {
-    console.log('El perro ya está en la lista del usuario');
-    return res.status(400).send('perro already registered.');
+    console.log(user);
+
+    const perro = new Perro(_.pick(req.body, ['nombre', 'sexo', 'fechaDeNacimiento', 'raza', 'color', 'observaciones', 'foto']));
+
+    console.log(perro);
+
+    const perros = user.perrosId; // Array de perros del usuario
+
+    console.log(perros);
+
+    let perroEncontrado = perros.find(perroId => perroId && perroId.toString() === perro._id.toString());
+
+    if (!perroEncontrado) {
+      console.log('El perro no se encuentra en la lista del usuario');
+      user.perrosId.push(perro._id);
+      await user.save();
+      console.log("Perro agregado al usuario");
+    } else {
+      console.log('El perro ya está en la lista del usuario');
+      return res.status(400).send('Perro already registered.');
+    }
+
+    await perro.save();
+
+    res.redirect('/admin');
+  } catch (error) {
+    console.log('Error al registrar el perro:', error);
+    return res.status(500).send('Internal Server Error');
   }
-
-  await user.save();
-
-  res.redirect('/');
 })
 
 /*  permite visualizar al administrador
@@ -145,6 +161,39 @@ router.post('/registrar-perro', async (req, res) => {
   // );
 
     res.redirect('/'); // TODO Enviar mensaje con confirmación de modificación 
+})
+
+.post('/eliminar-usuario', async (req, res) => {
+  try {
+    // Obtener el usuario que deseas eliminar
+    const usuario = await User.findOne({ mail: req.body.dato });
+    if (!usuario) {
+      return res.status(400).send('User not registered.');
+    }
+
+    // Recopilar los IDs de los perros y turnos asociados al usuario
+    const idPerros = usuario.perrosId.map(perro => ObjectId(perro));
+    const idTurnos = usuario.turnosId.map(turno => ObjectId(turno));
+
+    // Eliminar los perros asociados al usuario
+    await Perro.deleteMany({ _id: { $in: idPerros.map(id => new ObjectId(id)) } });
+    // Eliminar los turnos asociados al usuario
+    await Turno.deleteMany({ _id: { $in: idTurnos } });
+
+    // Eliminar el usuario
+    await User.deleteOne({ mail: req.body.dato });
+    //console.log('Usuario y sus perros/turnos eliminados exitosamente');
+    res.render('eliminacion-confirmada');
+  } catch (err) {
+    res.json({ error: err.message || err.toString() });
+  }
+})
+
+.post('/listar-perros',async(req,res) => {
+    const usuario = await User.findOne({ mail: req.body.dato })
+                              .populate('perrosId')
+    const perros = usuario.perrosId;
+    res.render('listaPerros', { perros , admin: true })
 })
 
 module.exports = router;
