@@ -3,7 +3,7 @@ const router = express.Router();
 const passport = require('passport');
 const autenticado = require('../middleware/autenticado');
 const { User, encriptarContraseña, compararContraseñas } = require('../models/user');
-  
+
 // Para ver el usuario actual
 router.get('/yo', autenticado, async(req,res) => {
     res.send(req.user);
@@ -22,7 +22,7 @@ router.get('/yo', autenticado, async(req,res) => {
         return next(loginErr);
       } else {
         if(user.contraseña === user.contraseñaDefault) {
-          res.render('modificar-datos',{ error : 'Debe modificar su contraseña por seguridad.', primerLogin: true})
+          res.render('modificar-pass', { error : 'Debe modificar su contraseña por seguridad.' })
         } else {
           res.redirect('/');
         }     
@@ -38,35 +38,22 @@ router.get('/yo', autenticado, async(req,res) => {
   });
 })
 
-.post('/modificar-datos', async (req, res) => {
-  if (req.isAuthenticated()) {
-    let { mailNuevo, contraseña1, contraseña2 } = req.body;
-    let mailActual = req.user.mail;
-    let user = await User.findOne({ mail: mailActual });
-    if (!await compararContraseñas(contraseña1, user.contraseña)) return res.status(400).json('La contraseña ingresada no es correcta')
-    try {
-      if (mailNuevo === "") mailNuevo = mailActual;
-      if (contraseña2 !== "") {
-        contraseña2 = await encriptarContraseña(contraseña2);
-      }
-      else {
-        contraseña2 = contraseña1;
-        contraseña2 = await encriptarContraseña(contraseña2);
-      }
-      await User.updateOne({ mail: mailActual }, {
-        $set: {
-          mail: mailNuevo,
-          contraseña: contraseña2
-        }
-      });
-      return res.redirect('/');
-    } catch (error) {
-      return res.json({
-        resultado: false,
-        msg: 'El usuario no se pudo modificar',
-        error
-      });
-    }
+//Cambiar contraseña para el primer login, no está en cliente porque no debe estar totalmente autenticado
+.post('/primer-login-pass', async(req,res) => {
+  if(req.isAuthenticated()){
+    let { contraseña1, contraseña2 } = req.body;
+    let user = await User.findById(req.user.id);
+    
+    let contraseñaValida = await compararContraseñas(contraseña1, user.contraseña);
+    if (!contraseñaValida) return res.status(400).render('modificar-pass', { error: 'La contraseña ingresada no es correcta' });
+
+    contraseñaValida = contraseña2.length > 3 && contraseña2.length < 255
+    if(!contraseñaValida) return res.status(400).render('modificar-pass', { error: 'La contraseña nueva debe ser mayor a 3 caracteres y menor a 255 caracteres' }); 
+    
+    user.contraseña = await encriptarContraseña(contraseña2);
+    await user.save();
+
+    return res.redirect('/');
   }
 })
 
