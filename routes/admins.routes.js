@@ -146,11 +146,11 @@ router.post('/registrar-perro', async (req, res) => {
   }
 })
 
-.patch('modificar-turno', (req,res) => { // TODO testearlo
-    const turno = Turno.findByIdAndUpdate(
-                req.body.id,
-                _.pick(req.body, ['nombre', 'rangoHorario', 'dni', 'motivo', 'estado', 'fecha'])
-    );
+.post('/modificar-turno', async(req,res) => {
+    var campos = ['rangoHorario', 'motivo', 'estado', 'fecha'];
+    campos = _.pickBy(_.pick(req.body, campos), _.identity)
+
+    const turno = await Turno.findByIdAndUpdate(req.body.id, campos);
     if(!turno) res.status(400).send('El turno no fue encontrado');
 
   // Activar para testear un par de veces o en demo para no gastar la cuota de mails (son 100)

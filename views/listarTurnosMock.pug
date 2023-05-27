@@ -1,0 +1,39 @@
+doctype html
+html
+  head
+    title Turnos
+
+    style.
+      table {
+        border-collapse: collapse;
+        width: 30%;
+      }
+      th, td {
+        padding: 12px;
+        text-align: left;
+      }
+       td.buttons {
+        display: flex;
+        gap: 10px;
+      }
+
+  body
+    h1 Lista de turnos
+    table
+    tr
+        th Nombre del perro
+        th Rango horario
+        th Fecha
+        th Motivo
+        th Estado
+    tr
+        td Pancho
+        td Mañana
+        td 19 mayo
+        td Chequeo general
+        td Pendiente
+        td.buttons
+            button(type="button" onclick="window.location.href='/admin/modificar-turno?id=64713320cb306b9ce17965f4'") Modificar turno
+
+//está todo hardcodeado para testear mi "modificar-turno"
+//habria que hacer que la url a la que va sea /admin/modificar-turno?turno.id 
