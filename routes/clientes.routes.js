@@ -81,4 +81,21 @@ router.post('/solicitar-turno', async (req, res) => {
   res.render('listaPerros', { perros })
 })
 
+.get('/aceptar-modificacion', async(req,res) => {
+  if(!req.query.id) return res.status(400).send('Tiene que proveer el id en la url');
+  
+  await Turno.findByIdAndUpdate(req.query.id,{ estado: 'aceptado' });
+  
+  res.send('Turno aceptado con exito.');
+})
+
+.get('/rechazar-modificacion', async(req,res) => {
+  if(!req.query.id) return res.status(400).send('Tiene que proveer el id en la url');
+  
+  await Turno.findByIdAndUpdate(req.query.id,{ estado: 'rechazado' });
+  
+  res.send('Turno rechazado con exito.');
+})
+
+
 module.exports = router;
