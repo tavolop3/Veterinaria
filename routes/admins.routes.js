@@ -147,7 +147,7 @@ router.post('/registrar-perro', async (req, res) => {
 })
 
 .post('/modificar-turno', async(req,res) => {
-    var campos = ['rangoHorario', 'motivo', 'estado', 'fecha'];
+    var campos = ['rangoHorario', 'fecha'];
     campos = _.pickBy(_.pick(req.body, campos), _.identity)
 
     const turno = await Turno.findByIdAndUpdate(req.body.id, campos);
