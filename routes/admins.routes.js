@@ -147,8 +147,9 @@ router.post('/registrar-perro', async (req, res) => {
 })
 
 .post('/modificar-turno', async(req,res) => {
-    var campos = ['rangoHorario', 'fecha'];
+    var campos = ['rangoHorario', 'fecha', 'estado'];
     campos = _.pickBy(_.pick(req.body, campos), _.identity)
+    campos.estado = 'modificado-pendiente';
 
     const turno = await Turno.findByIdAndUpdate(req.body.id, campos);
     if(!turno) res.status(400).send('El turno no fue encontrado');
