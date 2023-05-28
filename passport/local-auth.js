@@ -1,6 +1,6 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
-const {User, validateLogin, compararContraseñas} = require('../models/user');
+const {User, compararContraseñas} = require('../models/user');
 
 passport.serializeUser((user, done) => {
   done(null, user.id);
@@ -16,9 +16,9 @@ passport.use(new LocalStrategy({
     passwordField: 'contraseña',
     passReqToCallback: true
   }, async (req, email, password, done) => {
-    const { error } = validateLogin({ mail: email, contraseña: password});  // TODO Traducir mensajes a español
-    if(error) return done(null, false, req.flash('signinMessage', error));
-
+    // const { error } = validateLogin({ mail: email, contraseña: password}); Ya no valida porque no está especificado en la hu
+    // if(error) return done(null, false, req.flash('signinMessage', error));
+    
     let user = await User.findOne({ mail: email });
     if(!user) return done(null, false, req.flash('signinMessage', 'Contraseña o mail invalido'));
 

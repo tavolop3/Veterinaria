@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
 var crypto = require("crypto");
-const { User, validateCreate, encriptarContraseña } = require('../models/user');
-const { Perro, validateCreatePerro } = require('../models/perro')
+const { User, encriptarContraseña } = require('../models/user');
+const { Perro } = require('../models/perro')
 const { Turno } = require('../models/turno')
 const _ = require('lodash');
 const { sendEmail } = require('../emails');
@@ -11,8 +11,8 @@ const { ObjectId } = require('mongoose').Types;
 
 
 router.post('/registrar-usuario', async (req, res) => {
-  const { error } = validateCreate(req.body);
-  if (error) return res.status(400).render('registro-usuario', { error }); // TODO Traducir mensajes a español
+  // const { error } = validateCreate(req.body);  Ya no valida porque no está especificado en las hu las microvalidaciones
+  // if (error) return res.status(400).render('registro-usuario', { error });
 
   let user = await User.findOne({ mail: req.body.mail });
   if (user) return res.status(400).render('registro-usuario', { error: 'El mail ya está en uso.' }); // TODO Popup
