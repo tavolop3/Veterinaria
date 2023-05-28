@@ -5,6 +5,7 @@ const { Turno } = require('../models/turno')
 const { User, encriptarContraseña, compararContraseñas } = require('../models/user');
 const { Perro } = require('../models/perro')
 const { Adopcion } = require('../models/adopcion')
+const { sendEmail } = require('../emails');
 
 /* Endpoint para
    guardar un turno solicitado
@@ -105,6 +106,21 @@ router.post('/solicitar-turno', async (req, res) => {
         error
       });
     }
+})
+
+.post('/adopcion/solicitar', (req,res) => {
+  // Activar para testear un par de veces o en demo para no gastar la cuota de mails (son 100)
+  // await sendEmail(req.user.mail,'OhMyDog - Solicitud de adpopción enviada',
+  //     'Su solicitud de adopción se ha enviado, contactese con ' + req.body.mail + ' para poder coordinar la adopción.' 
+  // );
+
+  res.send('La solicitud fue enviada.');
+})
+
+.post('/adopcion/confirmar', (req,res) => {
+  const adopcion = new Adopcion.findByIdAndUpdate(req.body.id, { confirmado: true });
+
+  res.send('La solicitud fue enviada.');
 })
 
 module.exports = router;

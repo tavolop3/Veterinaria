@@ -3,6 +3,7 @@ const router = express.Router();
 const passport = require('passport');
 const autenticado = require('../middleware/autenticado');
 const { User, encriptarContraseña, compararContraseñas } = require('../models/user');
+const { sendEmail } = require('../emails');
 
 // Para ver el usuario actual
 router.get('/yo', autenticado, async(req,res) => {
@@ -55,6 +56,15 @@ router.get('/yo', autenticado, async(req,res) => {
 
     return res.redirect('/');
   }
+})
+
+.post('/adopcion/solicitar', (req,res) => {
+  // Activar para testear un par de veces o en demo para no gastar la cuota de mails (son 100)
+  // await sendEmail(req.body.mailSolicitante,'OhMyDog - Solicitud de adpopción enviada',
+  //     'Su solicitud de adopción se ha enviado, contactese con ' + req.body.mailPostulante + ' para poder coordinar la adopción. Para tener acceso a más funcionalidades acercate a la veterinaria y registrate!' 
+  // );
+
+  res.send('La solicitud fue enviada.');
 })
 
 module.exports = router;
