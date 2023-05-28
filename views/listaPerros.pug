@@ -43,7 +43,7 @@ else
           td= perro.observaciones
           if admin
             td.buttons
-              form(action="/admin/modificar-perro", method="POST")
+              form(action="/admin/modificar-perro", method="GET")
                 input(type="hidden", name="id", value=perro._id)
                 button(type="submit") Modificar perro
               form(action="/admin/eliminar-perro", method="POST")

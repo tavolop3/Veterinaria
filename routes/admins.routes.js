@@ -59,19 +59,20 @@ router.post('/registrar-usuario', async (req, res) => {
     }
   })
 
-  .post('modificar-perro', async (req, res) => {
-    const { perro } = req.body.perro;
-    let updatedFields = {};
-    if (perro.nombre !== '') updatedFields.nombre = perro.nombre;
-    if (perro.sexo !== '') updatedFields.sexo = perro.sexo;
-    if (perro.fecha !== null) updatedFields.fecha = perro.fecha;
-    if (perro.raza !== '') updatedFields.dni = perro.raza;
-    if (perro.color !== '') updatedFields.color = perro.color;
-    if (perro.observaciones !== '') updatedFields.observaciones = perro.observaciones;
-    if (perro.color !== '') updatedFields.color = perro.color;
+  .post('/modificar-perro', async (req, res) => {
+    const { id, nombre, sexo, fecha, raza, color, observaciones, foto } = req.body;   
     try {
-      await Perro.updateOne({ _id: req.body._id }, { $set: updatedFields });
-      return res.redirect('/indexAdmin');
+      await Perro.updateOne({ _id: id }, { $set: {
+        nombre: nombre,
+        sexo: sexo,
+        fecha: fecha,
+        raza: raza,
+        color: color,
+        observaciones: observaciones,
+        foto: foto
+      } 
+    });
+      return res.redirect('/admin');
     } catch (error) {
       return res.json({
         resultado: false,
