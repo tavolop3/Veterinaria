@@ -12,10 +12,10 @@ router.post('/solicitar-turno', async (req, res) => {
   const nuevoTurno = {
     nombreDelPerro: req.body.nombreDelPerro,
     rangoHorario: req.body.rango,
-    dni: req.body.dni,
+    dni: req.user.dni,
     motivo: req.body.motivo,
     estado: 'Pendiente',
-    fecha: new Date(req.body.fecha)
+    fecha: req.body.fecha
   };
   // encuentra el usuario logueado
   let usuario = await User.findById(req.user._id);
@@ -26,9 +26,11 @@ router.post('/solicitar-turno', async (req, res) => {
   if (!perroEncontrado) return res.status(400).send('No se encontró el perro con el nombre especificado.');
   // verifica que el perro tiene mas de 4 meses
   let fechaLimite = new Date(nuevoTurno.fecha);
-  fechaLimite.setMonth(nuevoTurno.fecha.getMonth() - 4);
-  if (perroEncontrado.fecha > fechaLimite) return res.status(400).send('El perro debe tener al menos 4 meses para solicitar un turno.');
-  // crea el turno
+  fechaLimite.setMonth(fechaLimite.getMonth() - 4);
+  if (perroEncontrado.fechaDeNacimiento > fechaLimite) {
+    if (nuevoTurno.motivo === "Vacunacion antirrabica") return res.status(400).send('El perro debe tener al menos 4 meses para recibir la vacunación antirrábica.');
+  }
+    // crea el turno
   try {
     const turno = new Turno(nuevoTurno);
     await turno.save();
