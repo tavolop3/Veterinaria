@@ -117,8 +117,8 @@ router.post('/solicitar-turno', async (req, res) => {
   res.send('La solicitud fue enviada.');
 })
 
-.post('/adopcion/confirmar', (req,res) => {
-  const adopcion = new Adopcion.findByIdAndUpdate(req.body.id, { confirmado: true });
+.post('/adopcion/confirmar', async(req,res) => {
+  await Adopcion.findByIdAndUpdate(req.body.id, { confirmado: true });
 
   res.send('La solicitud fue enviada.');
 })
