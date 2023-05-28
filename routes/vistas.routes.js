@@ -2,6 +2,7 @@ const express = require('express');
 const autenticado = require('../middleware/autenticado');
 const esAdmin = require('../middleware/esAdmin');
 const router = express.Router();
+const { User } = require('../models/user')
 
 router.get('', (req, res) => {
     if (!req.user)
@@ -26,8 +27,10 @@ router.get('', (req, res) => {
     res.render('indexCliente')
 })
 
-.get('/clientes/turno', autenticado, (req, res) => {
-    res.render('turno');
+.get('/clientes/turno', autenticado, async (req, res) => {
+    const usuario = await User.findById(req.user.id).populate('perrosId')
+    const perros = usuario.perrosId;
+    res.render('turno', {perros});
 })
 
 .get('/clientes/modificar-datos', autenticado, (req, res) => {
