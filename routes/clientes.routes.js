@@ -84,37 +84,17 @@ router.post('/solicitar-turno', async (req, res) => {
     res.render('listaPerros', { perros })
   })
 
-  .get('/historial-turnos', async (req, res) => {
-    try {
-      const usuario = await User.findById(req.user.id).populate('turnosId')
-      const turnos = usuario.turnosId;
-      if (turnos.length === 0) {
-        res.render('historialTurnos', { error: 'La lista esta vacia' });
-      }
-      else {
-        res.render('historialTurnos', { turnos: turnos });
-      }
-    } catch (error) {
-      console.log('Error al obtener los turnos:', error);
-      return res.status(400).send('Error al obtener los turnos');
-    }
-  })
-
-
-
-
-
 
   .get('/historial-turnos', async (req, res) => {
     try {
       const usuario = await User.findById(req.user.id).populate('turnosId')
       const turnos = usuario.turnosId;
       if (turnos.length === 0) {
-        res.render('historialTurnos', { error: 'La lista esta vacia' });
+        res.render('historialTurnosCliente', { error: 'La lista esta vacia' });
       }
       else {
         turnos.sort(compararFechas);
-        res.render('historialTurnos', { turnos: turnos });
+        res.render('historialTurnosCliente', { turnos: turnos });
       }
     } catch (error) {
       console.log('Error al obtener los turnos:', error);

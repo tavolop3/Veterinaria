@@ -37,7 +37,7 @@ html
             td= turno.estado 
             td= turno.fecha.toLocaleDateString()
             td.buttons
-                form(action="/admin/modificar-turno", method="POST")
+                form(action="/admin/mostrar-modificar-turno", method="POST")
                   input(type="hidden", name="id", value=turno._id)
                   button(type="submit") Modificar turno
 
