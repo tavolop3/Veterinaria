@@ -56,9 +56,5 @@ router.get('', (req, res) => {
     res.render('listarTurnosMock');
 })
 
-.get('/admin/modificar-turno', [autenticado,esAdmin], (req,res) => {
-    res.render('modificar-turno', { id: req.query.id });
-})
-
 
 module.exports = router;
