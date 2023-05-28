@@ -33,7 +33,7 @@ html
             td= usuario.nombre
             td= usuario.apellido
             td.buttons
-              form(action="/usuarios/modificar-datos", method="POST")
+              form(action="/admin/modificar-usuario", method="GET")
                 input(type="hidden", name="dato", value=usuario.mail)
                 button(type="submit") Modificar usuario
               form(action="/admin/listar-perros", method="POST")

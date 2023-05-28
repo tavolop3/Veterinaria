@@ -2,6 +2,7 @@ const express = require('express');
 const autenticado = require('../middleware/autenticado');
 const esAdmin = require('../middleware/esAdmin');
 const router = express.Router();
+const { User } = require('../models/user');
 
 router.get('', (req, res) => {
     if (!req.user)
@@ -50,6 +51,12 @@ router.get('', (req, res) => {
 
     .get('/admin/eliminar-perro', [autenticado, esAdmin], (req, res) => {
         res.render('eliminar-perro');
+    })
+
+    .get('/admin/modificar-usuario', [autenticado, esAdmin], async (req, res) => {
+        let userMail = req.query.dato;
+        let usuario = await User.findOne({ mail: userMail })
+        res.render('modificar-usuario', {usuario, userMail})
     })
 
 module.exports = router;

@@ -5,8 +5,10 @@ html
     title Modificar usuario
     link(rel="stylesheet", href="/style/login.css")
   body
-    form(action="admin/modificar-usuario", method="post")
+    form(action="/admin/modificar-usuario", method="post")
       ul
+        li
+          input(type="hidden", name="dato", value=userMail)
         li
           label(for="mail") Mail:
           input(type="email", id="mail", name="mail", value=usuario.mail)
