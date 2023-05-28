@@ -1,53 +1,32 @@
 const mongoose = require('mongoose');
 const Joi = require('joi');
-const config = require('config');
 const { ObjectId } = require('mongodb');
 const bcrypt = require('bcrypt');
 
 const userSchema = new mongoose.Schema({
     nombre: {
         type: String,
-        required: true,
-        minlength: 3,
-        maxlength: 15
     },
     apellido: {
         type: String,
-        required: true,
-        minlength: 3,
-        maxlength: 15
     },
     dni: {
         type: String,
-        required: true,
         unique: true,
-        minlength: 8,
-        maxlength: 8
     },
     telefono: {
         type: String,
         required: true,
-        minlength: 6,
-        maxlength: 50
     },
     mail: {
         type: String,
         unique: true,
-        required: true,
-        minlength: 3,
-        maxlength: 50
     },
     contraseña: {
         type: String,
-        required: true,
-        min: 3,
-        max: 255
     },
     contraseñaDefault: {
         type: String,
-        required: true,
-        min: 3,
-        max: 255
     },
     isAdmin: {
         type: Boolean,
@@ -57,11 +36,6 @@ const userSchema = new mongoose.Schema({
     perrosId: [{ type : ObjectId, ref: 'Perro' }],
     turnosId: [{ type : ObjectId, ref: 'Turno' }]
 });
-
-userSchema.methods.generateAuthToken = function () {
-    const token = jwt.sign({ _id: this._id, isAdmin: this.isAdmin }, config.get('jwtPrivateKey'));
-    return token;
-}
 
 const User = mongoose.model('User', userSchema);
 

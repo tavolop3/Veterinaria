@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 var crypto = require("crypto");
 const { User, validateCreate, encriptarContraseña } = require('../models/user');
-const { Perro, validateCreatePerro } = require('../models/perro')
+const { Perro } = require('../models/perro')
 const { Turno, modificarEstado } = require('../models/turno')
 const _ = require('lodash');
 const { sendEmail } = require('../emails');
@@ -10,8 +10,8 @@ const { ObjectId } = require('mongoose').Types;
 const moment = require('moment');
 
 router.post('/registrar-usuario', async (req, res) => {
-  const { error } = validateCreate(req.body);
-  if (error) return res.status(400).render('registro-usuario', { error }); // TODO Traducir mensajes a español
+  // const { error } = validateCreate(req.body);  Ya no valida porque no está especificado en las hu las microvalidaciones
+  // if (error) return res.status(400).render('registro-usuario', { error });
 
   let user = await User.findOne({ mail: req.body.mail });
   if (user) return res.status(400).render('registro-usuario', { error: 'El mail ya está en uso.' }); // TODO Popup
@@ -34,19 +34,21 @@ router.post('/registrar-usuario', async (req, res) => {
   res.redirect('/'); // TODO Enviar mensaje con confirmación de creación 
 })
 
-  .post('modificar-usuario', async (req, res) => {
-    const { usuario } = req.body.usuario;
-    let user = await User.findById({ _id: usuario._id });
+  .post('/modificar-usuario', async (req, res) => {
+    const { dato, mail, nombre, apellido, dni, telefono } = req.body;
+    let user = await User.findOne({ mail: dato });
     if (!user) return res.status(400).send('No se encontro el usuario');
-    let updatedFields = {};
-    if (usuario.mail !== '') updatedFields.mail = usuario.mail;
-    if (usuario.nombre !== '') updatedFields.nombre = usuario.nombre;
-    if (usuario.apellido !== '') updatedFields.apellido = usuario.apellido;
-    if (usuario.dni !== '') updatedFields.dni = usuario.dni;
-    if (usuario.telefono !== '') updatedFields.telefono = usuario.telefono;
     try {
-      await User.updateOne({ mail: mail1 }, { $set: updatedFields });
-      return res.redirect('/indexAdmin');
+      await User.updateOne({ mail: dato }, { 
+        $set: {
+          mail: mail,
+          nombre: nombre,
+          apellido: apellido,
+          dni: dni,
+          telefono, telefono
+        } 
+      });
+      return res.redirect('/admin');
     } catch (error) {
       return res.json({
         resultado: false,
@@ -56,19 +58,20 @@ router.post('/registrar-usuario', async (req, res) => {
     }
   })
 
-  .post('modificar-perro', async (req, res) => {
-    const { perro } = req.body.perro;
-    let updatedFields = {};
-    if (perro.nombre !== '') updatedFields.nombre = perro.nombre;
-    if (perro.sexo !== '') updatedFields.sexo = perro.sexo;
-    if (perro.fecha !== null) updatedFields.fecha = perro.fecha;
-    if (perro.raza !== '') updatedFields.dni = perro.raza;
-    if (perro.color !== '') updatedFields.color = perro.color;
-    if (perro.observaciones !== '') updatedFields.observaciones = perro.observaciones;
-    if (perro.color !== '') updatedFields.color = perro.color;
+  .post('/modificar-perro', async (req, res) => {
+    const { id, nombre, sexo, fecha, raza, color, observaciones, foto } = req.body;   
     try {
-      await Perro.updateOne({ _id: req.body._id }, { $set: updatedFields });
-      return res.redirect('/indexAdmin');
+      await Perro.updateOne({ _id: id }, { $set: {
+        nombre: nombre,
+        sexo: sexo,
+        fecha: fecha,
+        raza: raza,
+        color: color,
+        observaciones: observaciones,
+        foto: foto
+      } 
+    });
+      return res.redirect('/admin');
     } catch (error) {
       return res.json({
         resultado: false,
@@ -132,20 +135,20 @@ router.post('/registrar-perro', async (req, res) => {
   }
 })
 
-/*  permite visualizar al administrador
-    los turnos asignados para el dia
-*/
-.get('/turnos-diarios', async (req, res) => {
-  let hoy = new Date();
-  try {
-    let turnos = await Turno.find({});
-    let turnosDiarios = turnos.filter(turno => turno.fecha.getDate() === hoy.getDate());
-    res.render('turnos-hoy', { turnosDiarios })
-  } catch (error) {
-    console.log('Error al obtener los turnos:', error);
-    return res.status(400).send('Error al obtener los turnos');
-  }
-})
+  /*  permite visualizar al administrador
+      los turnos asignados para el dia
+  */
+  .get('/turnos-diarios', async (req, res) => {
+    let hoy = new Date();
+    try {
+      let turnos = await Turno.find({});
+      let turnosDiarios = turnos.filter(turno => turno.fecha.getDate() === hoy.getDate());
+      res.render('turnos-hoy', { turnosDiarios })
+    } catch (error) {
+      console.log('Error al obtener los turnos:', error);
+      return res.status(400).send('Error al obtener los turnos');
+    }
+  })
 
 .post('/admin/mostrar-modificar-turno', (req,res) => {
   res.render('modificar-turno', { turno: req.body.turno });
@@ -228,29 +231,51 @@ router.post('/registrar-perro', async (req, res) => {
       return res.status(400).send('User not registered.');
     }
 
-    // Recopilar los IDs de los perros y turnos asociados al usuario
-    const idPerros = usuario.perrosId.map(perro => ObjectId(perro));
-    const idTurnos = usuario.turnosId.map(turno => ObjectId(turno));
+      // Recopilar los IDs de los perros y turnos asociados al usuario
+      const idPerros = usuario.perrosId.map(perro => ObjectId(perro));
+      const idTurnos = usuario.turnosId.map(turno => ObjectId(turno));
 
-    // Eliminar los perros asociados al usuario
-    await Perro.deleteMany({ _id: { $in: idPerros.map(id => new ObjectId(id)) } });
-    // Eliminar los turnos asociados al usuario
-    await Turno.deleteMany({ _id: { $in: idTurnos } });
+      // Eliminar los perros asociados al usuario
+      await Perro.deleteMany({ _id: { $in: idPerros.map(id => new ObjectId(id)) } });
+      // Eliminar los turnos asociados al usuario
+      await Turno.deleteMany({ _id: { $in: idTurnos } });
 
-    // Eliminar el usuario
-    await User.deleteOne({ mail: req.body.dato });
-    //console.log('Usuario y sus perros/turnos eliminados exitosamente');
-    res.render('eliminacion-confirmada');
-  } catch (err) {
-    res.json({ error: err.message || err.toString() });
-  }
-})
+      // Eliminar el usuario
+      await User.deleteOne({ mail: req.body.dato });
+      //console.log('Usuario y sus perros/turnos eliminados exitosamente');
+      res.render('eliminacion-confirmada');
+    } catch (err) {
+      res.json({ error: err.message || err.toString() });
+    }
+  })
 
-.post('/listar-perros',async(req,res) => {
+  .post('/eliminar-perro', async (req, res) => {
+    try {
+      const usuario = await User.findOne({ mail: req.body.mail });
+      const index = usuario.perrosId.indexOf(req.body.id);
+      if (index !== -1) {
+        usuario.perrosId.splice(index, 1); // Elimina 1 elemento en el índice especificado
+      }
+      await usuario.save();
+      // Obtener el perro a eliminar
+      const perro = await Perro.findByIdAndDelete({ _id: req.body.id });
+      if (!perro) {
+        return res.status(400).send('El perro no estaba en el sistema.');
+      }
+      //console.log('Usuario y sus perros/turnos eliminados exitosamente');
+
+      res.render('eliminacion-perro-confirmada');
+    } catch (err) {
+      res.json({ error: err.message || err.toString() });
+    }
+  })
+
+  .post('/listar-perros', async (req, res) => {
     const usuario = await User.findOne({ mail: req.body.dato })
-                              .populate('perrosId')
+      .populate('perrosId')
     const perros = usuario.perrosId;
-    res.render('listaPerros', { perros , admin: true })
-})
+    let mail = usuario.mail;
+    res.render('listaPerros', { perros, admin: true, mail })
+  })
 
 module.exports = router;
