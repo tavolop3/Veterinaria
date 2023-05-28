@@ -3,7 +3,7 @@ const router = express.Router();
 var crypto = require("crypto");
 const { User, validateCreate, encriptarContraseña } = require('../models/user');
 const { Perro, validateCreatePerro } = require('../models/perro')
-const { Turno } = require('../models/turno')
+const { Turno, modificarEstado } = require('../models/turno')
 const _ = require('lodash');
 const { sendEmail } = require('../emails');
 const { ObjectId } = require('mongoose').Types;
@@ -146,6 +146,10 @@ router.post('/registrar-perro', async (req, res) => {
   }
 })
 
+.post('/admin/mostrar-modificar-turno', (req,res) => {
+  res.render('modificar-turno', { turno: req.body.turno });
+})
+
 .post('/modificar-turno', async(req,res) => {
     var campos = ['rangoHorario', 'fecha', 'estado'];
     campos = _.pickBy(_.pick(req.body, campos), _.identity)
@@ -159,7 +163,56 @@ router.post('/registrar-perro', async (req, res) => {
   //     'Uno de tus turnos fue modificado por la veterinaria, por favor, revisa en tus turnos.'
   // );
 
-    res.redirect('/'); // TODO Enviar mensaje con confirmación de modificación 
+    res.redirect('/'); // TODO Mostrar mensaje con confirmación de modificación 
+})
+
+.get('/aceptar-turno', async(req,res) => { // TODO testear todos los de turnos 
+  modificarEstado(req.body.turno.id, 'aceptado');
+  
+  // Activar para testear un par de veces o en demo para no gastar la cuota de mails (son 100)
+  // sendEmail(user.mail,'OhMyDog - Aceptación de turno',
+  //     'Tu turno fue aceptado!'
+  // );
+
+  res.send('Turno aceptado con exito y notificado al cliente.');
+})
+
+.get('/rechazar-turno', async(req,res) => {
+  modificarEstado(req.body.turno.id, 'rechazado');
+
+  // Activar para testear un par de veces o en demo para no gastar la cuota de mails (son 100)
+  // sendEmail(user.mail,'OhMyDog - Rechazo de turno',
+  //     'Lamentablemente uno de tus turnos fue rechazado por la veterinaria, por favor, revisa en tus turnos.'
+  // );
+
+  res.send('Turno rechazado con exito y notificado al cliente.');
+})
+
+.get('/confirmar-asistencia', async(req,res) => {
+  let turno = req.body.turno;
+  await modificarEstado(turno.id, 'asistido');
+
+  if(turno.estado != 'Vacunacion generica') return res.send('Turno marcado como asistido.');
+
+  // TODO implementar reasignacion de turno.
+  //fijarse en la otra implementacion para cambiar la fecha
+  // fecha = Date.now();
+  // if(perro.edad > 4 meses) {
+  //   fecha += 1 año;
+  // } else {
+  //   fecha += 21 dias;
+  // }
+  //la fecha llega a modificarse antes de que se cree el turno? 
+
+  turno = new Turno(_.pick(turno, ['nombreDelPerro', 'rangoHorario', 'dni', 'motivo', 'estado','fecha']));
+  await turno.save();
+
+  // Activar para testear un par de veces o en demo para no gastar la cuota de mails (son 100)
+  // sendEmail(user.mail,'OhMyDog - Asignación de nuevo turno',
+  //     'Se asignó un nuevo turno automáticamente para la próxima vacunación, por favor, revisa en tus turnos.'
+  // );
+
+  res.send('Se confirmó la asistencia, nuevo turno asignado con exito y notificado al cliente.');
 })
 
 .post('/eliminar-usuario', async (req, res) => {

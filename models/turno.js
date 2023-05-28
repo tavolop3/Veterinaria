@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const Joi = require('joi');
 
 const turnoSchema = new mongoose.Schema({
     nombreDelPerro:{
@@ -24,4 +23,9 @@ const turnoSchema = new mongoose.Schema({
 
 const Turno = mongoose.model('Turno', turnoSchema);
 
+async function modificarEstado(id,estado) {
+    await Turno.findByIdAndUpdate(id,{ estado });
+}
+
 exports.Turno = Turno;
+exports.modificarEstado = modificarEstado;

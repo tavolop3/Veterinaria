@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const autenticado = require('../middleware/autenticado');
-const { Turno } = require('../models/turno')
+const { Turno, modificarEstado } = require('../models/turno')
 const { User, encriptarContraseña, compararContraseñas } = require('../models/user');
 const { Perro } = require('../models/perro')
 
@@ -82,20 +82,15 @@ router.post('/solicitar-turno', async (req, res) => {
 })
 
 .get('/aceptar-modificacion', async(req,res) => {
-  if(!req.query.id) return res.status(400).send('Tiene que proveer el id en la url');
-  
-  await Turno.findByIdAndUpdate(req.query.id,{ estado: 'aceptado' });
+  modificarEstado(req.body.turno.id, 'aceptado');
   
   res.send('Turno aceptado con exito.');
 })
 
 .get('/rechazar-modificacion', async(req,res) => {
-  if(!req.query.id) return res.status(400).send('Tiene que proveer el id en la url');
-  
-  await Turno.findByIdAndUpdate(req.query.id,{ estado: 'rechazado' });
+  modificarEstado(req.body.turno.id, 'rechazado');
   
   res.send('Turno rechazado con exito.');
 })
-
 
 module.exports = router;
