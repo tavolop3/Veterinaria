@@ -94,6 +94,9 @@ router.get('/listar-usuarios', async (req, res) => {
 
 router.post('/registrar-perro', async (req, res) => {
   try {
+    const perro = new Perro(_.pick(req.body, ['nombre', 'sexo', 'fechaDeNacimiento', 'raza', 'color', 'observaciones', 'foto']));
+    const { error } = validateCreatePerro(perro);
+    if (error) return res.status(400).render('registro-perro', { error });
     let user = await User.findOne({ mail: req.body.mail });
 
     if (!user) {
@@ -102,7 +105,7 @@ router.post('/registrar-perro', async (req, res) => {
 
     console.log(user);
 
-    const perro = new Perro(_.pick(req.body, ['nombre', 'sexo', 'fechaDeNacimiento', 'raza', 'color', 'observaciones', 'foto']));
+    //const perro = new Perro(_.pick(req.body, ['nombre', 'sexo', 'fechaDeNacimiento', 'raza', 'color', 'observaciones', 'foto']));
 
     console.log(perro);
 
@@ -131,68 +134,73 @@ router.post('/registrar-perro', async (req, res) => {
   }
 })
 
-/*  permite visualizar al administrador
-    los turnos asignados para el dia
-*/
-.get('/turnos-diarios', async (req, res) => {
-  let hoy = new Date();
-  try {
-    let turnos = await Turno.find({});
-    let turnosDiarios = turnos.filter(turno => turno.fecha.getDate() === hoy.getDate());
-    res.render('turnos-hoy', { turnosDiarios })
-  } catch (error) {
-    console.log('Error al obtener los turnos:', error);
-    return res.status(400).send('Error al obtener los turnos');
-  }
-})
+  /*  permite visualizar al administrador
+      los turnos asignados para el dia
+  */
+  .get('/turnos-diarios', async (req, res) => {
+    let hoy = new Date();
+    try {
+      let turnos = await Turno.find({});
+      let turnosDiarios = turnos.filter(turno => turno.fecha.getDate() === hoy.getDate());
+      res.render('turnos-hoy', { turnosDiarios })
+    } catch (error) {
+      console.log('Error al obtener los turnos:', error);
+      return res.status(400).send('Error al obtener los turnos');
+    }
+  })
 
-.post('/modificar-turno', async(req,res) => {
+  .post('/modificar-turno', async (req, res) => {
     var campos = ['rangoHorario', 'fecha', 'estado'];
     campos = _.pickBy(_.pick(req.body, campos), _.identity)
     campos.estado = 'modificado-pendiente';
 
     const turno = await Turno.findByIdAndUpdate(req.body.id, campos);
-    if(!turno) res.status(400).send('El turno no fue encontrado');
+    if (!turno) res.status(400).send('El turno no fue encontrado');
 
-  // Activar para testear un par de veces o en demo para no gastar la cuota de mails (son 100)
-  // sendEmail(user.mail,'OhMyDog - Modificación de turno',
-  //     'Uno de tus turnos fue modificado por la veterinaria, por favor, revisa en tus turnos.'
-  // );
+    // Activar para testear un par de veces o en demo para no gastar la cuota de mails (son 100)
+    // sendEmail(user.mail,'OhMyDog - Modificación de turno',
+    //     'Uno de tus turnos fue modificado por la veterinaria, por favor, revisa en tus turnos.'
+    // );
 
     res.redirect('/'); // TODO Enviar mensaje con confirmación de modificación 
-})
+  })
 
-.post('/eliminar-usuario', async (req, res) => {
-  try {
-    // Obtener el usuario que deseas eliminar
-    const usuario = await User.findOne({ mail: req.body.dato });
-    if (!usuario) {
-      return res.status(400).send('User not registered.');
+  .post('/eliminar-usuario', async (req, res) => {
+    try {
+      // Obtener el usuario que deseas eliminar
+      const usuario = await User.findOne({ mail: req.body.dato });
+      if (!usuario) {
+        return res.status(400).send('User not registered.');
+      }
+
+      // Recopilar los IDs de los perros y turnos asociados al usuario
+      const idPerros = usuario.perrosId.map(perro => ObjectId(perro));
+      const idTurnos = usuario.turnosId.map(turno => ObjectId(turno));
+
+      // Eliminar los perros asociados al usuario
+      await Perro.deleteMany({ _id: { $in: idPerros.map(id => new ObjectId(id)) } });
+      // Eliminar los turnos asociados al usuario
+      await Turno.deleteMany({ _id: { $in: idTurnos } });
+
+      // Eliminar el usuario
+      await User.deleteOne({ mail: req.body.dato });
+      //console.log('Usuario y sus perros/turnos eliminados exitosamente');
+      res.render('eliminacion-confirmada');
+    } catch (err) {
+      res.json({ error: err.message || err.toString() });
     }
+  })
 
-    // Recopilar los IDs de los perros y turnos asociados al usuario
-    const idPerros = usuario.perrosId.map(perro => ObjectId(perro));
-    const idTurnos = usuario.turnosId.map(turno => ObjectId(turno));
-
-    // Eliminar los perros asociados al usuario
-    await Perro.deleteMany({ _id: { $in: idPerros.map(id => new ObjectId(id)) } });
-    // Eliminar los turnos asociados al usuario
-    await Turno.deleteMany({ _id: { $in: idTurnos } });
-
-    // Eliminar el usuario
-    await User.deleteOne({ mail: req.body.dato });
-    //console.log('Usuario y sus perros/turnos eliminados exitosamente');
-    res.render('eliminacion-confirmada');
-  } catch (err) {
-    res.json({ error: err.message || err.toString() });
-  }
-})
-
-.post('/listar-perros',async(req,res) => {
+  .post('/listar-perros', async (req, res) => {
     const usuario = await User.findOne({ mail: req.body.dato })
-                              .populate('perrosId')
+      .populate('perrosId')
     const perros = usuario.perrosId;
-    res.render('listaPerros', { perros , admin: true })
-})
+    res.render('listaPerros', { perros, admin: true })
+  })
+
+
+
+
+
 
 module.exports = router;

@@ -2,22 +2,22 @@ const mongoose = require('mongoose');
 const Joi = require('joi');
 
 const turnoSchema = new mongoose.Schema({
-    nombreDelPerro:{
+    nombreDelPerro: {
         type: String
     },
-    rangoHorario:{
+    rangoHorario: {
         type: String
     },
-    dni:{
+    dni: {
         type: String
     },
-    motivo:{
+    motivo: {
         type: String
     },
-    estado:{
+    estado: {
         type: String
     },
-    fecha:{
+    fecha: {
         type: Date
     }
 })

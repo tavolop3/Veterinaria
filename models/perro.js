@@ -4,27 +4,50 @@ const config = require('config');
 const jwt = require('jsonwebtoken');
 const { ObjectId } = require('mongodb');
 
+/*
+        type: String,
+        required: true,
+        min: 3,
+        max: 255
+*/
 const perroSchema = new mongoose.Schema({
     nombre: {
-        type: String
+        type: String,
+        required: true,
+        min: 3,
+        max: 255
     },
     sexo: {
-        type: String
+        type: String,
+        required: true,
+        min: 3,
+        max: 255
     },
     fechaDeNacimiento: {
-        type: Date
+        type: Date,
+        required: true
     },
     raza: {
-        type: String
+        type: String,
+        required: true,
+        min: 3,
+        max: 50
     },
     color: {
-        type: String
+        type: String,
+        required: true,
+        min: 3,
+        max: 30
     },
     observaciones: {
-        type: String
+        type: String,
+        required: true,
+        min: 3,
+        max: 255
     },
     foto: {
-        type: String
+        type: String,
+        required: true
     }
 })
 
