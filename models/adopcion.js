@@ -1,13 +1,6 @@
 const mongoose = require('mongoose');
-const Joi = require('joi');
-const config = require('config');
-const jwt = require('jsonwebtoken');
-const { ObjectId } = require('mongodb');
 
 const adopcionSchema = new mongoose.Schema({
-    id:{
-        type: ObjectId
-    },
     nombre:{
         type: String
     },
