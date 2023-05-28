@@ -1,0 +1,72 @@
+doctype html
+html
+  head
+    title Turnos
+
+    style.
+      table {
+        border-collapse: collapse;
+        width: 30%;
+      }
+      th, td {
+        padding: 12px;
+        text-align: left;
+      }
+       td.buttons {
+        display: flex;
+        gap: 10px;
+      }
+
+  body
+    div(ng-unless="turnos.length === 0")
+      h1 Lista de turnos
+      table
+        tr
+          th Nombre del perro
+          th Rango horario
+          th DNI
+          th Motivo
+          th Estado 
+          th Fecha
+        each turno in turnos
+          tr
+            td= turno.nombreDelPerro
+            td= turno.rangoHorario
+            td= turno.dni
+            td= turno.motivo
+            td= turno.estado 
+            td= turno.fecha.toLocaleDateString()
+            td.buttons
+                form(action="/admin/modificar-turno", method="POST")
+                  input(type="hidden", name="id", value=turno._id)
+                  button(type="submit") Modificar turno
+
+                //a partir de aca abajo, podria mandar solo el ID (turno._id)
+                form(action="/admin/confirmar-asistencia", method="POST") 
+                  input(type="hidden", name="id", value=turno._id)
+                  button(type="submit") Confirmar asistencia
+
+                form(action="/admin/eliminar-turno", method="POST")
+                  input(type="hidden", name="id", value=turno._id)
+                  button(type="submit") Eliminar turno
+
+                form(action="/admin/aceptar-turno", method="POST")
+                  input(type="hidden", name="id", value=turno._id)
+                  button(type="submit") Aceptar turno
+
+                form(action="/admin/rechazar-turno", method="POST")
+                  input(type="hidden", name="id", value=turno._id)
+                  button(type="submit") Rechazar turno
+
+            //estos dos botones irian para el cliente que no se si va a ser 2 pugs distintos o 1 pug para los 2
+            //if turno.estado = modificado-pendiente && !usuario.isAdmin
+            //button(type="button" onclick="window.location.href='/clientes/aceptar-modificacion?id=64713320cb306b9ce17965f4'") Aceptar ////modificación
+            //button(type="button" onclick="window.location.href='/clientes/rechazar-modificacion?id=64713320cb306b9ce17965f4'") Rechazar modificación
+
+             // form(action="/admin/modificar-perro", method="POST")
+             //   input(type="hidden", name="id", value=perro._id)
+             //   button(type="submit") Modificar perro
+//mandar al post de " /clientes/mostrar-modificar-turno " el turno completo a modificar. (NO el id!!!!!!)
+//acordarse tambien de ordenar por fecha!
+// modificar - eliminar - aceptar - rechazar (Admin) - confirmar asistencia (una vez q el cliente asistio, al admin lo confirma)
+// aceptar modificacion - rechazar modificacion 

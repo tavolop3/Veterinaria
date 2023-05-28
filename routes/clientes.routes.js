@@ -98,21 +98,43 @@ router.post('/solicitar-turno', async (req, res) => {
   })
 
 
-.get('/aceptar-modificacion', async(req,res) => {
-  if(!req.query.id) return res.status(400).send('Tiene que proveer el id en la url');
-  
-  await Turno.findByIdAndUpdate(req.query.id,{ estado: 'aceptado' });
-  
-  res.send('Turno aceptado con exito.');
-})
+  .get('/aceptar-modificacion', async (req, res) => {
+    if (!req.query.id) return res.status(400).send('Tiene que proveer el id en la url');
 
-.get('/rechazar-modificacion', async(req,res) => {
-  if(!req.query.id) return res.status(400).send('Tiene que proveer el id en la url');
-  
-  await Turno.findByIdAndUpdate(req.query.id,{ estado: 'rechazado' });
-  
-  res.send('Turno rechazado con exito.');
-})
+    await Turno.findByIdAndUpdate(req.query.id, { estado: 'aceptado' });
 
+    res.send('Turno aceptado con exito.');
+  })
+
+  .get('/rechazar-modificacion', async (req, res) => {
+    if (!req.query.id) return res.status(400).send('Tiene que proveer el id en la url');
+
+    await Turno.findByIdAndUpdate(req.query.id, { estado: 'rechazado' });
+
+    res.send('Turno rechazado con exito.');
+  })
+
+  .get('/historial-turnos', async (req, res) => {
+    try {
+      const usuario = await User.findById(req.user.id).populate('turnosId')
+      const turnos = usuario.turnosId;
+      if (turnos.length === 0) {
+        res.render('historialTurnos', { error: 'La lista esta vacia' });
+      }
+      else {
+        turnos.sort(compararFechas);
+        res.render('historialTurnos', { turnos: turnos });
+      }
+    } catch (error) {
+      console.log('Error al obtener los turnos:', error);
+      return res.status(400).send('Error al obtener los turnos');
+    }
+  })
+
+function compararFechas(a, b) {
+  const fechaA = new Date(a.fecha);
+  const fechaB = new Date(b.fecha);
+  return fechaA - fechaB;
+}
 
 module.exports = router;

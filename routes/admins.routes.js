@@ -94,11 +94,10 @@ router.get('/listar-usuarios', async (req, res) => {
 
 router.post('/registrar-perro', async (req, res) => {
   try {
-    const perro = new Perro(_.pick(req.body, ['nombre', 'sexo', 'fechaDeNacimiento', 'raza', 'color', 'observaciones', 'foto']));
-    const { error } = validateCreatePerro(perro);
-    if (error) return res.status(400).render('registro-perro', { error });
+    const perro = new Perro(_.pick(req.body, ['nombre', 'sexo', 'fechaDeNacimiento', 'raza', 'color', 'observaciones', 'foto', 'mail']));
+    //const { error } = validateCreatePerro(perro);
+    //if (error) return res.status(400).render('registro-perro', { error });
     let user = await User.findOne({ mail: req.body.mail });
-
     if (!user) {
       return res.status(400).send('User not registered.');
     }
@@ -185,7 +184,7 @@ router.post('/registrar-perro', async (req, res) => {
       // Eliminar el usuario
       await User.deleteOne({ mail: req.body.dato });
       //console.log('Usuario y sus perros/turnos eliminados exitosamente');
-      res.render('eliminacion-confirmada');
+      res.send('El usuario se elimino exitosamente');
     } catch (err) {
       res.json({ error: err.message || err.toString() });
     }
@@ -198,9 +197,107 @@ router.post('/registrar-perro', async (req, res) => {
     res.render('listaPerros', { perros, admin: true })
   })
 
+  .post('/eliminar-perro', async (req, res) => {
+    try {
+      const usuario = await User.findOne({ mail: req.body.mail });
+      console.log(req.body);
+      console.log(usuario);
+      const index = usuario.perrosId.indexOf(req.body.id);
+      if (index !== -1) {
+        usuario.perrosId.splice(index, 1); // Elimina 1 elemento en el índice especificado
+      }
+      await usuario.save();
+      // Obtener el perro a eliminar
+      const perro = await Perro.findByIdAndDelete({ _id: req.body.id });
+      if (!perro) {
+        return res.status(400).send('El perro no estaba en el sistema.');
+      }
+      //console.log('Usuario y sus perros/turnos eliminados exitosamente');
+
+      res.send('Eliminacion del perro confirmada.');
+    } catch (err) {
+      res.json({ error: err.message || err.toString() });
+    }
+  })
+
+  /*.get('/historial-turnos', async (req, res) => {
+    try {
+      const turnos = Turno.find({});
+      if (turnos.length === 0) {
+        res.render('historialTurnosAdmin', { error: 'La lista esta vacia' });
+      }
+      else {
+        res.render('historialTurnosAdmin', { turnos: turnos });
+      }
+    } catch (error) {
+      console.log('Error al obtener los turnos:', error);
+      return res.status(400).send('Error al obtener los turnos');
+    }
+  })*/
 
 
 
+  .get('/historial-turnos', async (req, res) => {
+    try {
+      let turnos = await Turno.find({});
+      if (turnos.length === 0) {
+        res.render('historialTurnosAdmin', { error: 'La lista esta vacia' })
+      }
+      else {
+        turnos.sort(compararFechas);
+        res.render('historialTurnosAdmin', { turnos: turnos });
+      }
+    } catch (error) {
+      console.log('Error al obtener los turnos:', error);
+      return res.status(400).send('Error al obtener los turnos');
+    }
+  })
 
+  .post('/eliminar-turno', async (req, res) => {
+    try {
+      let turno = await Turno.findById(req.body.id);
+      const usuario = await User.findOne({ dni: turno.dni });
+      console.log(turno);
+      if (!(usuario === null)) {
+        const index = usuario.turnosId.indexOf(turno.id);
+        if (index !== -1) {
+          usuario.turnosId.splice(index, 1); // Elimina 1 elemento en el índice especificado
+        }
+        await usuario.save();
+      }
+
+      // Obtener el perro a eliminar
+      turno = await Turno.findByIdAndDelete(turno.id);
+      if (!turno) {
+        return res.status(400).send('El turno no estaba en el sistema.');
+      }
+      //console.log('Usuario y sus perros/turnos eliminados exitosamente');
+
+      res.send('Eliminacion del turno confirmada.');
+    } catch (err) {
+      res.json({ error: err.message || err.toString() });
+    }
+  })
+
+  .post('/confirmar-asistencia', async (req, res) => {
+    try {
+      const turno = await Turno.findOneAndUpdate(req.body.id, { estado: 'asistido' });
+      console.log(turno);
+      //await turno.save();
+      res.redirect("/admin/historial-turnos");
+    } catch (err) {
+      res.json({ error: err.message || err.toString() });
+    }
+  })
+
+
+//Por alguna razon , esta funcion tiene que estar abajo de todo, sino te tira error.  
+function compararFechas(a, b) {
+
+  const fechaA = new Date(a.fecha);
+  const fechaB = new Date(b.fecha);
+  return fechaA - fechaB;
+
+}
 
 module.exports = router;

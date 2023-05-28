@@ -3,6 +3,7 @@ const Joi = require('joi');
 const config = require('config');
 const jwt = require('jsonwebtoken');
 const { ObjectId } = require('mongodb');
+const Mail = require('nodemailer/lib/mailer');
 
 /*
         type: String,
@@ -12,48 +13,52 @@ const { ObjectId } = require('mongodb');
 */
 const perroSchema = new mongoose.Schema({
     nombre: {
-        type: String,
-        required: true,
+        type: String
+        /*required: true,
         min: 3,
-        max: 255
+        max: 255*/
     },
     sexo: {
-        type: String,
-        required: true,
-        min: 3,
-        max: 255
+        type: String
+        // required: true,
+        // min: 3,
+        // max: 255
     },
     fechaDeNacimiento: {
-        type: Date,
-        required: true
+        type: Date
+        // required: true
     },
     raza: {
-        type: String,
-        required: true,
-        min: 3,
-        max: 50
+        type: String
+        // required: true,
+        // min: 3,
+        // max: 50
     },
     color: {
-        type: String,
-        required: true,
-        min: 3,
-        max: 30
+        // type: String,
+        // required: true,
+        // min: 3,
+        // max: 30
     },
     observaciones: {
-        type: String,
-        required: true,
-        min: 3,
-        max: 255
+        type: String
+        //required: true,
+        //min: 3,
+        //max: 255
     },
     foto: {
-        type: String,
-        required: true
+        type: String
+        // required: true
+    },
+    mail: {
+        type: String
+        // required: true
     }
 })
 
 const Perro = mongoose.model('Perro', perroSchema);
 
-function validateCreatePerro(perro) {
+/*function validateCreatePerro(perro) {
     const schema = Joi.object({
         nombre: Joi.string().min(3).max(15).required(),
         sexo: Joi.string().min(1).max(1).required(),
@@ -64,7 +69,7 @@ function validateCreatePerro(perro) {
         foto: Joi.string().min(3).required()
     });
     return schema.validate(perro);
-}
+}*/
 
 exports.Perro = Perro;
-exports.validateCreatePerro = validateCreatePerro;
+//exports.validateCreatePerro = validateCreatePerro;

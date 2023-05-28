@@ -14,51 +14,51 @@ router.get('', (req, res) => {
     }
 })
 
-// ------------------- USUARIOS -------------------------
+    // ------------------- USUARIOS -------------------------
 
-.get('/usuarios/login', (req, res) => {
-    res.render('login');
-})
+    .get('/usuarios/login', (req, res) => {
+        res.render('login');
+    })
 
-// ------------------- CLIENTES -------------------------
+    // ------------------- CLIENTES -------------------------
 
-.get('/clientes', autenticado, (req, res) => {
-    res.render('indexCliente')
-})
+    .get('/clientes', autenticado, (req, res) => {
+        res.render('indexCliente')
+    })
 
-.get('/clientes/turno', autenticado, (req, res) => {
-    res.render('turno');
-})
+    .get('/clientes/turno', autenticado, (req, res) => {
+        res.render('turno');
+    })
 
-.get('/clientes/modificar-datos', autenticado, (req, res) => {
-    res.render('modificar-datos');
-})
+    .get('/clientes/modificar-datos', autenticado, (req, res) => {
+        res.render('modificar-datos');
+    })
 
-// ------------------- ADMIN -------------------------
+    // ------------------- ADMIN -------------------------
 
-.get('/admin', [autenticado, esAdmin], (req, res) => {
-    res.render('indexAdmin');
-})
+    .get('/admin', [autenticado, esAdmin], (req, res) => {
+        res.render('indexAdmin');
+    })
 
-.get('/admin/registrar-usuario', [autenticado, esAdmin], (req, res) => {
-    res.render('registro-usuario');
-})
+    .get('/admin/registrar-usuario', [autenticado, esAdmin], (req, res) => {
+        res.render('registro-usuario');
+    })
 
-.get('/admin/registrar-perro', [autenticado, esAdmin], (req, res) => {
-    res.render('registro-perro');
-})
+    .get('/admin/registrar-perro', [autenticado, esAdmin], (req, res) => {
+        res.render('registro-perro');
+    })
 
-.get('/admin/eliminar-perro', [autenticado, esAdmin], (req, res) => {
-    res.render('eliminar-perro');
-})
+    .get('/admin/eliminar-perro', [autenticado, esAdmin], (req, res) => {
+        res.render('eliminar-perro');
+    })
 
-.get('/admin/listar-turnos', [autenticado,esAdmin], (req,res) => {
-    res.render('listarTurnosMock');
-})
+    /*.get('/admin/historial-turnos', [autenticado, esAdmin], (req, res) => {
+        res.render('listarTurnosMock');
+    })*/
 
-.get('/admin/modificar-turno', [autenticado,esAdmin], (req,res) => {
-    res.render('modificar-turno', { id: req.query.id });
-})
+    .get('/admin/modificar-turno', [autenticado, esAdmin], (req, res) => {
+        res.render('modificar-turno', { id: req.query.id });
+    })
 
 
 module.exports = router;

@@ -15,7 +15,7 @@ const turnoSchema = new mongoose.Schema({
         type: String
     },
     estado: {
-        type: String
+        type: String //aceptado , rechazado , pendiente , modificado-pendiente , asistido
     },
     fecha: {
         type: Date
