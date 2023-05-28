@@ -274,7 +274,7 @@ router.post('/registrar-perro', async (req, res) => {
       }
       await usuario.save();
       // Obtener el perro a eliminar
-      const perro = await Perro.findByIdAndDelete({ _id: req.body.id });
+      const perro = await Perro.findByIdAndDelete(req.body.id);
       if (!perro) {
         return res.status(400).send('El perro no estaba en el sistema.');
       }
@@ -286,37 +286,6 @@ router.post('/registrar-perro', async (req, res) => {
     }
   })
 
-  /*.get('/historial-turnos', async (req, res) => {
-    try {
-      const turnos = Turno.find({});
-      if (turnos.length === 0) {
-        res.render('historialTurnosAdmin', { error: 'La lista esta vacia' });
-      }
-      else {
-        res.render('historialTurnosAdmin', { turnos: turnos });
-      }
-    } catch (error) {
-      console.log('Error al obtener los turnos:', error);
-      return res.status(400).send('Error al obtener los turnos');
-    }
-  })*/
-
-
-  .post('/eliminar-perro', async (req, res) => {
-    try {
-      const usuario = await User.findOne({ mail: req.body.mail });
-      const index = usuario.perrosId.indexOf(req.body.id);
-      if (index !== -1) {
-        usuario.perrosId.splice(index, 1); // Elimina 1 elemento en el índice especificado
-      }
-      await usuario.save();
-      // Obtener el perro a eliminar
-      const perro = await Perro.findByIdAndDelete({ _id: req.body.id });
-      if (!perro) {
-        return res.status(400).send('El perro no estaba en el sistema.');
-      }
-      //console.log('Usuario y sus perros/turnos eliminados exitosamente');
-    })
 
   .get('/historial-turnos', async (req, res) => {
     try {
