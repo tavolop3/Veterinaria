@@ -1,58 +1,30 @@
 const mongoose = require('mongoose');
-const Joi = require('joi');
-const config = require('config');
-const jwt = require('jsonwebtoken');
-const { ObjectId } = require('mongodb');
-const Mail = require('nodemailer/lib/mailer');
 
-/*
-        type: String,
-        required: true,
-        min: 3,
-        max: 255
-*/
+
 const perroSchema = new mongoose.Schema({
     nombre: {
         type: String
-        /*required: true,
-        min: 3,
-        max: 255*/
     },
     sexo: {
         type: String
-        // required: true,
-        // min: 3,
-        // max: 255
     },
     fechaDeNacimiento: {
         type: Date
-        // required: true
     },
     raza: {
         type: String
-        // required: true,
-        // min: 3,
-        // max: 50
     },
     color: {
-        // type: String,
-        // required: true,
-        // min: 3,
-        // max: 30
+        type: String
     },
     observaciones: {
         type: String
-        //required: true,
-        //min: 3,
-        //max: 255
     },
     foto: {
         type: String
-        // required: true
     },
     mail: {
         type: String
-        // required: true
     }
 })
 

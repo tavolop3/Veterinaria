@@ -26,8 +26,10 @@ router.get('', (req, res) => {
         res.render('indexCliente')
     })
 
-    .get('/clientes/turno', autenticado, (req, res) => {
-        res.render('turno');
+    .get('/clientes/turno', autenticado, async (req, res) => {
+        const usuario = await User.findById(req.user.id).populate('perrosId')
+        const perros = usuario.perrosId;
+        res.render('turno', { perros });
     })
 
     .get('/clientes/modificar-datos', autenticado, (req, res) => {
@@ -52,13 +54,10 @@ router.get('', (req, res) => {
         res.render('eliminar-perro');
     })
 
-    /*.get('/admin/historial-turnos', [autenticado, esAdmin], (req, res) => {
-        res.render('listarTurnosMock');
-    })*/
+/*.get('/admin/historial-turnos', [autenticado, esAdmin], (req, res) => {
+    res.render('listarTurnosMock');
+})*/
 
-    .get('/admin/modificar-turno', [autenticado, esAdmin], (req, res) => {
-        res.render('modificar-turno', { id: req.query.id });
-    })
 
 
 module.exports = router;

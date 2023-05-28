@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const autenticado = require('../middleware/autenticado');
-const { Turno } = require('../models/turno')
+const { Turno, modificarEstado } = require('../models/turno')
 const { User, encriptarContraseña, compararContraseñas } = require('../models/user');
-const { Perro } = require('../models/perro')
+const { Perro } = require('../models/perro');
+const { sendEmail } = require('../emails');
 
 /* Endpoint para
    guardar un turno solicitado
@@ -12,10 +13,10 @@ router.post('/solicitar-turno', async (req, res) => {
   const nuevoTurno = {
     nombreDelPerro: req.body.nombreDelPerro,
     rangoHorario: req.body.rango,
-    dni: req.body.dni,
+    dni: req.user.dni,
     motivo: req.body.motivo,
     estado: 'Pendiente',
-    fecha: new Date(req.body.fecha)
+    fecha: req.body.fecha
   };
   // encuentra el usuario logueado
   let usuario = await User.findById(req.user._id);
@@ -26,8 +27,10 @@ router.post('/solicitar-turno', async (req, res) => {
   if (!perroEncontrado) return res.status(400).send('No se encontró el perro con el nombre especificado.');
   // verifica que el perro tiene mas de 4 meses
   let fechaLimite = new Date(nuevoTurno.fecha);
-  fechaLimite.setMonth(nuevoTurno.fecha.getMonth() - 4);
-  if (perroEncontrado.fecha > fechaLimite) return res.status(400).send('El perro debe tener al menos 4 meses para solicitar un turno.');
+  fechaLimite.setMonth(fechaLimite.getMonth() - 4);
+  if (perroEncontrado.fechaDeNacimiento > fechaLimite) {
+    if (nuevoTurno.motivo === "Vacunacion antirrabica") return res.status(400).send('El perro debe tener al menos 4 meses para recibir la vacunación antirrábica.');
+  }
   // crea el turno
   try {
     const turno = new Turno(nuevoTurno);
@@ -98,21 +101,9 @@ router.post('/solicitar-turno', async (req, res) => {
   })
 
 
-  .get('/aceptar-modificacion', async (req, res) => {
-    if (!req.query.id) return res.status(400).send('Tiene que proveer el id en la url');
 
-    await Turno.findByIdAndUpdate(req.query.id, { estado: 'aceptado' });
 
-    res.send('Turno aceptado con exito.');
-  })
 
-  .get('/rechazar-modificacion', async (req, res) => {
-    if (!req.query.id) return res.status(400).send('Tiene que proveer el id en la url');
-
-    await Turno.findByIdAndUpdate(req.query.id, { estado: 'rechazado' });
-
-    res.send('Turno rechazado con exito.');
-  })
 
   .get('/historial-turnos', async (req, res) => {
     try {
@@ -131,10 +122,23 @@ router.post('/solicitar-turno', async (req, res) => {
     }
   })
 
+
+
+  .post('/aceptar-modificacion', async (req, res) => {
+    modificarEstado(req.body.turno.id, 'aceptado');
+
+    res.send('Turno aceptado con exito.');
+  })
+
+  .post('/rechazar-modificacion', async (req, res) => {
+    modificarEstado(req.body.turno.id, 'rechazado');
+
+    res.send('Turno rechazado con exito.');
+  })
+
 function compararFechas(a, b) {
   const fechaA = new Date(a.fecha);
   const fechaB = new Date(b.fecha);
   return fechaA - fechaB;
 }
-
 module.exports = router;

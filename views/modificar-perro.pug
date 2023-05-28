@@ -5,17 +5,19 @@ html
     title Modificar perro
     link(rel="stylesheet", href="/style/login.css")
   body
-    form(action="admin/modificar-perro", method="post")
+    form(action="/admin/modificar-perro", method="post")
       ul
         li
+          input(type="hidden", name="id", value=perro._id)
+        li
           label(for="nombre") Nombre:
-          input(type="text", id="nombre", name="nombre", value=perro.mail)
+          input(type="text", id="nombre", name="nombre", value=perro.nombre)
         li
           label(for="sexo") Sexo:
-          input(type="text", id="sexo", name="sexo", value=perro.nombre)
+          input(type="text", id="sexo", name="sexo", value=perro.sexo)
         li
           label(for="fecha") Fecha de nacimiento:
-          input(type="date", id="fecha", name="fecha", value=perro.apellido)
+          input(type="date", id="fecha", name="fecha", value=perro.fecha)
         li
           label(for="raza") Raza:
           input(type="text", id="raza", name="raza", value=perro.raza)
@@ -23,10 +25,10 @@ html
           label(for="color") Color:
           input(type="text", id="color", name="color", value=perro.color)
         li
-          label(for="observacioens") Observaciones:
-          input(type="text", id="observaciones", name="observaciones", value=perro.color)
+          label(for="observaciones") Observaciones:
+          input(type="text", id="observaciones", name="observaciones", value=perro.observaciones)
         li
-          label(for="color") Foto:
-          input(type="text", id="foto", name="foto", value=perro.color)
+          label(for="foto") Foto:
+          input(type="text", id="foto", name="foto", value=perro.foto)
         li.button
           button(type="submit") Modificar
