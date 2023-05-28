@@ -7,6 +7,7 @@ const { Turno, modificarEstado } = require('../models/turno')
 const _ = require('lodash');
 const { sendEmail } = require('../emails');
 const { ObjectId } = require('mongoose').Types;
+const moment = require('moment');
 
 router.post('/registrar-usuario', async (req, res) => {
   const { error } = validateCreate(req.body);
@@ -194,17 +195,21 @@ router.post('/registrar-perro', async (req, res) => {
 
   if(turno.estado != 'Vacunacion generica') return res.send('Turno marcado como asistido.');
 
-  // TODO implementar reasignacion de turno.
-  //fijarse en la otra implementacion para cambiar la fecha
-  // fecha = Date.now();
-  // if(perro.edad > 4 meses) {
-  //   fecha += 1 año;
-  // } else {
-  //   fecha += 21 dias;
-  // }
+  const perros = await User.findOne({ dni: turno.dni }).populate('perrosId')
+  const perro = perros.find(perroId => perroId && perroId.toString() === perro._id.toString()); // funciona?
+
+  const fechaDeNacimiento = moment(perro.fechaDeNacimiento).format('YYYY-MM-DD');
+  const edad = moment().diff(fechaDeNacimiento, 'months'); 
+  
+  fechaDelTurno = moment();
+  if(edad > 4) {
+      fechaDelTurno = moment(fechaDelTurno).add(1, 'years');  
+  } else {
+      fechaDelTurno = moment(fechaDelTurno).add(21, 'days');
+  }
   //la fecha llega a modificarse antes de que se cree el turno? 
 
-  turno = new Turno(_.pick(turno, ['nombreDelPerro', 'rangoHorario', 'dni', 'motivo', 'estado','fecha']));
+  turno = new Turno(_.pick(turno, ['nombreDelPerro', 'rangoHorario', 'dni', 'motivo', 'estado',fechaDelTurno.toDate()]));
   await turno.save();
 
   // Activar para testear un par de veces o en demo para no gastar la cuota de mails (son 100)
