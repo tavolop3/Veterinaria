@@ -36,6 +36,10 @@ router.get('', (req, res) => {
         res.render('modificar-datos')
     })
 
+    .get('/clientes/cargar-adopcion', autenticado, (req, res) => {
+        res.render('cargar-adopcion')
+    })
+
     // ------------------- ADMIN -------------------------
 
     .get('/admin', [autenticado, esAdmin], (req, res) => {

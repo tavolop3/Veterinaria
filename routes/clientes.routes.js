@@ -4,6 +4,7 @@ const autenticado = require('../middleware/autenticado');
 const { Turno } = require('../models/turno')
 const { User, encriptarContraseña, compararContraseñas } = require('../models/user');
 const { Perro } = require('../models/perro')
+const { Adopcion } = require('../models/adopcion')
 
 /* Endpoint para
    guardar un turno solicitado
@@ -79,6 +80,31 @@ router.post('/solicitar-turno', async (req, res) => {
                             .populate('perrosId')
   const perros = usuario.perrosId;
   res.render('listaPerros', { perros })
+})
+
+.post('/cargar-adopcion', async(req, res) => {
+  perroParaAdoptar = {
+    nombre: req.body.nombre,
+    edad: req.body.edad,
+    sexo: req.body.sexo,
+    color: req.body.color,
+    tamaño: req.body.tamaño,
+    origen: req.body.origen,
+    confirmado: false,
+    mail: req.user.mail
+  }
+    try {
+      let adopcion = new Adopcion(perroParaAdoptar);
+      await adopcion.save();
+      req.user.perrosEnAdopcion.push(adopcion._id);
+      res.redirect('/clientes');
+    } catch (error) {
+      return res.json({
+        resultado: false,
+        msg: 'El usuario no se pudo modificar',
+        error
+      });
+    }
 })
 
 module.exports = router;

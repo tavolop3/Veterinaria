@@ -27,7 +27,8 @@ const adopcionSchema = new mongoose.Schema({
         type: String
     },
     confirmado:{
-        type: Boolean
+        type: Boolean,
+        default: false
     },
     mail:{
         type: String
@@ -35,3 +36,5 @@ const adopcionSchema = new mongoose.Schema({
 })
 
 const Adopcion = mongoose.model('Adopcion', adopcionSchema);
+
+exports.Adopcion = Adopcion;
