@@ -44,7 +44,7 @@ router.post('/solicitar-turno', async (req, res) => {
   }
 })
 
-.post('/modificar-datos', async (req, res) => {
+  .post('/modificar-datos', async (req, res) => {
     let { mailNuevo, contraseña1, contraseña2 } = req.body;
     let mailActual = req.user.mail;
     let user = await User.findOne({ mail: mailActual });
@@ -72,14 +72,31 @@ router.post('/solicitar-turno', async (req, res) => {
         error
       });
     }
-})
+  })
 
-.get('/mis-perros', async(req,res) => {
-  const usuario = await User.findById(req.user.id)
-                            .populate('perrosId')
-  const perros = usuario.perrosId;
-  res.render('listaPerros', { perros })
-})
+  .get('/mis-perros', async (req, res) => {
+    const usuario = await User.findById(req.user.id)
+      .populate('perrosId')
+    const perros = usuario.perrosId;
+    res.render('listaPerros', { perros })
+  })
+
+  .get('/historial-turnos', async (req, res) => {
+    try {
+      const usuario = await User.findById(req.user.id).populate('turnosId')
+      const turnos = usuario.turnosId;
+      if (turnos.length === 0) {
+        res.render('historialTurnos', { error: 'La lista esta vacia' });
+      }
+      else {
+        res.render('historialTurnos', { turnos: turnos });
+      }
+    } catch (error) {
+      console.log('Error al obtener los turnos:', error);
+      return res.status(400).send('Error al obtener los turnos');
+    }
+  })
+
 
 .get('/aceptar-modificacion', async(req,res) => {
   modificarEstado(req.body.turno.id, 'aceptado');

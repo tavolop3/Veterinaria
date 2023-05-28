@@ -1,0 +1,38 @@
+doctype html
+html
+  head
+    title Turnos
+
+    style.
+      table {
+        border-collapse: collapse;
+        width: 30%;
+      }
+      th, td {
+        padding: 12px;
+        text-align: left;
+      }
+       /*td.buttons {
+        display: flex;
+        gap: 10px;
+      }*/
+
+  body
+    div(ng-unless="turnos.length === 0")
+      h1 Lista de turnos
+      table
+        tr
+          th Nombre del perro
+          th Rango horario
+          th DNI
+          th Motivo
+          th Estado 
+          th Fecha
+        each turno in turnos
+          tr
+            td= turno.nombreDelPerro
+            td= turno.rangoHorario
+            td= turno.dni
+            td= turno.motivo
+            td= turno.estado 
+            td= turno.fecha
