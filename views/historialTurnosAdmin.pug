@@ -18,7 +18,9 @@ html
       }
 
   body
-    div(ng-unless="turnos.length === 0")
+    if(!turnos)
+      h1 No hay turnos cargados 
+    else
       h1 Lista de turnos
       table
         tr
