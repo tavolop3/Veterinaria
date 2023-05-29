@@ -14,7 +14,7 @@ router.post('/registrar-usuario', async (req, res) => {
   // if (error) return res.status(400).render('registro-usuario', { error });
 
   let user = await User.findOne({ mail: req.body.mail });
-  if (user) return res.status(400).render('registro-usuario', { error: 'El mail ya está en uso.' }); // TODO Popup
+  if (user) return res.status(400).render('registro-usuario', { error: 'El mail ya está en uso.' });
 
   user = await User.findOne({ dni: req.body.dni });
   if (user) return res.status(400).render('registro-usuario', { error: 'El dni ya está registrado.' });
@@ -31,7 +31,7 @@ router.post('/registrar-usuario', async (req, res) => {
   user.contraseñaDefault = user.contraseña;
   await user.save();
 
-  res.redirect('/'); // TODO Enviar mensaje con confirmación de creación 
+  res.redirect('<script>alert("Se registró al usuario."); window.location.href = "/";</script>'); 
 })
 
   .post('/modificar-usuario', async (req, res) => {
@@ -162,10 +162,10 @@ router.post('/registrar-perro', async (req, res) => {
     //     'Uno de tus turnos fue modificado por la veterinaria, por favor, revisa en tus turnos.'
     // );
 
-    res.redirect('/'); // TODO Mostrar mensaje con confirmación de modificación 
+    res.redirect('<script>alert("La modificación se realizó correctamente."); window.location.href = "/";</script>'); 
   })
 
-  .post('/aceptar-turno', async (req, res) => { // TODO testear todos los de turnos 
+  .post('/aceptar-turno', async (req, res) => {
     let turno = await modificarEstado(req.body.id, 'aceptado');
 
     const user = await User.findOne({ dni: turno.dni });

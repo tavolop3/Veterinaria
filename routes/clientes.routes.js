@@ -36,6 +36,7 @@ router.post('/solicitar-turno', async (req, res) => {
     const turno = new Turno(nuevoTurno);
     await turno.save();
     usuario.turnosId.push(turno._id);
+    await usuario.save();
     return res.send('<script>alert("El turno se solicito correctamente."); window.location.href = "/clientes";</script>');
   } catch (error) {
     return res.send('<script>alert("El turno no pudo guardarse."); window.location.href = "/clientes";</script>');
@@ -96,13 +97,13 @@ router.post('/solicitar-turno', async (req, res) => {
   .post('/aceptar-modificacion', async (req, res) => {
     await modificarEstado(req.body.id, 'aceptado');
 
-    res.send('Turno aceptado con exito.');
+    res.send('<script>alert("Se aceptó la modificación.");window.location.href = "/";</script>');
   })
 
   .post('/rechazar-modificacion', async (req, res) => {
     await modificarEstado(req.body.id, 'rechazado');
 
-    res.send('Turno rechazado con exito.');
+    res.send('<script>alert("Se rechazó la modificación.");window.location.href = "/";</script>');
   })
 
 function compararFechas(a, b) {
