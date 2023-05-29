@@ -161,7 +161,6 @@ router.post('/registrar-perro', async (req, res) => {
     var campos = ['rangoHorario', 'fecha', 'estado'];
     campos = _.pickBy(_.pick(req.body, campos), _.identity)
     campos.estado = 'modificado-pendiente';
-    console.log(campos.fecha);
     const turno = await Turno.findByIdAndUpdate(req.body.id, campos);
     if (!turno) res.status(400).send('El turno no fue encontrado');
 
@@ -204,7 +203,9 @@ router.post('/registrar-perro', async (req, res) => {
     if (turno.motivo != 'Vacunacion generica') return res.send('Turno marcado como asistido.');
 
     const user = await User.findOne({ dni: turno.dni }).populate('perrosId');
-    
+    user.turnosId.push(turno._id);
+    await user.save();    
+
     const perros = user.perrosId;
     const perroEncontrado = perros.find(perro => perro && perro.nombre === turno.nombreDelPerro);
 
