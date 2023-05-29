@@ -49,13 +49,9 @@ router.post('/registrar-usuario', async (req, res) => {
           telefono, telefono
         } 
       });
-      return res.redirect('/admin');
+      return res.send('<script>alert("La modificación se realizó correctamente."); window.location.href = "/admin";</script>');
     } catch (error) {
-      return res.json({
-        resultado: false,
-        msg: 'El usuario no se pudo modificar',
-        error
-      });
+      return res.send('<script>alert("El usuario no se pudo modificar."); window.location.href = "/admin";</script>');
     }
   })
 
@@ -72,13 +68,9 @@ router.post('/registrar-usuario', async (req, res) => {
         foto: foto
       } 
     });
-      return res.redirect('/admin');
+      return res.send('<script>alert("La modificación se realizó correctamente."); window.location.href = "/admin";</script>');
     } catch (error) {
-      return res.json({
-        resultado: false,
-        msg: 'El perro no se pudo modificar',
-        error
-      });
+      return res.send('<script>alert("La modificación no pudo realizarse."); window.location.href = "/admin";</script>');
     }
   })
 
