@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const Joi = require('joi');
+
 
 const perroSchema = new mongoose.Schema({
     nombre: {
@@ -22,12 +22,15 @@ const perroSchema = new mongoose.Schema({
     },
     foto: {
         type: String
+    },
+    mail: {
+        type: String
     }
 })
 
 const Perro = mongoose.model('Perro', perroSchema);
 
-function validateCreatePerro(perro) {
+/*function validateCreatePerro(perro) {
     const schema = Joi.object({
         nombre: Joi.string().min(3).max(15).required(),
         sexo: Joi.string().min(1).max(1).required(),
@@ -38,7 +41,7 @@ function validateCreatePerro(perro) {
         foto: Joi.string().min(3).required()
     });
     return schema.validate(perro);
-}
+}*/
 
 exports.Perro = Perro;
-exports.validateCreatePerro = validateCreatePerro;
+//exports.validateCreatePerro = validateCreatePerro;

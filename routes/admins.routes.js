@@ -1,14 +1,13 @@
 const express = require('express');
 const router = express.Router();
 var crypto = require("crypto");
-const { User, encriptarContraseña } = require('../models/user');
+const { User, validateCreate, encriptarContraseña } = require('../models/user');
 const { Perro } = require('../models/perro')
-const { Turno } = require('../models/turno')
+const { Turno, modificarEstado } = require('../models/turno')
 const _ = require('lodash');
 const { sendEmail } = require('../emails');
 const { ObjectId } = require('mongoose').Types;
-
-
+const moment = require('moment');
 
 router.post('/registrar-usuario', async (req, res) => {
   // const { error } = validateCreate(req.body);  Ya no valida porque no está especificado en las hu las microvalidaciones
@@ -24,7 +23,7 @@ router.post('/registrar-usuario', async (req, res) => {
 
   const contraRandom = crypto.randomBytes(8).toString('hex');
   // Activar para testear un par de veces o en demo para no gastar la cuota de mails (son 100)
-  // sendEmail(user.mail,'OhMyDog - Contraseña predefinida',
+  // await sendEmail(user.mail,'OhMyDog - Contraseña predefinida',
   //     'Bienvenido a OhMyDog, tu cuenta fue creada con exito. Tu contraseña para el primer ingreso va a ser '+ contraRandom + ' es importante que la cambies ni bien accedas por motivos de seguridad, gracias.'
   // );
   console.log('Contraseña generada:' + contraRandom);
@@ -32,7 +31,7 @@ router.post('/registrar-usuario', async (req, res) => {
   user.contraseñaDefault = user.contraseña;
   await user.save();
 
-  res.redirect('/admin');
+  res.redirect('/'); // TODO Enviar mensaje con confirmación de creación 
 })
 
   .post('/modificar-usuario', async (req, res) => {
@@ -92,11 +91,10 @@ router.get('/listar-usuarios', async (req, res) => {
 
 router.post('/registrar-perro', async (req, res) => {
   try {
-    let perro = new Perro(_.pick(req.body, ['nombre', 'sexo', 'fechaDeNacimiento', 'raza', 'color', 'observaciones', 'foto', 'mail']));
+    const perro = new Perro(_.pick(req.body, ['nombre', 'sexo', 'fechaDeNacimiento', 'raza', 'color', 'observaciones', 'foto', 'mail']));
     //const { error } = validateCreatePerro(perro);
     //if (error) return res.status(400).render('registro-perro', { error });
     let user = await User.findOne({ mail: req.body.mail });
-
     if (!user) {
       return res.status(400).send('User not registered.');
     }
@@ -164,10 +162,10 @@ router.post('/registrar-perro', async (req, res) => {
     //     'Uno de tus turnos fue modificado por la veterinaria, por favor, revisa en tus turnos.'
     // );
 
-    res.redirect('/'); // TODO Mostrar mensaje con confirmación de modificación
+    res.redirect('/'); // TODO Mostrar mensaje con confirmación de modificación 
   })
 
-  .post('/aceptar-turno', async (req, res) => { // TODO testear todos los de turnos
+  .post('/aceptar-turno', async (req, res) => { // TODO testear todos los de turnos 
     let turno = await modificarEstado(req.body.id, 'aceptado');
 
     const user = await User.findOne({ dni: turno.dni });
@@ -181,7 +179,7 @@ router.post('/registrar-perro', async (req, res) => {
 
   .post('/rechazar-turno', async (req, res) => {
     let turno = await modificarEstado(req.body.id, 'rechazado');
-
+    
     const user = await User.findOne({ dni: turno.dni });
     // Activar para testear un par de veces o en demo para no gastar la cuota de mails (son 100)
     // await sendEmail(user.mail,'OhMyDog - Rechazo de turno',
@@ -198,7 +196,7 @@ router.post('/registrar-perro', async (req, res) => {
 
     const user = await User.findOne({ dni: turno.dni }).populate('perrosId');
     user.turnosId.push(turno._id);
-    await user.save();
+    await user.save();    
 
     const perros = user.perrosId;
     const perroEncontrado = perros.find(perro => perro && perro.nombre === turno.nombreDelPerro);
@@ -247,28 +245,7 @@ router.post('/registrar-perro', async (req, res) => {
       // Eliminar el usuario
       await User.deleteOne({ mail: req.body.dato });
       //console.log('Usuario y sus perros/turnos eliminados exitosamente');
-      res.render('eliminacion-confirmada');
-    } catch (err) {
-      res.json({ error: err.message || err.toString() });
-    }
-  })
-
-  .post('/eliminar-perro', async (req, res) => {
-    try {
-      const usuario = await User.findOne({ mail: req.body.mail });
-      const index = usuario.perrosId.indexOf(req.body.id);
-      if (index !== -1) {
-        usuario.perrosId.splice(index, 1); // Elimina 1 elemento en el índice especificado
-      }
-      await usuario.save();
-      // Obtener el perro a eliminar
-      const perro = await Perro.findByIdAndDelete({ _id: req.body.id });
-      if (!perro) {
-        return res.status(400).send('El perro no estaba en el sistema.');
-      }
-      //console.log('Usuario y sus perros/turnos eliminados exitosamente');
-
-      res.render('eliminacion-perro-confirmada');
+      res.send('El usuario se elimino exitosamente');
     } catch (err) {
       res.json({ error: err.message || err.toString() });
     }
@@ -278,13 +255,95 @@ router.post('/registrar-perro', async (req, res) => {
     const usuario = await User.findOne({ mail: req.body.dato })
       .populate('perrosId')
     const perros = usuario.perrosId;
-    let mail = usuario.mail;
-    res.render('listaPerros', { perros, admin: true, mail })
+    res.render('listaPerros', { perros, admin: true })
+  })
+
+  .post('/eliminar-perro', async (req, res) => {
+    try {
+      const usuario = await User.findOne({ mail: req.body.mail });
+      console.log(req.body);
+      console.log(usuario);
+      const index = usuario.perrosId.indexOf(req.body.id);
+      if (index !== -1) {
+        usuario.perrosId.splice(index, 1); // Elimina 1 elemento en el índice especificado
+      }
+      await usuario.save();
+      // Obtener el perro a eliminar
+      const perro = await Perro.findByIdAndDelete(req.body.id);
+      if (!perro) {
+        return res.status(400).send('El perro no estaba en el sistema.');
+      }
+      //console.log('Usuario y sus perros/turnos eliminados exitosamente');
+
+      res.send('Eliminacion del perro confirmada.');
+    } catch (err) {
+      res.json({ error: err.message || err.toString() });
+    }
+  })
+
+
+  .get('/historial-turnos', async (req, res) => {
+    try {
+      let turnos = await Turno.find({});
+      if (turnos.length === 0) {
+        res.render('historialTurnosAdmin', { error: 'La lista esta vacia' })
+      }
+      else {
+        turnos.sort(compararFechas);
+        res.render('historialTurnosAdmin', { turnos: turnos });
+      }
+    } catch (error) {
+      console.log('Error al obtener los turnos:', error);
+      return res.status(400).send('Error al obtener los turnos');
+    }
+  })
+
+  .post('/eliminar-turno', async (req, res) => {
+    try {
+      let turno = await Turno.findById(req.body.id);
+      const usuario = await User.findOne({ dni: turno.dni });
+      console.log(turno);
+      if (!(usuario === null)) {
+        const index = usuario.turnosId.indexOf(turno.id);
+        if (index !== -1) {
+          usuario.turnosId.splice(index, 1); // Elimina 1 elemento en el índice especificado
+        }
+        await usuario.save();
+      }
+
+      // Obtener el perro a eliminar
+      turno = await Turno.findByIdAndDelete(turno.id);
+      if (!turno) {
+        return res.status(400).send('El turno no estaba en el sistema.');
+      }
+      //console.log('Usuario y sus perros/turnos eliminados exitosamente');
+
+      res.send('Eliminacion del turno confirmada.');
+    } catch (err) {
+      res.json({ error: err.message || err.toString() });
+    }
   })
 
 
 
+  //Por alguna razon , esta funcion tiene que estar abajo de todo, sino te tira error.  
 
 
 
+
+  .post('/listar-perros', async (req, res) => {
+    const usuario = await User.findOne({ mail: req.body.dato })
+      .populate('perrosId')
+    const perros = usuario.perrosId;
+    let mail = usuario.mail;
+    res.render('listaPerros', { perros, admin: true, mail })
+  })
+
+function compararFechas(a, b) {
+
+  const fechaA = new Date(a.fecha);
+  const fechaB = new Date(b.fecha);
+  return fechaA - fechaB;
+
+}
 module.exports = router;

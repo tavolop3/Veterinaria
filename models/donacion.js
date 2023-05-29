@@ -5,9 +5,6 @@ const jwt = require('jsonwebtoken');
 const { ObjectId } = require('mongodb');
 
 const donacionScheme = new mongoose.Schema({
-    id:{
-        type: ObjectId
-    },
     montoObjetivo:{
         type: Number
     },

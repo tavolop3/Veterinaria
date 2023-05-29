@@ -48,6 +48,6 @@ else
                 button(type="submit") Modificar perro
               form(action="/admin/eliminar-perro", method="POST")
                 input(type="hidden", name="id", value=perro._id)
-                input(type="hidden", name="mail", value=mail)
+                input(type="hidden", name="mail", value=perro.mail)
                 button(type="submit") Eliminar perro
                 

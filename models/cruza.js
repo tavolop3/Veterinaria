@@ -5,9 +5,6 @@ const jwt = require('jsonwebtoken');
 const { ObjectId } = require('mongodb');
 
 const cruzaSchema = new mongoose.Schema({
-    id:{
-        type: ObjectId
-    },
     raza:{
         type: String
     },
