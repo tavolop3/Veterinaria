@@ -59,6 +59,11 @@ router.get('/yo', autenticado, async(req,res) => {
 })
 
 .post('/adopcion/solicitar', (req,res) => {
+  //en realidad seria un endpoint que vea si 
+  // es cliente -> manda el mail
+  //  sino -> lo manda a un formulario para ingresar su mail (si es un popup mejor)
+  //    hay que hacer otro endpoint acá para recibir el mail y mandarselo al propietario de la adopcion
+
   // Activar para testear un par de veces o en demo para no gastar la cuota de mails (son 100)
   // await sendEmail(req.body.mailSolicitante,'OhMyDog - Solicitud de adpopción enviada',
   //     'Su solicitud de adopción se ha enviado, contactese con ' + req.body.mailPostulante + ' para poder coordinar la adopción. Para tener acceso a más funcionalidades acercate a la veterinaria y registrate!' 
