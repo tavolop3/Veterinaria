@@ -39,12 +39,10 @@ html
             td= turno.estado 
             td= turno.fecha.toLocaleDateString()
             td.buttons
-                //estos dos botones irian para el cliente que no se si va a ser 2 pugs distintos o 1 pug para los 2
-                //if turno.estado = modificado-pendiente && !usuario.isAdmin
-                form(action="/clientes/aceptar-modificacion", method="POST")
-                  input(type="hidden", name="id", value=turno._id)
-                  button(type="submit") Aceptar modificacion
-
-                form(action="/clientes/rechazar-modificacion", method="POST")
-                  input(type="hidden", name="id", value=turno._id)
-                  button(type="submit") Rechazar modificacion
+                if turno.estado == "modificado-pendiente" 
+                  form(action="/clientes/aceptar-modificacion", method="POST")
+                    input(type="hidden", name="id", value=turno._id)
+                    button(type="submit") Aceptar modificacion
+                  form(action="/clientes/rechazar-modificacion", method="POST")
+                    input(type="hidden", name="id", value=turno._id)
+                    button(type="submit") Rechazar modificacion
