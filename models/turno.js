@@ -1,10 +1,6 @@
 const mongoose = require('mongoose');
-const { ObjectId } = require('mongodb');
 
 const turnoSchema = new mongoose.Schema({
-    id:{
-        type: ObjectId
-    },
     nombreDelPerro:{
         type: String
     },
