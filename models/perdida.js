@@ -5,9 +5,6 @@ const jwt = require('jsonwebtoken');
 const { ObjectId } = require('mongodb');
 
 const perdidaScheme = new mongoose.Scheme({
-    id:{
-        type: ObjectId
-    },
     nombre:{
         type: String
     },

@@ -29,12 +29,14 @@ router.get('', (req, res) => {
         res.render('indexCliente')
     })
 
-    .get('/clientes/turno', autenticado, (req, res) => {
-        res.render('turno')
+    .get('/clientes/turno', autenticado, async (req, res) => {
+        const usuario = await User.findById(req.user.id).populate('perrosId')
+        const perros = usuario.perrosId;
+        res.render('turno', { perros });
     })
 
     .get('/clientes/modificar-datos', autenticado, (req, res) => {
-        res.render('modificar-datos')
+        res.render('modificar-datos');
     })
 
     // ------------------- ADMIN -------------------------
@@ -55,21 +57,19 @@ router.get('', (req, res) => {
         res.render('eliminar-perro');
     })
 
-    .get('/admin/modificar-usuario', [autenticado, esAdmin], async (req, res) => {
-        let userMail = req.query.dato;
-        let usuario = await User.findOne({ mail: userMail });
-        res.render('modificar-usuario', {usuario, userMail});
+    .get('/admin/cargar/paseador-cuidador', [autenticado, esAdmin], async(req, res) => {
+        res.render('cargar-paseador-cuidador');
     })
 
-    .get('/admin/modificar-perro', [autenticado, esAdmin], async (req, res) => {
-        let perro = await Perro.findById({ _id: req.query.id});
-        res.render('modificar-perro', {perro});
+    .get('/admin/modificar-servicio', [autenticado, esAdmin], async(req, res) => {
+        let servicio = await Servicio.findById(req.query.id);
+        res.render('modificar-servicio', {servicio});
     })
 
     .get('/admin/cargar/paseador-cuidador', [autenticado, esAdmin], async(req, res) => {
         res.render('cargar-paseador-cuidador');
     })
-
+    
     .get('/admin/modificar-servicio', [autenticado, esAdmin], async(req, res) => {
         let servicio = await Servicio.findById(req.query.id);
         res.render('modificar-servicio', {servicio});

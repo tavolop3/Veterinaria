@@ -37,7 +37,7 @@ else
         tr
           td= perro.nombre
           td= perro.sexo
-          td= perro.fechaDeNacimiento
+          td= perro.fechaDeNacimiento.toLocaleDateString()
           td= perro.raza 
           td= perro.color 
           td= perro.observaciones
@@ -48,6 +48,6 @@ else
                 button(type="submit") Modificar perro
               form(action="/admin/eliminar-perro", method="POST")
                 input(type="hidden", name="id", value=perro._id)
-                input(type="hidden", name="mail", value=mail)
+                input(type="hidden", name="mail", value=perro.mail)
                 button(type="submit") Eliminar perro
                 

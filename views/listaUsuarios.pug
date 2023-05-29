@@ -18,28 +18,31 @@ html
       }
 
   body
-    div(ng-unless="usuarios.length === 0")
-      h1 Lista de usuarios
-      table
-        tr
-          th DNI
-          th Mail
-          th Nombre
-          th Apellido
-        each usuario in usuarios
+    if(!usuarios)
+      h1 No hay usuarios cargados todavia
+    else
+      div
+        h1 Lista de usuarios
+        table
           tr
-            td= usuario.dni
-            td= usuario.mail
-            td= usuario.nombre
-            td= usuario.apellido
-            td.buttons
-              form(action="/admin/modificar-usuario", method="GET")
-                input(type="hidden", name="dato", value=usuario.mail)
-                button(type="submit") Modificar usuario
-              form(action="/admin/listar-perros", method="POST")
-                input(type="hidden", name="dato", value=usuario.mail)
-                button(type="submit") Listar perros
-              form(action="/admin/eliminar-usuario", method="POST")
-                input(type="hidden", name="dato", value=usuario.mail)
-                button(type="submit") Eliminar usuario
-            
+            th DNI
+            th Mail
+            th Nombre
+            th Apellido
+          each usuario in usuarios
+            tr
+              td= usuario.dni
+              td= usuario.mail
+              td= usuario.nombre
+              td= usuario.apellido
+              td.buttons
+                form(action="/usuarios/modificar-datos", method="POST")
+                  input(type="hidden", name="dato", value=usuario.mail)
+                  button(type="submit") Modificar usuario
+                form(action="/admin/listar-perros", method="POST")
+                  input(type="hidden", name="dato", value=usuario.mail)
+                  button(type="submit") Listar perros
+                form(action="/admin/eliminar-usuario", method="POST")
+                  input(type="hidden", name="dato", value=usuario.mail)
+                  button(type="submit") Eliminar usuario
+              
