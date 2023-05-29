@@ -153,15 +153,15 @@ router.post('/registrar-perro', async (req, res) => {
     }
   })
 
-  .post('/admin/mostrar-modificar-turno', (req, res) => {
-    res.render('modificar-turno', { turno: req.body.turno });
+  .post('/mostrar-modificar-turno', (req, res) => {
+    res.render('modificar-turno', { id: req.body.id });
   })
 
   .post('/modificar-turno', async (req, res) => {
     var campos = ['rangoHorario', 'fecha', 'estado'];
     campos = _.pickBy(_.pick(req.body, campos), _.identity)
     campos.estado = 'modificado-pendiente';
-
+    console.log(campos.fecha);
     const turno = await Turno.findByIdAndUpdate(req.body.id, campos);
     if (!turno) res.status(400).send('El turno no fue encontrado');
 
@@ -174,10 +174,10 @@ router.post('/registrar-perro', async (req, res) => {
     res.redirect('/'); // TODO Mostrar mensaje con confirmación de modificación 
   })
 
-  .get('/aceptar-turno', async (req, res) => { // TODO testear todos los de turnos 
-    modificarEstado(req.body.turno.id, 'aceptado');
+  .post('/aceptar-turno', async (req, res) => { // TODO testear todos los de turnos 
+    let turno = await modificarEstado(req.body.id, 'aceptado');
 
-    const user = await User.findOne({ dni: req.body.turno.dni });
+    const user = await User.findOne({ dni: turno.dni });
     // Activar para testear un par de veces o en demo para no gastar la cuota de mails (son 100)
     // await sendEmail(user.mail,'OhMyDog - Aceptación de turno',
     //     'Tu turno fue aceptado!'
@@ -186,10 +186,10 @@ router.post('/registrar-perro', async (req, res) => {
     res.send('Turno aceptado con exito y notificado al cliente.');
   })
 
-  .get('/rechazar-turno', async (req, res) => {
-    modificarEstado(req.body.turno.id, 'rechazado');
-
-    const user = await User.findOne({ dni: req.body.turno.dni });
+  .post('/rechazar-turno', async (req, res) => {
+    let turno = await modificarEstado(req.body.id, 'rechazado');
+    
+    const user = await User.findOne({ dni: turno.dni });
     // Activar para testear un par de veces o en demo para no gastar la cuota de mails (son 100)
     // await sendEmail(user.mail,'OhMyDog - Rechazo de turno',
     //     'Lamentablemente uno de tus turnos fue rechazado por la veterinaria, por favor, revisa en tus turnos.'
@@ -198,30 +198,32 @@ router.post('/registrar-perro', async (req, res) => {
     res.send('Turno rechazado con exito y notificado al cliente.');
   })
 
-  .get('/confirmar-asistencia', async (req, res) => {
-    let turno = req.body.turno;
-    await modificarEstado(turno.id, 'asistido');
+  .post('/confirmar-asistencia', async (req, res) => {
+    let turno = await modificarEstado(req.body.id, 'asistido');
 
-    if (turno.estado != 'Vacunacion generica') return res.send('Turno marcado como asistido.');
+    if (turno.motivo != 'Vacunacion generica') return res.send('Turno marcado como asistido.');
 
-    const perros = await User.findOne({ dni: turno.dni }).populate('perrosId')
-    const perro = perros.find(perroId => perroId && perroId.toString() === perro._id.toString()); // funciona?
+    const user = await User.findOne({ dni: turno.dni }).populate('perrosId');
+    
+    const perros = user.perrosId;
+    const perroEncontrado = perros.find(perro => perro && perro.nombre === turno.nombreDelPerro);
 
-    const fechaDeNacimiento = moment(perro.fechaDeNacimiento).format('YYYY-MM-DD');
+    const fechaDeNacimiento = moment(perroEncontrado.fechaDeNacimiento).format('YYYY-MM-DD');
     const edad = moment().diff(fechaDeNacimiento, 'months');
 
     fechaDelTurno = moment();
     if (edad > 4) {
-      fechaDelTurno = moment(fechaDelTurno).add(1, 'years');
+      fechaDelTurno = moment(fechaDelTurno).add(1, 'years').toDate();
     } else {
-      fechaDelTurno = moment(fechaDelTurno).add(21, 'days');
+      fechaDelTurno = moment(fechaDelTurno).add(21, 'days').toDate();
     }
-    //la fecha llega a modificarse antes de que se cree el turno? 
 
-    turno = new Turno(_.pick(turno, ['nombreDelPerro', 'rangoHorario', 'dni', 'motivo', 'estado', fechaDelTurno.toDate()]));
+    const camposTurno = _.pick(turno, ['nombreDelPerro', 'rangoHorario', 'dni', 'motivo']);
+    camposTurno.estado = 'pendiente';
+    camposTurno.fecha = fechaDelTurno;
+    turno = new Turno(camposTurno);
     await turno.save();
 
-    const user = await User.findOne({ dni: turno.dni });
     // Activar para testear un par de veces o en demo para no gastar la cuota de mails (son 100)
     // await sendEmail(user.mail,'OhMyDog - Asignación de nuevo turno',
     //     'Se asignó un nuevo turno automáticamente para la próxima vacunación, por favor, revisa en tus turnos.'

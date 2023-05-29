@@ -24,7 +24,10 @@ const turnoSchema = new mongoose.Schema({
 const Turno = mongoose.model('Turno', turnoSchema);
 
 async function modificarEstado(id, estado) {
-    await Turno.findByIdAndUpdate(id, { estado });
+    const turno = await Turno.findById(id);
+    turno.estado = estado;
+    await turno.save();
+    return turno;
 }
 
 exports.Turno = Turno;
