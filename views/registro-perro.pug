@@ -16,7 +16,9 @@ html
           input(type="text", id="nombre", name="nombre" ,required)
         li
           label(for="sexo") sexo
-          input(type="text", id="sexo", name="sexo" ,required)
+          select(id="sexo", name="sexo", required)
+            option(value="macho") Macho
+            option(value="hembra") Hembra
         li
           label(for="fechaDeNacimiento") fechaDeNacimiento
           input(type="Date", id="fechaDeNacimiento", name="fechaDeNacimiento" ,required)

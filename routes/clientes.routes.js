@@ -62,13 +62,9 @@ router.post('/solicitar-turno', async (req, res) => {
           contraseña: contraseña2
         }
       });
-      return res.redirect('/');
+      return res.send('<script>alert("La modificación se realizó correctamente."); window.location.href = "/clientes";</script>');
     } catch (error) {
-      return res.json({
-        resultado: false,
-        msg: 'El usuario no se pudo modificar',
-        error
-      });
+      return res.send('<script>alert("La modificación no pudo realizarse."); window.location.href = "/clientes";</script>');
     }
   })
 
