@@ -8,7 +8,7 @@ html
     form(action="/clientes/solicitar-turno", method="post")
       ul
         li
-          label(for="nombreDelPerro") Nombre del perro:
+          label(for="nombreDelPerro") Perro:
           select(name="nombreDelPerro", id="nombreDelPerro", required)
             each perro in perros
               option(value=perro.nombre)= perro.nombre
