@@ -40,14 +40,14 @@ router.post('/registrar-usuario', async (req, res) => {
     let user = await User.findOne({ mail: dato });
     if (!user) return res.status(400).send('No se encontro el usuario');
     try {
-      await User.updateOne({ mail: dato }, { 
+      await User.updateOne({ mail: dato }, {
         $set: {
           mail: mail,
           nombre: nombre,
           apellido: apellido,
           dni: dni,
           telefono, telefono
-        } 
+        }
       });
       return res.send('<script>alert("La modificación se realizó correctamente."); window.location.href = "/admin";</script>');
     } catch (error) {
@@ -56,18 +56,19 @@ router.post('/registrar-usuario', async (req, res) => {
   })
 
   .post('/modificar-perro', async (req, res) => {
-    const { id, nombre, sexo, fecha, raza, color, observaciones, foto } = req.body;   
+    const { id, nombre, sexo, fecha, raza, color, observaciones, foto } = req.body;
     try {
-      await Perro.updateOne({ _id: id }, { $set: {
-        nombre: nombre,
-        sexo: sexo,
-        fecha: fecha,
-        raza: raza,
-        color: color,
-        observaciones: observaciones,
-        foto: foto
-      } 
-    });
+      await Perro.updateOne({ _id: id }, {
+        $set: {
+          nombre: nombre,
+          sexo: sexo,
+          fecha: fecha,
+          raza: raza,
+          color: color,
+          observaciones: observaciones,
+          foto: foto
+        }
+      });
       return res.send('<script>alert("La modificación se realizó correctamente."); window.location.href = "/admin";</script>');
     } catch (error) {
       return res.send('<script>alert("La modificación no pudo realizarse."); window.location.href = "/admin";</script>');
@@ -91,6 +92,9 @@ router.get('/listar-usuarios', async (req, res) => {
 
 router.post('/registrar-perro', async (req, res) => {
   try {
+    let perro = new Perro(_.pick(req.body, ['nombre', 'sexo', 'fechaDeNacimiento', 'raza', 'color', 'observaciones', 'foto', 'mail']));
+    //const { error } = validateCreatePerro(perro);
+    //if (error) return res.status(400).render('registro-perro', { error });
     let user = await User.findOne({ mail: req.body.mail });
 
     if (!user) {
@@ -141,6 +145,86 @@ router.post('/registrar-perro', async (req, res) => {
       console.log('Error al obtener los turnos:', error);
       return res.status(400).send('Error al obtener los turnos');
     }
+  })
+
+  .post('/mostrar-modificar-turno', (req, res) => {
+    res.render('modificar-turno', { id: req.body.id });
+  })
+
+  .post('/modificar-turno', async (req, res) => {
+    var campos = ['rangoHorario', 'fecha', 'estado'];
+    campos = _.pickBy(_.pick(req.body, campos), _.identity)
+    campos.estado = 'modificado-pendiente';
+    const turno = await Turno.findByIdAndUpdate(req.body.id, campos);
+    if (!turno) res.status(400).send('El turno no fue encontrado');
+
+    const user = await User.findOne({ dni: turno.dni });
+    // Activar para testear un par de veces o en demo para no gastar la cuota de mails (son 100)
+    // await sendEmail(user.mail,'OhMyDog - Modificación de turno',
+    //     'Uno de tus turnos fue modificado por la veterinaria, por favor, revisa en tus turnos.'
+    // );
+
+    res.redirect('/'); // TODO Mostrar mensaje con confirmación de modificación
+  })
+
+  .post('/aceptar-turno', async (req, res) => { // TODO testear todos los de turnos
+    let turno = await modificarEstado(req.body.id, 'aceptado');
+
+    const user = await User.findOne({ dni: turno.dni });
+    // Activar para testear un par de veces o en demo para no gastar la cuota de mails (son 100)
+    // await sendEmail(user.mail,'OhMyDog - Aceptación de turno',
+    //     'Tu turno fue aceptado!'
+    // );
+
+    res.send('Turno aceptado con exito y notificado al cliente.');
+  })
+
+  .post('/rechazar-turno', async (req, res) => {
+    let turno = await modificarEstado(req.body.id, 'rechazado');
+
+    const user = await User.findOne({ dni: turno.dni });
+    // Activar para testear un par de veces o en demo para no gastar la cuota de mails (son 100)
+    // await sendEmail(user.mail,'OhMyDog - Rechazo de turno',
+    //     'Lamentablemente uno de tus turnos fue rechazado por la veterinaria, por favor, revisa en tus turnos.'
+    // );
+
+    res.send('Turno rechazado con exito y notificado al cliente.');
+  })
+
+  .post('/confirmar-asistencia', async (req, res) => {
+    let turno = await modificarEstado(req.body.id, 'asistido');
+
+    if (turno.motivo != 'Vacunacion generica') return res.send('Turno marcado como asistido.');
+
+    const user = await User.findOne({ dni: turno.dni }).populate('perrosId');
+    user.turnosId.push(turno._id);
+    await user.save();
+
+    const perros = user.perrosId;
+    const perroEncontrado = perros.find(perro => perro && perro.nombre === turno.nombreDelPerro);
+
+    const fechaDeNacimiento = moment(perroEncontrado.fechaDeNacimiento).format('YYYY-MM-DD');
+    const edad = moment().diff(fechaDeNacimiento, 'months');
+
+    fechaDelTurno = moment();
+    if (edad > 4) {
+      fechaDelTurno = moment(fechaDelTurno).add(1, 'years').toDate();
+    } else {
+      fechaDelTurno = moment(fechaDelTurno).add(21, 'days').toDate();
+    }
+
+    const camposTurno = _.pick(turno, ['nombreDelPerro', 'rangoHorario', 'dni', 'motivo']);
+    camposTurno.estado = 'pendiente';
+    camposTurno.fecha = fechaDelTurno;
+    turno = new Turno(camposTurno);
+    await turno.save();
+
+    // Activar para testear un par de veces o en demo para no gastar la cuota de mails (son 100)
+    // await sendEmail(user.mail,'OhMyDog - Asignación de nuevo turno',
+    //     'Se asignó un nuevo turno automáticamente para la próxima vacunación, por favor, revisa en tus turnos.'
+    // );
+
+    res.send('Se confirmó la asistencia, nuevo turno asignado con exito y notificado al cliente.');
   })
 
   .post('/eliminar-usuario', async (req, res) => {
