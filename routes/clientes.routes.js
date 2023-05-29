@@ -20,30 +20,25 @@ router.post('/solicitar-turno', async (req, res) => {
   };
   // encuentra el usuario logueado
   let usuario = await User.findById(req.user._id);
-  if (!usuario) return res.status(400).send('No se encontro el usuario.');
+  if (!usuario) return res.status(400).send('<script>alert("El usuario no se encontro."); window.location.href = "/clientes";</script>');
   // verifica que el perro para el cual se solicita el turno existe y este asignado en usuario
   let perrosDelUsuario = await Perro.find({ _id: { $in: usuario.perrosId } });
   let perroEncontrado = perrosDelUsuario.find(perro => perro.nombre === nuevoTurno.nombreDelPerro);
-  if (!perroEncontrado) return res.status(400).send('No se encontró el perro con el nombre especificado.');
+  if (!perroEncontrado) return res.status(400).send('<script>alert("No se encontro el perro con el nombre especificado."); window.location.href = "/clientes";</script>');
   // verifica que el perro tiene mas de 4 meses
   let fechaLimite = new Date(nuevoTurno.fecha);
   fechaLimite.setMonth(fechaLimite.getMonth() - 4);
   if (perroEncontrado.fechaDeNacimiento > fechaLimite) {
-    if (nuevoTurno.motivo === "Vacunacion antirrabica") return res.status(400).send('El perro debe tener al menos 4 meses para recibir la vacunación antirrábica.');
+    if (nuevoTurno.motivo === "Vacunacion antirrabica") return res.status(400).send('<script>alert("El perro debe de tener mas de 4 meses para darse la vacuna antirrabica."); window.location.href = "/clientes";</script>');
   }
   // crea el turno
   try {
     const turno = new Turno(nuevoTurno);
     await turno.save();
     usuario.turnosId.push(turno._id);
-    res.redirect('/');
+    return res.send('<script>alert("El turno se solicito correctamente."); window.location.href = "/clientes";</script>');
   } catch (error) {
-    console.log(error)
-    return res.json({
-      resultado: false,
-      msg: 'El turno no se pudo guardar',
-      error: error
-    });
+    return res.send('<script>alert("El turno no pudo guardarse."); window.location.href = "/clientes";</script>');
   }
 })
 
