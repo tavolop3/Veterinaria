@@ -31,7 +31,7 @@ router.post('/registrar-usuario', async (req, res) => {
   user.contraseñaDefault = user.contraseña;
   await user.save();
 
-  res.redirect('<script>alert("Se registró al usuario."); window.location.href = "/";</script>'); 
+  res.send('<script>alert("Se registró al usuario."); window.location.href = "/";</script>'); 
 })
 
   .post('/modificar-usuario', async (req, res) => {
@@ -153,6 +153,7 @@ router.post('/registrar-perro', async (req, res) => {
     var campos = ['rangoHorario', 'fecha', 'estado'];
     campos = _.pickBy(_.pick(req.body, campos), _.identity)
     campos.estado = 'modificado-pendiente';
+
     const turno = await Turno.findByIdAndUpdate(req.body.id, campos);
     if (!turno) res.status(400).send('El turno no fue encontrado');
 
@@ -162,7 +163,7 @@ router.post('/registrar-perro', async (req, res) => {
     //     'Uno de tus turnos fue modificado por la veterinaria, por favor, revisa en tus turnos.'
     // );
 
-    res.redirect('<script>alert("La modificación se realizó correctamente."); window.location.href = "/";</script>'); 
+    res.send('<script>alert("La modificación se realizó correctamente y se informó via mail al cliente."); window.location.href = "/admin/historial-turnos";</script>'); 
   })
 
   .post('/aceptar-turno', async (req, res) => {
@@ -174,7 +175,7 @@ router.post('/registrar-perro', async (req, res) => {
     //     'Tu turno fue aceptado!'
     // );
 
-    res.send('Turno aceptado con exito y notificado al cliente.');
+    res.send('<script>alert("Turno aceptado con exito y notificado al cliente via mail."); window.location.href = "/admin/historial-turnos";</script>');
   })
 
   .post('/rechazar-turno', async (req, res) => {
@@ -186,13 +187,14 @@ router.post('/registrar-perro', async (req, res) => {
     //     'Lamentablemente uno de tus turnos fue rechazado por la veterinaria, por favor, revisa en tus turnos.'
     // );
 
-    res.send('Turno rechazado con exito y notificado al cliente.');
+    res.send('<script>alert("Turno rechazado con exito y notificado al cliente via mail."); window.location.href = "/admin/historial-turnos";</script>');
   })
 
   .post('/confirmar-asistencia', async (req, res) => {
     let turno = await modificarEstado(req.body.id, 'asistido');
 
-    if (turno.motivo != 'Vacunacion generica') return res.send('Turno marcado como asistido.');
+    if (turno.motivo != 'Vacunacion generica') return res.send('<script>alert("Turno marcado como asistido."); window.location.href = "/admin/historial-turnos";</script>');
+
 
     const user = await User.findOne({ dni: turno.dni }).populate('perrosId');
     user.turnosId.push(turno._id);
@@ -222,7 +224,7 @@ router.post('/registrar-perro', async (req, res) => {
     //     'Se asignó un nuevo turno automáticamente para la próxima vacunación, por favor, revisa en tus turnos.'
     // );
 
-    res.send('Se confirmó la asistencia, nuevo turno asignado con exito y notificado al cliente.');
+    res.send('<script>alert("Se confirmó la asistencia, nuevo turno asignado con exito y notificado al cliente."); window.location.href = "/admin/historial-turnos";</script>');
   })
 
   .post('/eliminar-usuario', async (req, res) => {
