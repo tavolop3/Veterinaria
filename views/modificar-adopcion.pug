@@ -1,0 +1,31 @@
+doctype html
+html
+  head
+    meta(charset="utf-8")
+    title Modificar adopcion 
+    link(rel="stylesheet", href="/style/login.css")
+  body
+    form(action="/clientes/modificar-adopcion", method="post")
+      ul
+        li
+          input(type="hidden", name="dato", value=perro._id)
+        li
+          label(for="nombre") Nombre:
+          input(type="text", id="nombre", name="nombre", value=perro.nombre)
+        li
+          label(for="edad") Edad:
+          input(type="text", id="edad", name="edad", value=perro.edad)
+        li
+          label(for="sexo") Sexo:
+          input(type="text", id="sexo", name="sexo", value=perro.sexo)
+        li
+          label(for="color") Color:
+          input(type="text", id="color", name="color", value=perro.color)
+        li
+          label(for="tamaño") Tamaño:
+          input(type="text", id="tamaño", name="tamaño", value=perro.tamaño)
+        li
+          label(for="origen") Origen:
+          input(type="text", id="origen", name="origen", value=perro.origen)  
+        li.button
+          button(type="submit") Modificar

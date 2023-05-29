@@ -1,0 +1,47 @@
+include mixins/bannerCliente.pug
+
+doctype html
+html
+  head
+    title Perros en adopcion 
+    style.
+      table {
+        border-collapse: collapse;
+        width: 30%;
+      }
+      th, td {
+        padding: 2px;
+        text-align: left;
+      }
+      td.buttons {
+        display: flex;
+        gap: 10px;
+      }
+
++bannerCliente()  
+if !perros.length
+  h1 No tiene perros en adopcion
+else
+  div
+    h1 Lista de perros en adopcion
+    table
+      tr
+        th Nombre
+        th Edad
+        th Sexo
+        th Color
+        th Tamaño
+        th Origen
+      each perro in perros
+        tr
+          td= perro.nombre
+          td= perro.edad
+          td= perro.sexo
+          td= perro.color 
+          td= perro.tamaño 
+          td= perro.origen
+          if admin
+            td.buttons
+              form(action="/clientes/modificar-adopcion", method="GET")
+                input(type="hidden", name="id", value=perro._id)
+                button(type="submit") Modificar

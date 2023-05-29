@@ -40,6 +40,18 @@ router.get('', (req, res) => {
         res.render('cargar-adopcion')
     })
 
+    .get('/clientes/listar-adopciones', autenticado, async(req, res) => {
+        const usuario = await User.findById(req.user._id).populate('perrosEnAdopcion')
+        console.log(usuario)
+        const perros = usuario.perrosEnAdopcion;
+        res.render('listarAdopcion', { perros })
+    })
+
+    .get('/clientes/modificar-adopcion', autenticado, async(req, res) => {
+        let perro = await Perro.findById(req.query.id);
+        res.render('modificar-adopcion', { perro });
+    })
+
     // ------------------- ADMIN -------------------------
 
     .get('/admin', [autenticado, esAdmin], (req, res) => {
