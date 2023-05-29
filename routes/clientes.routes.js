@@ -102,16 +102,14 @@ router.post('/solicitar-turno', async (req, res) => {
     }
   })
 
-
-
   .post('/aceptar-modificacion', async (req, res) => {
-    modificarEstado(req.body.turno.id, 'aceptado');
+    await modificarEstado(req.body.id, 'aceptado');
 
     res.send('Turno aceptado con exito.');
   })
 
   .post('/rechazar-modificacion', async (req, res) => {
-    modificarEstado(req.body.turno.id, 'rechazado');
+    await modificarEstado(req.body.id, 'rechazado');
 
     res.send('Turno rechazado con exito.');
   })
