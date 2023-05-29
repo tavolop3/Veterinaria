@@ -3,7 +3,8 @@ const autenticado = require('../middleware/autenticado');
 const esAdmin = require('../middleware/esAdmin');
 const router = express.Router();
 const { User } = require('../models/user');
-const { Perro } = require('../models/perro')
+const { Perro } = require('../models/perro');
+const { Servicio } = require('../models/servicio');
 
 router.get('', (req, res) => {
     if (!req.user)
@@ -67,6 +68,11 @@ router.get('', (req, res) => {
 
     .get('/admin/cargar/paseador-cuidador', [autenticado, esAdmin], async(req, res) => {
         res.render('cargar-paseador-cuidador');
+    })
+
+    .get('/admin/modificar-servicio', [autenticado, esAdmin], async(req, res) => {
+        let servicio = await Servicio.findById(req.query.id);
+        res.render('modificar-servicio', {servicio});
     })
 
 module.exports = router;

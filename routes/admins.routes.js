@@ -229,6 +229,26 @@ router.post('/registrar-perro', async (req, res) => {
     }
 })
 
+.post('/modificar-servicio', async (req, res) => {
+  const { id, nombre, apellido, tiposervicio, zona, disponibilidadHoraria } = req.body;   
+  try {
+    await Perro.updateOne({ _id: id }, { $set: {
+      nombre: nombre,
+      apellido: apellido,
+      tipoServicio: tiposervicio,
+      zona: zona,
+      disponibilidHoraria: disponibilidadHoraria
+    } 
+  });
+    return res.redirect('/admin');
+  } catch (error) {
+    return res.json({
+      resultado: false,
+      msg: 'El servicio no se pudo modificar',
+      error
+    });
+  }
+})
 
 
 
