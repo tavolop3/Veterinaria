@@ -1,0 +1,48 @@
+doctype html
+html
+  head
+    title Turnos
+
+    style.
+      table {
+        border-collapse: collapse;
+        width: 30%;
+      }
+      th, td {
+        padding: 12px;
+        text-align: left;
+      }
+       td.buttons {
+        display: flex;
+        gap: 10px;
+      }
+
+  body
+    if(!turnos)
+      h1 No hay turnos cargados
+    else 
+      h1 Lista de turnos
+      table
+        tr
+          th Nombre del perro
+          th Rango horario
+          th DNI
+          th Motivo
+          th Estado 
+          th Fecha
+        each turno in turnos
+          tr
+            td= turno.nombreDelPerro
+            td= turno.rangoHorario
+            td= turno.dni
+            td= turno.motivo
+            td= turno.estado 
+            td= turno.fecha.toLocaleDateString()
+            td.buttons
+                if turno.estado == "modificado-pendiente" 
+                  form(action="/clientes/aceptar-modificacion", method="POST")
+                    input(type="hidden", name="id", value=turno._id)
+                    button(type="submit") Aceptar modificacion
+                  form(action="/clientes/rechazar-modificacion", method="POST")
+                    input(type="hidden", name="id", value=turno._id)
+                    button(type="submit") Rechazar modificacion
