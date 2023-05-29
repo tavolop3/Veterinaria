@@ -215,6 +215,7 @@ router.post('/registrar-perro', async (req, res) => {
     tiposervicio: req.body.tiposervicio,
     zona: req.body.zona,
     disponibilidadHoraria: req.body.disponibilidadHoraria,
+    mail: req.body.mail
   }
     try {
       let servicio = new Servicio(nuevoServicio);
@@ -226,14 +227,15 @@ router.post('/registrar-perro', async (req, res) => {
 })
 
 .post('/modificar-servicio', async (req, res) => {
-  const { id, nombre, apellido, tiposervicio, zona, disponibilidadHoraria } = req.body;   
+  const { id, nombre, apellido, tiposervicio, zona, disponibilidadHoraria, mail} = req.body;   
   try {
-    await Perro.updateOne({ _id: id }, { $set: {
+    await Servicio.updateOne({ _id: id }, { $set: {
       nombre: nombre,
       apellido: apellido,
       tipoServicio: tiposervicio,
       zona: zona,
-      disponibilidHoraria: disponibilidadHoraria
+      disponibilidHoraria: disponibilidadHoraria,
+      mail: mail
     }
   });
     return res.send('<script>alert("La modificacion del servicio se realizo correctamente"); window.location.href = "/admin";</script>');
@@ -241,7 +243,5 @@ router.post('/registrar-perro', async (req, res) => {
     return res.send('<script>alert("La modificacion del servicio no pudo realizarse"); window.location.href = "/admin";</script>');
   }
 })
-
-
 
 module.exports = router;
