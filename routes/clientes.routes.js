@@ -98,13 +98,9 @@ router.post('/solicitar-turno', async (req, res) => {
       let adopcion = new Adopcion(perroParaAdoptar);
       await adopcion.save();
       req.user.perrosEnAdopcion.push(adopcion._id);
-      res.redirect('/clientes');
+      return res.send('<script>alert("La adopcion se cargo correctamente."); window.location.href = "/clientes";</script>');
     } catch (error) {
-      return res.json({
-        resultado: false,
-        msg: 'El usuario no se pudo modificar',
-        error
-      });
+      return res.send('<script>alert("La adopcion no puedo cargarse."); window.location.href = "/clientes";</script>');
     }
 })
 
@@ -135,13 +131,9 @@ router.post('/solicitar-turno', async (req, res) => {
         origen: origen
       } 
     });
-      return res.redirect('/clientes');
+      return res.send('<script>alert("El perro en adopcion se cargo correctamente."); window.location.href = "/clientes";</script>');
     } catch (error) {
-      return res.json({
-        resultado: false,
-        msg: 'El perro no se pudo modificar',
-        error
-      });
+      return res.send('<script>alert("El perro en adopcion no pudo modificarse"); window.location.href = "/clientes";</script>');
     }
 })
 
