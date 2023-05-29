@@ -219,13 +219,9 @@ router.post('/registrar-perro', async (req, res) => {
     try {
       let servicio = new Servicio(nuevoServicio);
       await servicio.save();
-      res.redirect('/admin');
+      return res.send('<script>alert("La carga del servicio se realizo correctamente"); window.location.href = "/admin";</script>');
     } catch (error) {
-      return res.json({
-        resultado: false,
-        msg: 'El usuario no se pudo modificar',
-        error
-      });
+      return res.send('<script>alert("La carga del servicio no pudo realizarse"); window.location.href = "/admin";</script>');
     }
 })
 
@@ -238,15 +234,11 @@ router.post('/registrar-perro', async (req, res) => {
       tipoServicio: tiposervicio,
       zona: zona,
       disponibilidHoraria: disponibilidadHoraria
-    } 
+    }
   });
-    return res.redirect('/admin');
+    return res.send('<script>alert("La modificacion del servicio se realizo correctamente"); window.location.href = "/admin";</script>');
   } catch (error) {
-    return res.json({
-      resultado: false,
-      msg: 'El servicio no se pudo modificar',
-      error
-    });
+    return res.send('<script>alert("La modificacion del servicio no pudo realizarse"); window.location.href = "/admin";</script>');
   }
 })
 
