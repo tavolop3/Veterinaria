@@ -7,6 +7,7 @@ const { Turno } = require('../models/turno')
 const _ = require('lodash');
 const { sendEmail } = require('../emails');
 const { ObjectId } = require('mongoose').Types;
+const { Servicio } = require('../models/servicio')
 
 
 
@@ -206,7 +207,27 @@ router.post('/registrar-perro', async (req, res) => {
     res.render('listaPerros', { perros, admin: true, mail })
   })
 
-
+  
+.post('/cargar-servicio', async(req, res) => {
+  nuevoServicio = {
+    nombre: req.body.nombre,
+    apellido: req.body.apellido,
+    tiposervicio: req.body.tiposervicio,
+    zona: req.body.zona,
+    disponibilidadHoraria: req.body.disponibilidadHoraria,
+  }
+    try {
+      let servicio = new Servicio(nuevoServicio);
+      await servicio.save();
+      res.redirect('/admin');
+    } catch (error) {
+      return res.json({
+        resultado: false,
+        msg: 'El usuario no se pudo modificar',
+        error
+      });
+    }
+})
 
 
 

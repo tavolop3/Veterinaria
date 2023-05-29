@@ -65,4 +65,8 @@ router.get('', (req, res) => {
         res.render('modificar-perro', {perro});
     })
 
+    .get('/admin/cargar/paseador-cuidador', [autenticado, esAdmin], async(req, res) => {
+        res.render('cargar-paseador-cuidador');
+    })
+
 module.exports = router;

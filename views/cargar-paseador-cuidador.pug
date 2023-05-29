@@ -1,0 +1,31 @@
+doctype html
+html
+  head
+    meta(charset="UTF-8")
+    title Registrar servicio
+    link(rel="stylesheet", href="/style/registro.css")
+  body
+    form(action="/admin/cargar-servicio", method="post")
+      ul
+        li
+          label(for="nombre:") Nombre:
+          input(type="text", id="nombre:", name="nombre:" , required)
+        li
+        li
+          label(for="apellidio") Apellido:
+          input(type="text", id="apellido", name="apellido" ,required)
+        li
+          label(for="tiposervicio") Tipo de servicio:
+          select(name="tiposervicio", id="tiposervicio")
+            option(value="paseador") Paseador
+            option(value="cuidador") Cuidador
+        li
+          label(for="zona") Zona:
+          input(type="text", id="zona", name="zona" ,required)
+        li
+          label(for="disponibilidadHorario") Disponibilidad horario:
+          input(type="text", id="disponibilidadHorario", name="disponibilidadHorario" ,required)
+        li.button
+          button(type="submit") Cargar
+        if error
+          li.error= error  

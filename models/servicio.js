@@ -29,3 +29,5 @@ const servicioScheme = new mongoose.Scheme({
 })
 
 const Servicio = mongoose.model('Servicio', servicioScheme);
+
+exports.Servicio = Servicio;
