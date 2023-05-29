@@ -103,7 +103,7 @@ router.post('/registrar-perro', async (req, res) => {
 
     console.log(user);
 
-    const perro = new Perro(_.pick(req.body, ['nombre', 'sexo', 'fechaDeNacimiento', 'raza', 'color', 'observaciones', 'foto']));
+    perro = new Perro(_.pick(req.body, ['nombre', 'sexo', 'fechaDeNacimiento', 'raza', 'color', 'observaciones', 'foto']));
 
     console.log(perro);
 
