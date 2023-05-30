@@ -38,6 +38,14 @@ router.post('/registrar-usuario', async (req, res) => {
     const { dato, mail, nombre, apellido, dni, telefono } = req.body;
     let user = await User.findOne({ mail: dato });
     if (!user) return res.status(400).send('No se encontro el usuario');
+    let usuarioConMailRegistrado = await User.findOne({ mail: mail });
+    if (usuarioConMailRegistrado) {
+      if (usuarioConMailRegistrado.mail !== user.mail) return res.status(400).send('<script>alert("Ya hay un usuario con el mail asignado."); window.location.href = "/admin";</script>');
+    }
+    let usuarioConDNIRegistrado = await User.findOne({ dni: dni });
+    if (usuarioConDNIRegistrado) {
+      if (usuarioConDNIRegistrado.dni !== user.dni) return res.status(400).send('<script>alert("Ya hay un usuario con el dni asignado."); window.location.href = "/admin";</script>');
+    }
     try {
       await User.updateOne({ mail: dato }, {
         $set: {
@@ -78,7 +86,7 @@ router.post('/registrar-usuario', async (req, res) => {
 router.get('/listar-usuarios', async (req, res) => {
   try {
     let users = await User.find({ isAdmin: false });
-    const lista = users.map(usuario => ({ dni: usuario.dni, mail: usuario.mail, nombre: usuario.nombre, apellido: usuario.apellido }))
+    const lista = users.map(usuario => ({ dni: usuario.dni, mail: usuario.mail, nombre: usuario.nombre, apellido: usuario.apellido, telefono: usuario.telefono }))
     if (lista.length === 0) {
       res.render('listaUsuarios', { error: 'La lista esta vacia' });
     } else {

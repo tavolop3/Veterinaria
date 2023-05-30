@@ -29,14 +29,16 @@ html
             th Mail
             th Nombre
             th Apellido
+            th Telefono 
           each usuario in usuarios
             tr
               td= usuario.dni
               td= usuario.mail
               td= usuario.nombre
               td= usuario.apellido
+              td= usuario.telefono
               td.buttons
-                form(action="/usuarios/modificar-datos", method="POST")
+                form(action="/admin/modificar-usuario", method="GET")
                   input(type="hidden", name="dato", value=usuario.mail)
                   button(type="submit") Modificar usuario
                 form(action="/admin/listar-perros", method="POST")

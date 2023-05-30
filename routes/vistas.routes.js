@@ -47,6 +47,12 @@ router.get('', (req, res) => {
         res.render('registro-usuario');
     })
 
+    .get('/admin/modificar-usuario', [autenticado, esAdmin], async (req, res) => {
+        let userMail = req.query.dato;
+        let usuario = await User.findOne({ mail: userMail })
+        res.render('modificar-usuario', {usuario, userMail})
+    })
+
     .get('/admin/registrar-perro', [autenticado, esAdmin], (req, res) => {
         res.render('registro-perro');
     })
