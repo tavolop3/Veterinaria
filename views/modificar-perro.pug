@@ -13,19 +13,19 @@ html
           input(type="hidden", name="mailUsuario", value=mailUsuario)
         li 
           label(for="nombre") Nombre:
-          input(type="text", id="nombre", name="nombre", value=perro.nombre)
+          input(type="text", id="nombre", name="nombre", value=perro.nombre, required)
         li
           label(for="sexo") Sexo:
-          input(type="text", id="sexo", name="sexo", value=perro.sexo)
+          input(type="text", id="sexo", name="sexo", value=perro.sexo, required)
         li
           label(for="fecha") Fecha de nacimiento:
-          input(type="date", id="fecha", name="fecha", value=perro.fecha)
+          input(type="date", id="fecha", name="fecha", value=perro.fecha, required)
         li
           label(for="raza") Raza:
-          input(type="text", id="raza", name="raza", value=perro.raza)
+          input(type="text", id="raza", name="raza", value=perro.raza, required)
         li
           label(for="color") Color:
-          input(type="text", id="color", name="color", value=perro.color)
+          input(type="text", id="color", name="color", value=perro.color, required)
         li
           label(for="observaciones") Observaciones:
           input(type="text", id="observaciones", name="observaciones", value=perro.observaciones)
