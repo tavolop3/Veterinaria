@@ -3,6 +3,7 @@ const autenticado = require('../middleware/autenticado');
 const esAdmin = require('../middleware/esAdmin');
 const router = express.Router();
 const { User } = require('../models/user');
+const { Perro } = require('../models/perro')
 
 router.get('', (req, res) => {
     if (!req.user)
@@ -51,6 +52,13 @@ router.get('', (req, res) => {
         let userMail = req.query.dato;
         let usuario = await User.findOne({ mail: userMail })
         res.render('modificar-usuario', {usuario, userMail})
+    })
+
+    .get('/admin/modificar-perro', [autenticado, esAdmin], async (req, res) => {
+        mailUsuario = req.query.mailUsuario
+        let perro = await Perro.findById({ _id: req.query.id});
+        console.log(mailUsuario);
+        res.render('modificar-perro', {perro, mailUsuario});
     })
 
     .get('/admin/registrar-perro', [autenticado, esAdmin], (req, res) => {

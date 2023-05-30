@@ -63,7 +63,13 @@ router.post('/registrar-usuario', async (req, res) => {
   })
 
   .post('/modificar-perro', async (req, res) => {
-    const { id, nombre, sexo, fecha, raza, color, observaciones, foto } = req.body;
+    const { id, mailUsuario, nombre, sexo, fecha, raza, color, observaciones, foto } = req.body;
+    let usuario = await User.findOne({ mail: mailUsuario }).populate('perrosId')
+    console.log(usuario)
+    let perros = usuario.perrosId;
+    if (perros.some(perro => perro.nombre === nombre)) {
+      return res.status(400).send('<script>alert("El usuario ya tiene un perro con ese nombre."); window.location.href = "/admin";</script>');
+    }
     try {
       await Perro.updateOne({ _id: id }, {
         $set: {
@@ -251,10 +257,12 @@ router.post('/registrar-perro', async (req, res) => {
   })
 
   .post('/listar-perros', async (req, res) => {
+    let mailUsuario = req.body.dato
+    console.log(mailUsuario);
     const usuario = await User.findOne({ mail: req.body.dato })
       .populate('perrosId')
     const perros = usuario.perrosId;
-    res.render('listaPerros', { perros, admin: true })
+    res.render('listaPerros', { perros, mailUsuario, admin: true})
   })
 
   .post('/eliminar-perro', async (req, res) => {
