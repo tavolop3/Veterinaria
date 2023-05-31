@@ -111,7 +111,7 @@ router.post('/registrar-perro', async (req, res) => {
     //if (error) return res.status(400).render('registro-perro', { error });
     let user = await User.findOne({ mail: req.body.mail }).populate('perrosId');
     if (!user) {
-      return res.status(400).send('User not registered.');
+      return res.status(400).send('El usuario no se encuentra registado.');
     }
     console.log(user);
     perro = new Perro(_.pick(req.body, ['nombre', 'sexo', 'fechaDeNacimiento', 'raza', 'color', 'observaciones', 'foto']));

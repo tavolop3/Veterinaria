@@ -97,6 +97,7 @@ router.post('/solicitar-turno', async (req, res) => {
       let adopcion = new Adopcion(perroParaAdoptar);
       await adopcion.save();
       req.user.perrosEnAdopcion.push(adopcion._id);
+      await req.user.save();
       return res.send('<script>alert("La adopcion se cargo correctamente."); window.location.href = "/clientes";</script>');
     } catch (error) {
       return res.send('<script>alert("La adopcion no puedo cargarse."); window.location.href = "/clientes";</script>');
