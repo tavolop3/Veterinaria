@@ -105,7 +105,7 @@ router.post('/solicitar-turno', async (req, res) => {
   })
 
   .post('/modificar-adopcion', async (req, res) => {
-    const { dato, nombre, sexo, color, tamaño, origen } = req.body;
+    const { dato, nombre, edad, sexo, color, tamaño, origen } = req.body;
     try {
       await Adopcion.updateOne({ _id: dato }, {
         $set: {
@@ -117,7 +117,7 @@ router.post('/solicitar-turno', async (req, res) => {
           origen: origen
         }
       });
-      return res.send('<script>alert("El perro en adopcion se cargo correctamente."); window.location.href = "/clientes";</script>');
+      return res.send('<script>alert("El perro en adopcion se modifico correctamente."); window.location.href = "/clientes";</script>');
     } catch (error) {
       return res.send('<script>alert("El perro en adopcion no pudo modificarse"); window.location.href = "/clientes";</script>');
     }

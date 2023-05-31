@@ -3,7 +3,7 @@ const autenticado = require('../middleware/autenticado');
 const esAdmin = require('../middleware/esAdmin');
 const router = express.Router();
 const { User } = require('../models/user');
-const { Perro } = require('../models/perro')
+const { Perro } = require('../models/perro');
 const { Adopcion } = require('../models/adopcion');
 const { Servicio } = require('../models/servicio');
 
@@ -79,13 +79,13 @@ router.get('', (req, res) => {
 
     .get('/clientes/listar-adopciones', autenticado, async(req, res) => {
         const usuario = await User.findById(req.user._id).populate('perrosEnAdopcion')
-        console.log(usuario)
         const perros = usuario.perrosEnAdopcion;
         res.render('listarAdopcion', { perros })
     })
 
     .get('/clientes/modificar-adopcion', autenticado, async(req, res) => {
-        let perro = await Perro.findById(req.query.id);
+        let id = req.query.dato;
+        let perro = await Adopcion.findById(id);
         res.render('modificar-adopcion', { perro });
     })
 
