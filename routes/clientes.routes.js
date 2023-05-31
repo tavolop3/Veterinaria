@@ -3,8 +3,9 @@ const router = express.Router();
 const autenticado = require('../middleware/autenticado');
 const { Turno, modificarEstado } = require('../models/turno')
 const { User, encriptarContraseña, compararContraseñas } = require('../models/user');
-const { Perro } = require('../models/perro')
-const { Adopcion } = require('../models/adopcion')
+const { Perro } = require('../models/perro');
+const { Adopcion } = require('../models/adopcion');
+const { Servicio } = require('../models/servicio');
 const { sendEmail } = require('../emails');
 
 /* Endpoint para
@@ -37,6 +38,7 @@ router.post('/solicitar-turno', async (req, res) => {
     const turno = new Turno(nuevoTurno);
     await turno.save();
     usuario.turnosId.push(turno._id);
+    await usuario.save();
     return res.send('<script>alert("El turno se solicito correctamente."); window.location.href = "/clientes";</script>');
   } catch (error) {
     return res.send('<script>alert("El turno no pudo guardarse."); window.location.href = "/clientes";</script>');
@@ -76,17 +78,17 @@ router.post('/solicitar-turno', async (req, res) => {
     res.render('listaPerros', { perros })
   })
 
-.post('/cargar-adopcion', async(req, res) => {
-  perroParaAdoptar = {
-    nombre: req.body.nombre,
-    edad: req.body.edad,
-    sexo: req.body.sexo,
-    color: req.body.color,
-    tamaño: req.body.tamaño,
-    origen: req.body.origen,
-    confirmado: false,
-    mail: req.user.mail
-  }
+  .post('/cargar-adopcion', async (req, res) => {
+    perroParaAdoptar = {
+      nombre: req.body.nombre,
+      edad: req.body.edad,
+      sexo: req.body.sexo,
+      color: req.body.color,
+      tamaño: req.body.tamaño,
+      origen: req.body.origen,
+      confirmado: false,
+      mail: req.user.mail
+    }
     try {
       let adopcion = new Adopcion(perroParaAdoptar);
       await adopcion.save();
@@ -95,40 +97,41 @@ router.post('/solicitar-turno', async (req, res) => {
     } catch (error) {
       return res.send('<script>alert("La adopcion no puedo cargarse."); window.location.href = "/clientes";</script>');
     }
-})
+  })
 
-.post('/adopcion/solicitar', (req,res) => {
-  // Activar para testear un par de veces o en demo para no gastar la cuota de mails (son 100)
-  // await sendEmail(req.user.mail,'OhMyDog - Solicitud de adpopción enviada',
-  //     'Su solicitud de adopción se ha enviado, contactese con ' + req.body.mail + ' para poder coordinar la adopción.' 
-  // );
+  .post('/adopcion/solicitar', (req, res) => {
+    // Activar para testear un par de veces o en demo para no gastar la cuota de mails (son 100)
+    // await sendEmail(req.user.mail,'OhMyDog - Solicitud de adpopción enviada',
+    //     'Su solicitud de adopción se ha enviado, contactese con ' + req.body.mail + ' para poder coordinar la adopción.' 
+    // );
 
-  res.send('La solicitud fue enviada.');
-})
+    res.send('La solicitud fue enviada.');
+  })
 
-.post('/adopcion/confirmar', async(req,res) => {
-  await Adopcion.findByIdAndUpdate(req.body.id, { confirmado: true });
+  .post('/adopcion/confirmar', async (req, res) => {
+    await Adopcion.findByIdAndUpdate(req.body.id, { confirmado: true });
 
-  res.send('La solicitud fue enviada.');
-})
+    res.send('La solicitud fue enviada.');
+  })
 
-.post('/modificar-adopcion', async(req, res) => {
-  const { dato, nombre, sexo, color, tamaño, origen } = req.body;   
+  .post('/modificar-adopcion', async (req, res) => {
+    const { dato, nombre, sexo, color, tamaño, origen } = req.body;
     try {
-      await Adopcion.updateOne({ _id: dato }, { $set: {
-        nombre: nombre,
-        edad: edad,
-        sexo: sexo,
-        color: color,
-        tamaño: tamaño,
-        origen: origen
-      } 
-    });
+      await Adopcion.updateOne({ _id: dato }, {
+        $set: {
+          nombre: nombre,
+          edad: edad,
+          sexo: sexo,
+          color: color,
+          tamaño: tamaño,
+          origen: origen
+        }
+      });
       return res.send('<script>alert("El perro en adopcion se cargo correctamente."); window.location.href = "/clientes";</script>');
     } catch (error) {
       return res.send('<script>alert("El perro en adopcion no pudo modificarse"); window.location.href = "/clientes";</script>');
     }
-})
+  })
 
 
   .get('/historial-turnos', async (req, res) => {
@@ -151,14 +154,60 @@ router.post('/solicitar-turno', async (req, res) => {
   .post('/aceptar-modificacion', async (req, res) => {
     await modificarEstado(req.body.id, 'aceptado');
 
-    res.send('Turno aceptado con exito.');
+    res.send('<script>alert("Se aceptó la modificación.");window.location.href = "/";</script>');
   })
 
   .post('/rechazar-modificacion', async (req, res) => {
     await modificarEstado(req.body.id, 'rechazado');
 
-    res.send('Turno rechazado con exito.');
+    res.send('<script>alert("Se rechazó la modificación.");window.location.href = "/";</script>');
   })
+
+  .get('/visualizar-tablon-adopcion', async (req, res) => {
+    try {
+      let adopciones = await Adopcion.find({});
+      if (!adopciones) {
+        res.render('tablonAdopcion', { error: 'La lista esta vacia' })
+      }
+      else {
+        console.log(adopciones);
+        res.render('tablonAdopcion', { adopciones: adopciones });
+      }
+    } catch (error) {
+      console.log('Error al obtener las adopciones:', error);
+      return res.status(400).send('Error al obtener las adopciones');
+    }
+  })
+
+  .get('/visualizar-tablon-servicios', async (req, res) => {
+    try {
+      let servicios = await Servicio.find({});
+      if (!servicios) {
+        res.render('tablonServiciosCliente', { error: 'La lista esta vacia' })
+      }
+      else {
+        res.render('tablonServiciosCliente', { servicios: servicios });
+      }
+    } catch (error) {
+      console.log('Error al obtener los servicios:', error);
+      return res.status(400).send('Error al obtener los servicios');
+    }
+  })
+
+  .post('/confirmar-adopcion', async (req, res) => {
+    try {
+      let adopcion = await Adopcion.findById(req.body.id);
+      if ((adopcion) && (adopcion.mail == req.user.mail)) {
+        adopcion.confirmado = true;
+        adopcion.save();
+        res.send('<script>alert("La adopcion se confirmo exitosamente.");window.location.href = "/";</script>');
+      }
+    }
+    catch {
+      res.send('<script>alert("La adopcion no se confirmo.");window.location.href = "/";</script>');
+    }
+  })
+
 
 function compararFechas(a, b) {
   const fechaA = new Date(a.fecha);

@@ -1,24 +1,24 @@
 const mongoose = require('mongoose');
 
 const servicioScheme = new mongoose.Scheme({
-    nombre:{
+    nombre: {
         type: String
     },
-    apellido:{
+    apellido: {
         type: String
     },
-    tipoServicio:{
+    tipoServicio: {
         type: String
     },
-    zona:{
+    zona: {
         type: String
     },
-    disponibilidadHoraria:{
+    disponibilidadHoraria: {
         type: String
     },
-    mail:{
+    mail: {
         type: String
     }
 })
-
+exports.Servicio = Servicio;
 const Servicio = mongoose.model('Servicio', servicioScheme);
