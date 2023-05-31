@@ -140,10 +140,11 @@ router.post('/registrar-perro', async (req, res) => {
       los turnos asignados para el dia
   */
   .get('/turnos-diarios', async (req, res) => {
-    let hoy = new Date();
     try {
+      let hoy = new Date();
       let turnos = await Turno.find({});
-      let turnosDiarios = turnos.filter(turno => turno.fecha.getDate() === hoy.getDate());
+      let turnosDiarios = turnos.filter(turno => esHoy(turno.fecha, hoy));
+      console.log(turnosDiarios);
       res.render('turnos-hoy', { turnosDiarios })
     } catch (error) {
       console.log('Error al obtener los turnos:', error);
@@ -380,4 +381,14 @@ function compararFechas(a, b) {
   return fechaA - fechaB;
 
 }
+
+function esHoy(fecha1, fecha2) {
+  let a = String(fecha1.getUTCDate()).padStart(2, '0') + '/' + String(fecha1.getUTCMonth() + 1).padStart(2, '0') + '/' + fecha1.getUTCFullYear();
+  let b = String(fecha2.getUTCDate()).padStart(2, '0') + '/' + String(fecha2.getUTCMonth() + 1).padStart(2, '0') + '/' + fecha2.getUTCFullYear();
+  console.log(a);
+  console.log(b);
+  console.log(a == b);
+  return (a == b)
+}
+
 module.exports = router;
