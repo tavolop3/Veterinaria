@@ -3,6 +3,7 @@ const router = express.Router();
 const passport = require('passport');
 const autenticado = require('../middleware/autenticado');
 const { User, encriptarContraseña, compararContraseñas } = require('../models/user');
+const { sendEmail } = require('../emails');
 
 // Para ver el usuario actual
 router.get('/yo', autenticado, async(req,res) => {
@@ -55,6 +56,32 @@ router.get('/yo', autenticado, async(req,res) => {
 
     return res.redirect('/');
   }
+})
+
+.post('/adopcion/solicitar', async(req,res) => {
+  if(req.isAuthenticated()){
+      // Activar para testear un par de veces o en demo para no gastar la cuota de mails (son 100)
+      // await sendEmail(req.user.mail,'OhMyDog - Solicitud de adopción enviada',
+      //     'Su solicitud de adopción se ha enviado, contactese con ' + req.body.mailPostulante + ' para poder coordinar la adopción.' 
+      // );
+      // await sendEmail(req.body.mailPostulante,'OhMyDog - Solicitud de adopción recibida',
+      //     'Ha recibido una solicitud de adopción, contactese con ' + req.user.mail + ' para poder coordinar la adopción.' 
+      // );
+      res.send('<script>alert("Se solicitó el turno, revisa tu mail."); window.location.href = "/";</script>');
+  } else {
+    res.render('mail-noCliente', { mailPostulante: req.body.mailPostulante });
+  }
+})
+
+.post('/adopcion/mail-noCliente', async(req,res) => {
+  // Activar para testear un par de veces o en demo para no gastar la cuota de mails (son 100)
+  // await sendEmail(req.body.mailSolicitante,'OhMyDog - Solicitud de adopción enviada',
+  //     'Su solicitud de adopción se ha enviado, contactese con ' + req.body.mailPostulante + ' para poder coordinar la adopción. Para tener acceso a más funcionalidades acercate a la veterinaria y registrate!' 
+  // );
+  // await sendEmail(req.body.mailPostulante,'OhMyDog - Solicitud de adopción recibida',
+  //     'Ha recibido una solicitud de adopción, contactese con ' + req.body.mailSolicitante + ' para poder coordinar la adopción.' 
+  // );
+  res.send('<script>alert("Se solicitó el turno, revisa tu mail."); window.location.href = "/";</script>');
 })
 
 module.exports = router;

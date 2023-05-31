@@ -1,8 +1,4 @@
 const mongoose = require('mongoose');
-const Joi = require('joi');
-const config = require('config');
-const jwt = require('jsonwebtoken');
-const { ObjectId } = require('mongodb');
 
 const adopcionSchema = new mongoose.Schema({
     nombre: {
@@ -24,7 +20,8 @@ const adopcionSchema = new mongoose.Schema({
         type: String
     },
     confirmado: {
-        type: Boolean
+        type: Boolean,
+        default: false
     },
     mail: {
         type: String

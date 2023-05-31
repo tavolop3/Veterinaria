@@ -1,8 +1,4 @@
 const mongoose = require('mongoose');
-const Joi = require('joi');
-const config = require('config');
-const jwt = require('jsonwebtoken');
-const { ObjectId } = require('mongodb');
 
 const perdidaScheme = new mongoose.Scheme({
     nombre:{

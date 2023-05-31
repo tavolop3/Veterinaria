@@ -82,6 +82,46 @@ router.post('/solicitar-turno', async (req, res) => {
     res.render('listaPerros', { perros })
   })
 
+  .post('/cargar-adopcion', async (req, res) => {
+    perroParaAdoptar = {
+      nombre: req.body.nombre,
+      edad: req.body.edad,
+      sexo: req.body.sexo,
+      color: req.body.color,
+      tamaño: req.body.tamaño,
+      origen: req.body.origen,
+      confirmado: false,
+      mail: req.user.mail
+    }
+    try {
+      let adopcion = new Adopcion(perroParaAdoptar);
+      await adopcion.save();
+      req.user.perrosEnAdopcion.push(adopcion._id);
+      return res.send('<script>alert("La adopcion se cargo correctamente."); window.location.href = "/clientes";</script>');
+    } catch (error) {
+      return res.send('<script>alert("La adopcion no puedo cargarse."); window.location.href = "/clientes";</script>');
+    }
+  })
+
+  .post('/modificar-adopcion', async (req, res) => {
+    const { dato, nombre, sexo, color, tamaño, origen } = req.body;
+    try {
+      await Adopcion.updateOne({ _id: dato }, {
+        $set: {
+          nombre: nombre,
+          edad: edad,
+          sexo: sexo,
+          color: color,
+          tamaño: tamaño,
+          origen: origen
+        }
+      });
+      return res.send('<script>alert("El perro en adopcion se cargo correctamente."); window.location.href = "/clientes";</script>');
+    } catch (error) {
+      return res.send('<script>alert("El perro en adopcion no pudo modificarse"); window.location.href = "/clientes";</script>');
+    }
+  })
+
 
   .get('/historial-turnos', async (req, res) => {
     try {
@@ -110,37 +150,6 @@ router.post('/solicitar-turno', async (req, res) => {
     await modificarEstado(req.body.id, 'rechazado');
 
     res.send('<script>alert("Se rechazó la modificación.");window.location.href = "/";</script>');
-  })
-
-  .get('/visualizar-tablon-adopcion', async (req, res) => {
-    try {
-      let adopciones = await Adopcion.find({});
-      if (!adopciones) {
-        res.render('tablonAdopcion', { error: 'La lista esta vacia' })
-      }
-      else {
-        console.log(adopciones);
-        res.render('tablonAdopcion', { adopciones: adopciones });
-      }
-    } catch (error) {
-      console.log('Error al obtener las adopciones:', error);
-      return res.status(400).send('Error al obtener las adopciones');
-    }
-  })
-
-  .get('/visualizar-tablon-servicios', async (req, res) => {
-    try {
-      let servicios = await Servicio.find({});
-      if (!servicios) {
-        res.render('tablonServiciosCliente', { error: 'La lista esta vacia' })
-      }
-      else {
-        res.render('tablonServiciosCliente', { servicios: servicios });
-      }
-    } catch (error) {
-      console.log('Error al obtener los servicios:', error);
-      return res.status(400).send('Error al obtener los servicios');
-    }
   })
 
   .post('/confirmar-adopcion', async (req, res) => {

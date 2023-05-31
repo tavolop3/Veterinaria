@@ -1,10 +1,6 @@
 const mongoose = require('mongoose');
-const Joi = require('joi');
-const config = require('config');
-const jwt = require('jsonwebtoken');
-const { ObjectId } = require('mongodb');
 
-const servicioScheme = new mongoose.Scheme({
+const servicioSchema = new mongoose.Schema({
     nombre: {
         type: String
     },
@@ -24,5 +20,7 @@ const servicioScheme = new mongoose.Scheme({
         type: String
     }
 })
+
+const Servicio = mongoose.model('Servicio', servicioSchema);
+
 exports.Servicio = Servicio;
-const Servicio = mongoose.model('Servicio', servicioScheme);
