@@ -61,12 +61,12 @@ router.get('/yo', autenticado, async(req,res) => {
 .post('/adopcion/solicitar', async(req,res) => {
   if(req.isAuthenticated()){
       // Activar para testear un par de veces o en demo para no gastar la cuota de mails (son 100)
-      await sendEmail(req.user.mail,'OhMyDog - Solicitud de adopción enviada',
-          'Su solicitud de adopción se ha enviado, contactese con ' + req.body.mailPostulante + ' para poder coordinar la adopción.' 
-      );
-      await sendEmail(req.body.mailPostulante,'OhMyDog - Solicitud de adopción recibida',
-          'Ha recibido una solicitud de adopción, contactese con ' + req.user.mail + ' para poder coordinar la adopción.' 
-      );
+      // await sendEmail(req.user.mail,'OhMyDog - Solicitud de adopción enviada',
+      //     'Su solicitud de adopción se ha enviado, contactese con ' + req.body.mailPostulante + ' para poder coordinar la adopción.' 
+      // );
+      // await sendEmail(req.body.mailPostulante,'OhMyDog - Solicitud de adopción recibida',
+      //     'Ha recibido una solicitud de adopción, contactese con ' + req.user.mail + ' para poder coordinar la adopción.' 
+      // );
       res.send('<script>alert("Se solicitó el turno, revisa tu mail."); window.location.href = "/";</script>');
   } else {
     res.render('mail-noCliente', { mailPostulante: req.body.mailPostulante });
@@ -75,12 +75,12 @@ router.get('/yo', autenticado, async(req,res) => {
 
 .post('/adopcion/mail-noCliente', async(req,res) => {
   // Activar para testear un par de veces o en demo para no gastar la cuota de mails (son 100)
-  await sendEmail(req.body.mailSolicitante,'OhMyDog - Solicitud de adopción enviada',
-      'Su solicitud de adopción se ha enviado, contactese con ' + req.body.mailPostulante + ' para poder coordinar la adopción. Para tener acceso a más funcionalidades acercate a la veterinaria y registrate!' 
-  );
-  await sendEmail(req.body.mailPostulante,'OhMyDog - Solicitud de adopción recibida',
-      'Ha recibido una solicitud de adopción, contactese con ' + req.body.mailSolicitante + ' para poder coordinar la adopción.' 
-  );
+  // await sendEmail(req.body.mailSolicitante,'OhMyDog - Solicitud de adopción enviada',
+  //     'Su solicitud de adopción se ha enviado, contactese con ' + req.body.mailPostulante + ' para poder coordinar la adopción. Para tener acceso a más funcionalidades acercate a la veterinaria y registrate!' 
+  // );
+  // await sendEmail(req.body.mailPostulante,'OhMyDog - Solicitud de adopción recibida',
+  //     'Ha recibido una solicitud de adopción, contactese con ' + req.body.mailSolicitante + ' para poder coordinar la adopción.' 
+  // );
   res.send('<script>alert("Se solicitó el turno, revisa tu mail."); window.location.href = "/";</script>');
 })
 

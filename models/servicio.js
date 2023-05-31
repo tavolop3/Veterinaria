@@ -20,5 +20,7 @@ const servicioSchema = new mongoose.Schema({
         type: String
     }
 })
-exports.Servicio = servicioSchema;
+
 const Servicio = mongoose.model('Servicio', servicioSchema);
+
+exports.Servicio = Servicio;
