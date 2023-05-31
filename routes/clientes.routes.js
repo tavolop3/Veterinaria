@@ -162,7 +162,7 @@ router.post('/solicitar-turno', async (req, res) => {
     try {
       let adopciones = await Adopcion.find({});
       if (!adopciones) {
-        res.render('tablonAdopcion', { error: 'La lista esta vacia' })
+        res.render('tablonAdopcion', { error: 'No hay adopciones cargadas en el sistema.' })
       }
       else {
         console.log(adopciones);
@@ -178,7 +178,7 @@ router.post('/solicitar-turno', async (req, res) => {
     try {
       let servicios = await Servicio.find({});
       if (!servicios) {
-        res.render('tablonServiciosCliente', { error: 'La lista esta vacia' })
+        res.render('tablonServiciosCliente', { error: 'No hay paseadores o cuidadores cargados' })
       }
       else {
         res.render('tablonServiciosCliente', { servicios: servicios });
