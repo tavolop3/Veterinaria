@@ -3,6 +3,7 @@ const router = express.Router();
 var crypto = require("crypto");
 const { User, validateCreate, encriptarContraseña } = require('../models/user');
 const { Perro } = require('../models/perro')
+const { Servicio } = require('../models/servicio')
 const { Turno, modificarEstado } = require('../models/turno')
 const _ = require('lodash');
 const { sendEmail } = require('../emails');
@@ -15,7 +16,7 @@ router.post('/registrar-usuario', async (req, res) => {
   // if (error) return res.status(400).render('registro-usuario', { error });
 
   let user = await User.findOne({ mail: req.body.mail });
-  if (user) return res.status(400).render('registro-usuario', { error: 'El mail ya está en uso.' }); // TODO Popup
+  if (user) return res.status(400).render('registro-usuario', { error: 'El mail ya está en uso.' });
 
   user = await User.findOne({ dni: req.body.dni });
   if (user) return res.status(400).render('registro-usuario', { error: 'El dni ya está registrado.' });
@@ -32,7 +33,7 @@ router.post('/registrar-usuario', async (req, res) => {
   user.contraseñaDefault = user.contraseña;
   await user.save();
 
-  res.redirect('/'); // TODO Enviar mensaje con confirmación de creación 
+  res.send('<script>alert("Se registró al usuario."); window.location.href = "/";</script>');
 })
 
   .post('/modificar-usuario', async (req, res) => {
@@ -154,6 +155,7 @@ router.post('/registrar-perro', async (req, res) => {
     var campos = ['rangoHorario', 'fecha', 'estado'];
     campos = _.pickBy(_.pick(req.body, campos), _.identity)
     campos.estado = 'modificado-pendiente';
+
     const turno = await Turno.findByIdAndUpdate(req.body.id, campos);
     if (!turno) res.status(400).send('El turno no fue encontrado');
 
@@ -163,10 +165,10 @@ router.post('/registrar-perro', async (req, res) => {
     //     'Uno de tus turnos fue modificado por la veterinaria, por favor, revisa en tus turnos.'
     // );
 
-    res.redirect('/'); // TODO Mostrar mensaje con confirmación de modificación 
+    res.send('<script>alert("La modificación se realizó correctamente y se informó via mail al cliente."); window.location.href = "/admin/historial-turnos";</script>');
   })
 
-  .post('/aceptar-turno', async (req, res) => { // TODO testear todos los de turnos 
+  .post('/aceptar-turno', async (req, res) => {
     let turno = await modificarEstado(req.body.id, 'aceptado');
 
     const user = await User.findOne({ dni: turno.dni });
@@ -175,29 +177,30 @@ router.post('/registrar-perro', async (req, res) => {
     //     'Tu turno fue aceptado!'
     // );
 
-    res.send('Turno aceptado con exito y notificado al cliente.');
+    res.send('<script>alert("Turno aceptado con exito y notificado al cliente via mail."); window.location.href = "/admin/historial-turnos";</script>');
   })
 
   .post('/rechazar-turno', async (req, res) => {
     let turno = await modificarEstado(req.body.id, 'rechazado');
-    
+
     const user = await User.findOne({ dni: turno.dni });
     // Activar para testear un par de veces o en demo para no gastar la cuota de mails (son 100)
     // await sendEmail(user.mail,'OhMyDog - Rechazo de turno',
     //     'Lamentablemente uno de tus turnos fue rechazado por la veterinaria, por favor, revisa en tus turnos.'
     // );
 
-    res.send('Turno rechazado con exito y notificado al cliente.');
+    res.send('<script>alert("Turno rechazado con exito y notificado al cliente via mail."); window.location.href = "/admin/historial-turnos";</script>');
   })
 
   .post('/confirmar-asistencia', async (req, res) => {
     let turno = await modificarEstado(req.body.id, 'asistido');
 
-    if (turno.motivo != 'Vacunacion generica') return res.send('Turno marcado como asistido.');
+    if (turno.motivo != 'Vacunacion generica') return res.send('<script>alert("Turno marcado como asistido."); window.location.href = "/admin/historial-turnos";</script>');
+
 
     const user = await User.findOne({ dni: turno.dni }).populate('perrosId');
     user.turnosId.push(turno._id);
-    await user.save();    
+    await user.save();
 
     const perros = user.perrosId;
     const perroEncontrado = perros.find(perro => perro && perro.nombre === turno.nombreDelPerro);
@@ -223,7 +226,7 @@ router.post('/registrar-perro', async (req, res) => {
     //     'Se asignó un nuevo turno automáticamente para la próxima vacunación, por favor, revisa en tus turnos.'
     // );
 
-    res.send('Se confirmó la asistencia, nuevo turno asignado con exito y notificado al cliente.');
+    res.send('<script>alert("Se confirmó la asistencia, nuevo turno asignado con exito y notificado al cliente."); window.location.href = "/admin/historial-turnos";</script>');
   })
 
   .post('/eliminar-usuario', async (req, res) => {
@@ -340,18 +343,18 @@ router.post('/registrar-perro', async (req, res) => {
     res.render('listaPerros', { perros, admin: true, mail })
   })
 
-  
-.post('/cargar-servicio', async(req, res) => {
-  nuevoServicio = {
-    nombre: req.body.nombre,
-    apellido: req.body.apellido,
-    tiposervicio: req.body.tiposervicio,
-    zona: req.body.zona,
-    disponibilidadHoraria: req.body.disponibilidadHoraria,
-    mail: req.body.mail
-  }
-  let servicio = await Servicio.findOne({ mail: nuevoServicio.mail});
-  if (servicio) return res.status(400).send('<script>alert("El mail ya se encuentra asignado"); window.location.href = "/admin";</script>');
+
+  .post('/cargar-servicio', async (req, res) => {
+    nuevoServicio = {
+      nombre: req.body.nombre,
+      apellido: req.body.apellido,
+      tiposervicio: req.body.tiposervicio,
+      zona: req.body.zona,
+      disponibilidadHoraria: req.body.disponibilidadHoraria,
+      mail: req.body.mail
+    }
+    let servicio = await Servicio.findOne({ mail: nuevoServicio.mail });
+    if (servicio) return res.status(400).send('<script>alert("El mail ya se encuentra asignado"); window.location.href = "/admin";</script>');
     try {
       let servicio = new Servicio(nuevoServicio);
       await servicio.save();
@@ -359,25 +362,49 @@ router.post('/registrar-perro', async (req, res) => {
     } catch (error) {
       return res.send('<script>alert("La carga no pudo realizarse"); window.location.href = "/admin";</script>');
     }
-})
+  })
 
-.post('/modificar-servicio', async (req, res) => {
-  const { id, nombre, apellido, tiposervicio, zona, disponibilidadHoraria, mail} = req.body;   
-  try {
-    await Servicio.updateOne({ _id: id }, { $set: {
-      nombre: nombre,
-      apellido: apellido,
-      tipoServicio: tiposervicio,
-      zona: zona,
-      disponibilidHoraria: disponibilidadHoraria,
-      mail: mail
+  .post('/modificar-servicio', async (req, res) => {
+    const { id, nombre, apellido, tiposervicio, zona, disponibilidadHoraria, mail } = req.body;
+    try {
+      await Servicio.updateOne({ _id: id }, {
+        $set: {
+          nombre: nombre,
+          apellido: apellido,
+          tipoServicio: tiposervicio,
+          zona: zona,
+          disponibilidHoraria: disponibilidadHoraria,
+          mail: mail
+        }
+      });
+      return res.send('<script>alert("La modificacion del servicio se realizo correctamente"); window.location.href = "/admin";</script>');
+    } catch (error) {
+      return res.send('<script>alert("La modificacion del servicio no pudo realizarse"); window.location.href = "/admin";</script>');
     }
-  });
-    return res.send('<script>alert("La modificacion del servicio se realizo correctamente"); window.location.href = "/admin";</script>');
-  } catch (error) {
-    return res.send('<script>alert("La modificacion del servicio no pudo realizarse"); window.location.href = "/admin";</script>');
-  }
-})
+  })
+  .get('/visualizar-tablon-servicios-admin', async (req, res) => {
+    try {
+      let servicios = await Servicio.find({});
+      if (!servicios) {
+        res.render('tablonServiciosAdmin', { error: 'La lista esta vacia' })
+      }
+      else {
+        res.render('tablonServiciosAdmin', { servicios: servicios });
+      }
+    } catch (error) {
+      console.log('Error al obtener los servicios:', error);
+      return res.status(400).send('Error al obtener los servicios');
+    }
+  })
+
+  .post('/eliminar-servicio', async (req, res) => {
+    try {
+      let servicio = await Servicio.findByIdAndDelete(req.body.id);
+      res.send('Eliminacion del paseador/cuidador confirmada.');
+    } catch (err) {
+      res.json({ error: err.message || err.toString() });
+    }
+  })
 
 function compararFechas(a, b) {
 

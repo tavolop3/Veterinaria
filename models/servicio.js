@@ -1,27 +1,27 @@
 const mongoose = require('mongoose');
 const { ObjectId } = require('mongodb');
 
-const servicioScheme = new mongoose.Schema({
-    nombre:{
+const servicioSchema = new mongoose.Schema({
+    nombre: {
         type: String
     },
-    apellido:{
+    apellido: {
         type: String
     },
-    tipoServicio:{
+    tipoServicio: {
         type: String
     },
-    zona:{
+    zona: {
         type: String
     },
-    disponibilidadHoraria:{
+    disponibilidadHoraria: {
         type: String
     },
-    mail:{
+    mail: {
         type: String
     }
 })
 
-const Servicio = mongoose.model('Servicio', servicioScheme);
+const Servicio = mongoose.model('Servicio', servicioSchema);
 
 exports.Servicio = Servicio;

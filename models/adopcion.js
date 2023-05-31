@@ -5,30 +5,31 @@ const jwt = require('jsonwebtoken');
 const { ObjectId } = require('mongodb');
 
 const adopcionSchema = new mongoose.Schema({
-    nombre:{
+    nombre: {
         type: String
     },
-    edad:{
+    edad: {
         type: Number
     },
-    sexo:{
+    sexo: {
         type: String
     },
-    color:{
+    color: {
         type: String
     },
-    tamaño:{
+    tamaño: {
         type: String
     },
-    origen:{
+    origen: {
         type: String
     },
-    confirmado:{
+    confirmado: {
         type: Boolean
     },
-    mail:{
+    mail: {
         type: String
     }
 })
-
 const Adopcion = mongoose.model('Adopcion', adopcionSchema);
+
+exports.Adopcion = Adopcion;
