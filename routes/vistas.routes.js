@@ -23,6 +23,39 @@ router.get('', (req, res) => {
         res.render('login');
     })
 
+    .get('/usuarios/visualizar-tablon-servicios', async (req, res) => {
+        try {
+            let servicios = await Servicio.find({});
+            if (!servicios) {
+                res.render('tablonServiciosCliente', { error: 'No hay postulaciones cargadas en el sistema.' })
+            }
+            else {
+                let mail = "";
+                if(req.isAuthenticated())
+                    mail = req.user.mail;    
+                res.render('tablonServiciosCliente', { servicios, usuarioActual: mail });
+            }
+        } catch (error) {
+            console.log('Error al obtener los servicios:', error);
+            return res.status(400).send('Error al obtener los servicios');
+        }
+        })
+
+        .get('/usuarios/visualizar-tablon-servicios', async (req, res) => {
+            try {
+                let servicios = await Servicio.find({});
+                if (!servicios) {
+                res.render('tablonServiciosCliente', { error: 'No hay paseadores o cuidadores cargados' })
+                }
+                else {
+                res.render('tablonServiciosCliente', { servicios });
+                }
+            } catch (error) {
+                console.log('Error al obtener los servicios:', error);
+                return res.status(400).send('Error al obtener los servicios');
+            }
+        })
+
     // ------------------- CLIENTES -------------------------
 
     .get('/clientes', autenticado, (req, res) => {

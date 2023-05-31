@@ -8,7 +8,6 @@ const { Turno, modificarEstado } = require('../models/turno')
 const _ = require('lodash');
 const { sendEmail } = require('../emails');
 const { ObjectId } = require('mongoose').Types;
-const { Servicio } = require('../models/servicio')
 const moment = require('moment');
 
 router.post('/registrar-usuario', async (req, res) => {
@@ -348,7 +347,7 @@ router.post('/registrar-perro', async (req, res) => {
     nuevoServicio = {
       nombre: req.body.nombre,
       apellido: req.body.apellido,
-      tiposervicio: req.body.tiposervicio,
+      tipoServicio: req.body.tipoServicio,
       zona: req.body.zona,
       disponibilidadHoraria: req.body.disponibilidadHoraria,
       mail: req.body.mail
@@ -382,7 +381,8 @@ router.post('/registrar-perro', async (req, res) => {
       return res.send('<script>alert("La modificacion del servicio no pudo realizarse"); window.location.href = "/admin";</script>');
     }
   })
-  .get('/visualizar-tablon-servicios-admin', async (req, res) => {
+
+  .get('/visualizar-tablon-servicios', async (req, res) => {
     try {
       let servicios = await Servicio.find({});
       if (!servicios) {
@@ -400,7 +400,7 @@ router.post('/registrar-perro', async (req, res) => {
   .post('/eliminar-servicio', async (req, res) => {
     try {
       let servicio = await Servicio.findByIdAndDelete(req.body.id);
-      res.send('Eliminacion del paseador/cuidador confirmada.');
+      res.send('<script>alert("Eliminacion del paseador/cuidador confirmada."); window.location.href = "/admin/visualizar-tablon-servicios";</script>');
     } catch (err) {
       res.json({ error: err.message || err.toString() });
     }

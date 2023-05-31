@@ -124,21 +124,6 @@ router.post('/solicitar-turno', async (req, res) => {
     }
   })
 
-  .get('/visualizar-tablon-servicios', async (req, res) => {
-    try {
-      let servicios = await Servicio.find({});
-      if (!servicios) {
-        res.render('tablonServiciosCliente', { error: 'La lista esta vacia' })
-      }
-      else {
-        res.render('tablonServiciosCliente', { servicios: servicios });
-      }
-    } catch (error) {
-      console.log('Error al obtener los servicios:', error);
-      return res.status(400).send('Error al obtener los servicios');
-    }
-  })
-
   .post('/confirmar-adopcion', async (req, res) => {
     try {
       let adopcion = await Adopcion.findById(req.body.id);
