@@ -4,6 +4,8 @@ const autenticado = require('../middleware/autenticado');
 const { Turno, modificarEstado } = require('../models/turno')
 const { User, encriptarContraseña, compararContraseñas } = require('../models/user');
 const { Perro } = require('../models/perro');
+const { Adopcion } = require('../models/adopcion');
+const { Servicio } = require('../models/servicio');
 const { sendEmail } = require('../emails');
 
 /* Endpoint para
@@ -105,6 +107,52 @@ router.post('/solicitar-turno', async (req, res) => {
 
     res.send('<script>alert("Se rechazó la modificación.");window.location.href = "/";</script>');
   })
+
+  .get('/visualizar-tablon-adopcion', async (req, res) => {
+    try {
+      let adopciones = await Adopcion.find({});
+      if (!adopciones) {
+        res.render('tablonAdopcion', { error: 'La lista esta vacia' })
+      }
+      else {
+        console.log(adopciones);
+        res.render('tablonAdopcion', { adopciones: adopciones });
+      }
+    } catch (error) {
+      console.log('Error al obtener las adopciones:', error);
+      return res.status(400).send('Error al obtener las adopciones');
+    }
+  })
+
+  .get('/visualizar-tablon-servicios', async (req, res) => {
+    try {
+      let servicios = await Servicio.find({});
+      if (!servicios) {
+        res.render('tablonServiciosCliente', { error: 'La lista esta vacia' })
+      }
+      else {
+        res.render('tablonServiciosCliente', { servicios: servicios });
+      }
+    } catch (error) {
+      console.log('Error al obtener los servicios:', error);
+      return res.status(400).send('Error al obtener los servicios');
+    }
+  })
+
+  .post('/confirmar-adopcion', async (req, res) => {
+    try {
+      let adopcion = await Adopcion.findById(req.body.id);
+      if ((adopcion) && (adopcion.mail == req.user.mail)) {
+        adopcion.confirmado = true;
+        adopcion.save();
+        res.send('<script>alert("La adopcion se confirmo exitosamente.");window.location.href = "/";</script>');
+      }
+    }
+    catch {
+      res.send('<script>alert("La adopcion no se confirmo.");window.location.href = "/";</script>');
+    }
+  })
+
 
 function compararFechas(a, b) {
   const fechaA = new Date(a.fecha);

@@ -3,6 +3,7 @@ const router = express.Router();
 var crypto = require("crypto");
 const { User, validateCreate, encriptarContraseña } = require('../models/user');
 const { Perro } = require('../models/perro')
+const { Servicio } = require('../models/servicio')
 const { Turno, modificarEstado } = require('../models/turno')
 const _ = require('lodash');
 const { sendEmail } = require('../emails');
@@ -31,7 +32,7 @@ router.post('/registrar-usuario', async (req, res) => {
   user.contraseñaDefault = user.contraseña;
   await user.save();
 
-  res.send('<script>alert("Se registró al usuario."); window.location.href = "/";</script>'); 
+  res.send('<script>alert("Se registró al usuario."); window.location.href = "/";</script>');
 })
 
   .post('/modificar-usuario', async (req, res) => {
@@ -163,7 +164,7 @@ router.post('/registrar-perro', async (req, res) => {
     //     'Uno de tus turnos fue modificado por la veterinaria, por favor, revisa en tus turnos.'
     // );
 
-    res.send('<script>alert("La modificación se realizó correctamente y se informó via mail al cliente."); window.location.href = "/admin/historial-turnos";</script>'); 
+    res.send('<script>alert("La modificación se realizó correctamente y se informó via mail al cliente."); window.location.href = "/admin/historial-turnos";</script>');
   })
 
   .post('/aceptar-turno', async (req, res) => {
@@ -180,7 +181,7 @@ router.post('/registrar-perro', async (req, res) => {
 
   .post('/rechazar-turno', async (req, res) => {
     let turno = await modificarEstado(req.body.id, 'rechazado');
-    
+
     const user = await User.findOne({ dni: turno.dni });
     // Activar para testear un par de veces o en demo para no gastar la cuota de mails (son 100)
     // await sendEmail(user.mail,'OhMyDog - Rechazo de turno',
@@ -198,7 +199,7 @@ router.post('/registrar-perro', async (req, res) => {
 
     const user = await User.findOne({ dni: turno.dni }).populate('perrosId');
     user.turnosId.push(turno._id);
-    await user.save();    
+    await user.save();
 
     const perros = user.perrosId;
     const perroEncontrado = perros.find(perro => perro && perro.nombre === turno.nombreDelPerro);
@@ -339,6 +340,30 @@ router.post('/registrar-perro', async (req, res) => {
     const perros = usuario.perrosId;
     let mail = usuario.mail;
     res.render('listaPerros', { perros, admin: true, mail })
+  })
+
+  .get('/visualizar-tablon-servicios-admin', async (req, res) => {
+    try {
+      let servicios = await Servicio.find({});
+      if (!servicios) {
+        res.render('tablonServiciosAdmin', { error: 'La lista esta vacia' })
+      }
+      else {
+        res.render('tablonServiciosAdmin', { servicios: servicios });
+      }
+    } catch (error) {
+      console.log('Error al obtener los servicios:', error);
+      return res.status(400).send('Error al obtener los servicios');
+    }
+  })
+
+  .post('/eliminar-servicio', async (req, res) => {
+    try {
+      let servicio = await Servicio.findByIdAndDelete(req.body.id);
+      res.send('Eliminacion del paseador/cuidador confirmada.');
+    } catch (err) {
+      res.json({ error: err.message || err.toString() });
+    }
   })
 
 function compararFechas(a, b) {

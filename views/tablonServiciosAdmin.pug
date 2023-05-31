@@ -1,0 +1,43 @@
+doctype html
+html
+  head
+    title Lista de Adopciones
+    style.
+      table {
+        border-collapse: collapse;
+        width: 30%;
+      }
+      th, td {
+        padding: 12px;
+        text-align: left;
+      }
+       td.buttons {
+        display: flex;
+        gap: 10px;
+      }
+      
+  body
+    if (!servicios)
+        h1 No hay servicios cargadas en el sistema.
+    else
+        div
+            h1 Lista de Servicios
+            table
+                tr
+                th Nombre
+                th Apellido
+                th Tipo de servicio
+                th Zona
+                th Disponibilidad horaria
+                th Mail
+            each servicio in servicios
+              tr
+                td= servicio.nombre
+                td= servicio.apellido 
+                td= servicio.tipoServicio
+                td= servicio.zona
+                td= servicio.disponibilidadHoraria
+                td= servicio.mail
+                td.buttons
+                  form(action="/admin/eliminar-servicio", method="POST")
+                    input(type="hidden", name="id", value=servicio._id)
