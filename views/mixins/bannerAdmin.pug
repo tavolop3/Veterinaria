@@ -13,7 +13,6 @@ mixin bannerAdmin
               option Operaciones
               option(value="/admin/registrar-usuario") Registrar Usuario
               option(value="/admin/registrar-perro") Registrar Perro
-              option(value="/usuario/modificar-datos") Modificar datos
               option(value='/usuarios/cerrar-sesion') Cerrar sesion
               option(value="/admin") Operacion x
     header#indice
@@ -26,7 +25,7 @@ mixin bannerAdmin
           li
             a(href="#") Evadir impuestos
           li
-            a(href="#") Servicios
+            a(href="/admin/visualizar-tablon-servicios") Servicios
           li
             a(href="#") Donaciones
           li
