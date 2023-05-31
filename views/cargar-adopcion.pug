@@ -1,0 +1,35 @@
+include mixins/bannerUsuario.pug
+
+doctype html
+html
+  head
+    meta(charset="UTF-8")
+    title Cargar perro de adopcion
+    link(rel="stylesheet", href="/style/login.css")
+
++bannerUsuario()
+body
+  form(action="/clientes/cargar-adopcion", method="post")
+    ul
+      li
+        label(for="nombre") Nombre:
+        input(type="text", id="nombre", name="nombre", required)
+      li
+        label(for="edad") Edad:
+        input(type="text", id="edad", name="edad", required)
+      li
+        label(for="sexo") Sexo:
+        input(type="text", id="sexo", name="sexo", required)
+      li 
+        label(for="color") Color:
+        input(type="text", id="color", name="color", required)
+      li 
+        label(for="tamaño") Tamaño: 
+        input(type="text", id="tamaño", name="tamaño", required)
+      li 
+        label(for="origen") Origen: 
+        input(type="text", id="origen", name="origen", required)
+      li.button
+        button(type="submit") Cargar
+  if error
+    li.error= error

@@ -49,7 +49,11 @@ router.post('/solicitar-turno', async (req, res) => {
     let { mailNuevo, contraseña1, contraseña2 } = req.body;
     let mailActual = req.user.mail;
     let user = await User.findOne({ mail: mailActual });
-    if (!await compararContraseñas(contraseña1, user.contraseña)) return res.status(400).json('La contraseña ingresada no es correcta')
+    if (!await compararContraseñas(contraseña1, user.contraseña)) return res.status(400).send('<script>alert("La contraseña ingresada no es correcta."); window.location.href = "/clientes";</script>');
+    let usuarioConMail = await User.findOne({ mail: mailNuevo });
+    if (usuarioConMail) {
+      if (usuarioConMail.mail !== user.mail) return res.status(400).send('<script>alert("El mail ingresado ya se encuentra en uso."); window.location.href = "/clientes";</script>');
+    }
     try {
       if (mailNuevo === "") mailNuevo = mailActual;
       if (contraseña2 !== "") {
@@ -76,6 +80,46 @@ router.post('/solicitar-turno', async (req, res) => {
       .populate('perrosId')
     const perros = usuario.perrosId;
     res.render('listaPerros', { perros })
+  })
+
+  .post('/cargar-adopcion', async (req, res) => {
+    perroParaAdoptar = {
+      nombre: req.body.nombre,
+      edad: req.body.edad,
+      sexo: req.body.sexo,
+      color: req.body.color,
+      tamaño: req.body.tamaño,
+      origen: req.body.origen,
+      confirmado: false,
+      mail: req.user.mail
+    }
+    try {
+      let adopcion = new Adopcion(perroParaAdoptar);
+      await adopcion.save();
+      req.user.perrosEnAdopcion.push(adopcion._id);
+      return res.send('<script>alert("La adopcion se cargo correctamente."); window.location.href = "/clientes";</script>');
+    } catch (error) {
+      return res.send('<script>alert("La adopcion no puedo cargarse."); window.location.href = "/clientes";</script>');
+    }
+  })
+
+  .post('/modificar-adopcion', async (req, res) => {
+    const { dato, nombre, sexo, color, tamaño, origen } = req.body;
+    try {
+      await Adopcion.updateOne({ _id: dato }, {
+        $set: {
+          nombre: nombre,
+          edad: edad,
+          sexo: sexo,
+          color: color,
+          tamaño: tamaño,
+          origen: origen
+        }
+      });
+      return res.send('<script>alert("El perro en adopcion se cargo correctamente."); window.location.href = "/clientes";</script>');
+    } catch (error) {
+      return res.send('<script>alert("El perro en adopcion no pudo modificarse"); window.location.href = "/clientes";</script>');
+    }
   })
 
 

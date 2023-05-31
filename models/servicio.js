@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const { ObjectId } = require('mongodb');
 
 const servicioSchema = new mongoose.Schema({
     nombre: {
@@ -21,7 +20,6 @@ const servicioSchema = new mongoose.Schema({
         type: String
     }
 })
-
 const Servicio = mongoose.model('Servicio', servicioSchema);
 
 exports.Servicio = Servicio;

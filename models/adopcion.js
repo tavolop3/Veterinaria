@@ -20,7 +20,8 @@ const adopcionSchema = new mongoose.Schema({
         type: String
     },
     confirmado: {
-        type: Boolean
+        type: Boolean,
+        default: false
     },
     mail: {
         type: String

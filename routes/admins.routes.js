@@ -39,6 +39,14 @@ router.post('/registrar-usuario', async (req, res) => {
     const { dato, mail, nombre, apellido, dni, telefono } = req.body;
     let user = await User.findOne({ mail: dato });
     if (!user) return res.status(400).send('No se encontro el usuario');
+    let usuarioConMailRegistrado = await User.findOne({ mail: mail });
+    if (usuarioConMailRegistrado) {
+      if (usuarioConMailRegistrado.mail !== user.mail) return res.status(400).send('<script>alert("Ya hay un usuario con el mail asignado."); window.location.href = "/admin";</script>');
+    }
+    let usuarioConDNIRegistrado = await User.findOne({ dni: dni });
+    if (usuarioConDNIRegistrado) {
+      if (usuarioConDNIRegistrado.dni !== user.dni) return res.status(400).send('<script>alert("Ya hay un usuario con el dni asignado."); window.location.href = "/admin";</script>');
+    }
     try {
       await User.updateOne({ mail: dato }, {
         $set: {
@@ -56,7 +64,13 @@ router.post('/registrar-usuario', async (req, res) => {
   })
 
   .post('/modificar-perro', async (req, res) => {
-    const { id, nombre, sexo, fecha, raza, color, observaciones, foto } = req.body;
+    const { id, mailUsuario, nombre, sexo, fecha, raza, color, observaciones, foto } = req.body;
+    let usuario = await User.findOne({ mail: mailUsuario }).populate('perrosId')
+    console.log(usuario)
+    let perros = usuario.perrosId;
+    if (perros.some(perro => perro.nombre === nombre)) {
+      return res.status(400).send('<script>alert("El usuario ya tiene un perro con ese nombre."); window.location.href = "/admin";</script>');
+    }
     try {
       await Perro.updateOne({ _id: id }, {
         $set: {
@@ -79,7 +93,7 @@ router.post('/registrar-usuario', async (req, res) => {
 router.get('/listar-usuarios', async (req, res) => {
   try {
     let users = await User.find({ isAdmin: false });
-    const lista = users.map(usuario => ({ dni: usuario.dni, mail: usuario.mail, nombre: usuario.nombre, apellido: usuario.apellido }))
+    const lista = users.map(usuario => ({ dni: usuario.dni, mail: usuario.mail, nombre: usuario.nombre, apellido: usuario.apellido, telefono: usuario.telefono }))
     if (lista.length === 0) {
       res.render('listaUsuarios', { error: 'La lista esta vacia' });
     } else {
@@ -92,26 +106,19 @@ router.get('/listar-usuarios', async (req, res) => {
 
 router.post('/registrar-perro', async (req, res) => {
   try {
-    const perro = new Perro(_.pick(req.body, ['nombre', 'sexo', 'fechaDeNacimiento', 'raza', 'color', 'observaciones', 'foto', 'mail']));
+    let perro = new Perro(_.pick(req.body, ['nombre', 'sexo', 'fechaDeNacimiento', 'raza', 'color', 'observaciones', 'foto', 'mail']));
     //const { error } = validateCreatePerro(perro);
     //if (error) return res.status(400).render('registro-perro', { error });
-    let user = await User.findOne({ mail: req.body.mail });
+    let user = await User.findOne({ mail: req.body.mail }).populate('perrosId');
     if (!user) {
       return res.status(400).send('User not registered.');
     }
-
     console.log(user);
-
     perro = new Perro(_.pick(req.body, ['nombre', 'sexo', 'fechaDeNacimiento', 'raza', 'color', 'observaciones', 'foto']));
-
     console.log(perro);
-
     const perros = user.perrosId; // Array de perros del usuario
-
     console.log(perros);
-
-    let perroEncontrado = perros.find(perroId => perroId && perroId.toString() === perro._id.toString());
-
+    let perroEncontrado = perros.find(perroId => perroId && perroId.nombre === perro.nombre);
     if (!perroEncontrado) {
       console.log('El perro no se encuentra en la lista del usuario');
       user.perrosId.push(perro._id);
@@ -119,11 +126,9 @@ router.post('/registrar-perro', async (req, res) => {
       console.log("Perro agregado al usuario");
     } else {
       console.log('El perro ya está en la lista del usuario');
-      return res.status(400).send('Perro already registered.');
+      return res.status(400).send('El perro ya esta en la lista del usuario');
     }
-
     await perro.save();
-
     res.redirect('/admin');
   } catch (error) {
     console.log('Error al registrar el perro:', error);
@@ -255,10 +260,12 @@ router.post('/registrar-perro', async (req, res) => {
   })
 
   .post('/listar-perros', async (req, res) => {
+    let mailUsuario = req.body.dato
+    console.log(mailUsuario);
     const usuario = await User.findOne({ mail: req.body.dato })
       .populate('perrosId')
     const perros = usuario.perrosId;
-    res.render('listaPerros', { perros, admin: true })
+    res.render('listaPerros', { perros, mailUsuario, admin: true})
   })
 
   .post('/eliminar-perro', async (req, res) => {

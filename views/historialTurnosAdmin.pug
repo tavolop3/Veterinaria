@@ -44,9 +44,10 @@ html
                   button(type="submit") Modificar turno
 
                 //a partir de aca abajo, podria mandar solo el ID (turno._id)
-                form(action="/admin/confirmar-asistencia", method="POST") 
-                  input(type="hidden", name="id", value=turno._id)
-                  button(type="submit") Confirmar asistencia
+                if turno.estado == "no-asistido"
+                  form(action="/admin/confirmar-asistencia", method="POST") 
+                    input(type="hidden", name="id", value=turno._id)
+                    button(type="submit") Confirmar asistencia
 
                 form(action="/admin/eliminar-turno", method="POST")
                   input(type="hidden", name="id", value=turno._id)
