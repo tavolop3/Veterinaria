@@ -1,21 +1,21 @@
 const express = require('express');
 const router = express.Router();
 var crypto = require("crypto");
-const { User, encriptarContraseña } = require('../models/user');
+const { User, validateCreate, encriptarContraseña } = require('../models/user');
 const { Perro } = require('../models/perro')
-const { Turno } = require('../models/turno')
+const { Servicio } = require('../models/servicio')
+const { Turno, modificarEstado } = require('../models/turno')
 const _ = require('lodash');
 const { sendEmail } = require('../emails');
 const { ObjectId } = require('mongoose').Types;
-
-
+const moment = require('moment');
 
 router.post('/registrar-usuario', async (req, res) => {
   // const { error } = validateCreate(req.body);  Ya no valida porque no está especificado en las hu las microvalidaciones
   // if (error) return res.status(400).render('registro-usuario', { error });
 
   let user = await User.findOne({ mail: req.body.mail });
-  if (user) return res.status(400).render('registro-usuario', { error: 'El mail ya está en uso.' }); // TODO Popup
+  if (user) return res.status(400).render('registro-usuario', { error: 'El mail ya está en uso.' });
 
   user = await User.findOne({ dni: req.body.dni });
   if (user) return res.status(400).render('registro-usuario', { error: 'El dni ya está registrado.' });
@@ -24,7 +24,7 @@ router.post('/registrar-usuario', async (req, res) => {
 
   const contraRandom = crypto.randomBytes(8).toString('hex');
   // Activar para testear un par de veces o en demo para no gastar la cuota de mails (son 100)
-  // sendEmail(user.mail,'OhMyDog - Contraseña predefinida',
+  // await sendEmail(user.mail,'OhMyDog - Contraseña predefinida',
   //     'Bienvenido a OhMyDog, tu cuenta fue creada con exito. Tu contraseña para el primer ingreso va a ser '+ contraRandom + ' es importante que la cambies ni bien accedas por motivos de seguridad, gracias.'
   // );
   console.log('Contraseña generada:' + contraRandom);
@@ -32,7 +32,7 @@ router.post('/registrar-usuario', async (req, res) => {
   user.contraseñaDefault = user.contraseña;
   await user.save();
 
-  res.redirect('/admin');
+  res.send('<script>alert("Se registró al usuario."); window.location.href = "/";</script>');
 })
 
   .post('/modificar-usuario', async (req, res) => {
@@ -40,45 +40,38 @@ router.post('/registrar-usuario', async (req, res) => {
     let user = await User.findOne({ mail: dato });
     if (!user) return res.status(400).send('No se encontro el usuario');
     try {
-      await User.updateOne({ mail: dato }, { 
+      await User.updateOne({ mail: dato }, {
         $set: {
           mail: mail,
           nombre: nombre,
           apellido: apellido,
           dni: dni,
           telefono, telefono
-        } 
+        }
       });
-      return res.redirect('/admin');
+      return res.send('<script>alert("La modificación se realizó correctamente."); window.location.href = "/admin";</script>');
     } catch (error) {
-      return res.json({
-        resultado: false,
-        msg: 'El usuario no se pudo modificar',
-        error
-      });
+      return res.send('<script>alert("El usuario no se pudo modificar."); window.location.href = "/admin";</script>');
     }
   })
 
   .post('/modificar-perro', async (req, res) => {
-    const { id, nombre, sexo, fecha, raza, color, observaciones, foto } = req.body;   
+    const { id, nombre, sexo, fecha, raza, color, observaciones, foto } = req.body;
     try {
-      await Perro.updateOne({ _id: id }, { $set: {
-        nombre: nombre,
-        sexo: sexo,
-        fecha: fecha,
-        raza: raza,
-        color: color,
-        observaciones: observaciones,
-        foto: foto
-      } 
-    });
-      return res.redirect('/admin');
-    } catch (error) {
-      return res.json({
-        resultado: false,
-        msg: 'El perro no se pudo modificar',
-        error
+      await Perro.updateOne({ _id: id }, {
+        $set: {
+          nombre: nombre,
+          sexo: sexo,
+          fecha: fecha,
+          raza: raza,
+          color: color,
+          observaciones: observaciones,
+          foto: foto
+        }
       });
+      return res.send('<script>alert("La modificación se realizó correctamente."); window.location.href = "/admin";</script>');
+    } catch (error) {
+      return res.send('<script>alert("La modificación no pudo realizarse."); window.location.href = "/admin";</script>');
     }
   })
 
@@ -99,15 +92,17 @@ router.get('/listar-usuarios', async (req, res) => {
 
 router.post('/registrar-perro', async (req, res) => {
   try {
+    const perro = new Perro(_.pick(req.body, ['nombre', 'sexo', 'fechaDeNacimiento', 'raza', 'color', 'observaciones', 'foto', 'mail']));
+    //const { error } = validateCreatePerro(perro);
+    //if (error) return res.status(400).render('registro-perro', { error });
     let user = await User.findOne({ mail: req.body.mail });
-
     if (!user) {
       return res.status(400).send('User not registered.');
     }
 
     console.log(user);
 
-    const perro = new Perro(_.pick(req.body, ['nombre', 'sexo', 'fechaDeNacimiento', 'raza', 'color', 'observaciones', 'foto']));
+    perro = new Perro(_.pick(req.body, ['nombre', 'sexo', 'fechaDeNacimiento', 'raza', 'color', 'observaciones', 'foto']));
 
     console.log(perro);
 
@@ -151,6 +146,88 @@ router.post('/registrar-perro', async (req, res) => {
     }
   })
 
+  .post('/mostrar-modificar-turno', (req, res) => {
+    res.render('modificar-turno', { id: req.body.id });
+  })
+
+  .post('/modificar-turno', async (req, res) => {
+    var campos = ['rangoHorario', 'fecha', 'estado'];
+    campos = _.pickBy(_.pick(req.body, campos), _.identity)
+    campos.estado = 'modificado-pendiente';
+
+    const turno = await Turno.findByIdAndUpdate(req.body.id, campos);
+    if (!turno) res.status(400).send('El turno no fue encontrado');
+
+    const user = await User.findOne({ dni: turno.dni });
+    // Activar para testear un par de veces o en demo para no gastar la cuota de mails (son 100)
+    // await sendEmail(user.mail,'OhMyDog - Modificación de turno',
+    //     'Uno de tus turnos fue modificado por la veterinaria, por favor, revisa en tus turnos.'
+    // );
+
+    res.send('<script>alert("La modificación se realizó correctamente y se informó via mail al cliente."); window.location.href = "/admin/historial-turnos";</script>');
+  })
+
+  .post('/aceptar-turno', async (req, res) => {
+    let turno = await modificarEstado(req.body.id, 'aceptado');
+
+    const user = await User.findOne({ dni: turno.dni });
+    // Activar para testear un par de veces o en demo para no gastar la cuota de mails (son 100)
+    // await sendEmail(user.mail,'OhMyDog - Aceptación de turno',
+    //     'Tu turno fue aceptado!'
+    // );
+
+    res.send('<script>alert("Turno aceptado con exito y notificado al cliente via mail."); window.location.href = "/admin/historial-turnos";</script>');
+  })
+
+  .post('/rechazar-turno', async (req, res) => {
+    let turno = await modificarEstado(req.body.id, 'rechazado');
+
+    const user = await User.findOne({ dni: turno.dni });
+    // Activar para testear un par de veces o en demo para no gastar la cuota de mails (son 100)
+    // await sendEmail(user.mail,'OhMyDog - Rechazo de turno',
+    //     'Lamentablemente uno de tus turnos fue rechazado por la veterinaria, por favor, revisa en tus turnos.'
+    // );
+
+    res.send('<script>alert("Turno rechazado con exito y notificado al cliente via mail."); window.location.href = "/admin/historial-turnos";</script>');
+  })
+
+  .post('/confirmar-asistencia', async (req, res) => {
+    let turno = await modificarEstado(req.body.id, 'asistido');
+
+    if (turno.motivo != 'Vacunacion generica') return res.send('<script>alert("Turno marcado como asistido."); window.location.href = "/admin/historial-turnos";</script>');
+
+
+    const user = await User.findOne({ dni: turno.dni }).populate('perrosId');
+    user.turnosId.push(turno._id);
+    await user.save();
+
+    const perros = user.perrosId;
+    const perroEncontrado = perros.find(perro => perro && perro.nombre === turno.nombreDelPerro);
+
+    const fechaDeNacimiento = moment(perroEncontrado.fechaDeNacimiento).format('YYYY-MM-DD');
+    const edad = moment().diff(fechaDeNacimiento, 'months');
+
+    fechaDelTurno = moment();
+    if (edad > 4) {
+      fechaDelTurno = moment(fechaDelTurno).add(1, 'years').toDate();
+    } else {
+      fechaDelTurno = moment(fechaDelTurno).add(21, 'days').toDate();
+    }
+
+    const camposTurno = _.pick(turno, ['nombreDelPerro', 'rangoHorario', 'dni', 'motivo']);
+    camposTurno.estado = 'pendiente';
+    camposTurno.fecha = fechaDelTurno;
+    turno = new Turno(camposTurno);
+    await turno.save();
+
+    // Activar para testear un par de veces o en demo para no gastar la cuota de mails (son 100)
+    // await sendEmail(user.mail,'OhMyDog - Asignación de nuevo turno',
+    //     'Se asignó un nuevo turno automáticamente para la próxima vacunación, por favor, revisa en tus turnos.'
+    // );
+
+    res.send('<script>alert("Se confirmó la asistencia, nuevo turno asignado con exito y notificado al cliente."); window.location.href = "/admin/historial-turnos";</script>');
+  })
+
   .post('/eliminar-usuario', async (req, res) => {
     try {
       // Obtener el usuario que deseas eliminar
@@ -171,28 +248,7 @@ router.post('/registrar-perro', async (req, res) => {
       // Eliminar el usuario
       await User.deleteOne({ mail: req.body.dato });
       //console.log('Usuario y sus perros/turnos eliminados exitosamente');
-      res.render('eliminacion-confirmada');
-    } catch (err) {
-      res.json({ error: err.message || err.toString() });
-    }
-  })
-
-  .post('/eliminar-perro', async (req, res) => {
-    try {
-      const usuario = await User.findOne({ mail: req.body.mail });
-      const index = usuario.perrosId.indexOf(req.body.id);
-      if (index !== -1) {
-        usuario.perrosId.splice(index, 1); // Elimina 1 elemento en el índice especificado
-      }
-      await usuario.save();
-      // Obtener el perro a eliminar
-      const perro = await Perro.findByIdAndDelete({ _id: req.body.id });
-      if (!perro) {
-        return res.status(400).send('El perro no estaba en el sistema.');
-      }
-      //console.log('Usuario y sus perros/turnos eliminados exitosamente');
-
-      res.render('eliminacion-perro-confirmada');
+      res.send('El usuario se elimino exitosamente');
     } catch (err) {
       res.json({ error: err.message || err.toString() });
     }
@@ -202,13 +258,119 @@ router.post('/registrar-perro', async (req, res) => {
     const usuario = await User.findOne({ mail: req.body.dato })
       .populate('perrosId')
     const perros = usuario.perrosId;
-    let mail = usuario.mail;
-    res.render('listaPerros', { perros, admin: true, mail })
+    res.render('listaPerros', { perros, admin: true })
+  })
+
+  .post('/eliminar-perro', async (req, res) => {
+    try {
+      const usuario = await User.findOne({ mail: req.body.mail });
+      console.log(req.body);
+      console.log(usuario);
+      const index = usuario.perrosId.indexOf(req.body.id);
+      if (index !== -1) {
+        usuario.perrosId.splice(index, 1); // Elimina 1 elemento en el índice especificado
+      }
+      await usuario.save();
+      // Obtener el perro a eliminar
+      const perro = await Perro.findByIdAndDelete(req.body.id);
+      if (!perro) {
+        return res.status(400).send('El perro no estaba en el sistema.');
+      }
+      //console.log('Usuario y sus perros/turnos eliminados exitosamente');
+
+      res.send('Eliminacion del perro confirmada.');
+    } catch (err) {
+      res.json({ error: err.message || err.toString() });
+    }
+  })
+
+
+  .get('/historial-turnos', async (req, res) => {
+    try {
+      let turnos = await Turno.find({});
+      if (turnos.length === 0) {
+        res.render('historialTurnosAdmin', { error: 'La lista esta vacia' })
+      }
+      else {
+        turnos.sort(compararFechas);
+        res.render('historialTurnosAdmin', { turnos: turnos });
+      }
+    } catch (error) {
+      console.log('Error al obtener los turnos:', error);
+      return res.status(400).send('Error al obtener los turnos');
+    }
+  })
+
+  .post('/eliminar-turno', async (req, res) => {
+    try {
+      let turno = await Turno.findById(req.body.id);
+      const usuario = await User.findOne({ dni: turno.dni });
+      console.log(turno);
+      if (!(usuario === null)) {
+        const index = usuario.turnosId.indexOf(turno.id);
+        if (index !== -1) {
+          usuario.turnosId.splice(index, 1); // Elimina 1 elemento en el índice especificado
+        }
+        await usuario.save();
+      }
+
+      // Obtener el perro a eliminar
+      turno = await Turno.findByIdAndDelete(turno.id);
+      if (!turno) {
+        return res.status(400).send('El turno no estaba en el sistema.');
+      }
+      //console.log('Usuario y sus perros/turnos eliminados exitosamente');
+
+      res.send('Eliminacion del turno confirmada.');
+    } catch (err) {
+      res.json({ error: err.message || err.toString() });
+    }
   })
 
 
 
+  //Por alguna razon , esta funcion tiene que estar abajo de todo, sino te tira error.  
 
 
 
+
+  .post('/listar-perros', async (req, res) => {
+    const usuario = await User.findOne({ mail: req.body.dato })
+      .populate('perrosId')
+    const perros = usuario.perrosId;
+    let mail = usuario.mail;
+    res.render('listaPerros', { perros, admin: true, mail })
+  })
+
+  .get('/visualizar-tablon-servicios-admin', async (req, res) => {
+    try {
+      let servicios = await Servicio.find({});
+      if (!servicios) {
+        res.render('tablonServiciosAdmin', { error: 'La lista esta vacia' })
+      }
+      else {
+        res.render('tablonServiciosAdmin', { servicios: servicios });
+      }
+    } catch (error) {
+      console.log('Error al obtener los servicios:', error);
+      return res.status(400).send('Error al obtener los servicios');
+    }
+  })
+
+  .post('/eliminar-servicio', async (req, res) => {
+    try {
+      let servicio = await Servicio.findByIdAndDelete(req.body.id);
+      res.send('Eliminacion del paseador/cuidador confirmada.');
+    } catch (err) {
+      res.json({ error: err.message || err.toString() });
+    }
+  })
+
+function compararFechas(a, b) {
+
+  const fechaA = new Date(a.fecha);
+  const fechaB = new Date(b.fecha);
+  return fechaA - fechaB;
+
+}
 module.exports = router;

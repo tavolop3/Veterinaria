@@ -1,0 +1,22 @@
+doctype html
+html
+  head
+    meta(charset="utf-8")
+    title Modificar turno
+    link(rel="stylesheet", href="/style/login.css")
+  body
+    form(action="/admin/modificar-turno", method="post")
+      ul
+        li
+          label(for="rangoHorario") Rango horario:
+          select(name="rangoHorario", id="rangoHorario")
+            option(value="manana") Mañana
+            option(value="tarde") Tarde
+        li
+            label(for="fecha") Fecha:
+            input(type="date", id="fecha", name="fecha")
+        li.button
+          input(type="hidden", name="id", value=id)
+          button(type="submit") Guardar cambios
+    if error 
+      li.error= error
