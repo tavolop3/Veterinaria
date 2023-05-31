@@ -43,8 +43,13 @@ html
               td= adopcion.confirmado
               td= adopcion.mail
               //chequear, solo el cliente que realizo la publicacion puede darle al boton este
-              if (!(adopcion.confirmado) && (usuarioActual == adopcion.mail))
-                td.buttons
+              td.buttons
+                if (!(adopcion.confirmado) && (usuarioActual == adopcion.mail))
                   form(action="/clientes/confirmar-adopcion", method="POST")
                     input(type="hidden", name="id", value=adopcion._id)
                     button(type="submit") Confirmar adopcion
+                if !(usuarioActual == adopcion.mail)
+                  form(action="/clientes/adopcion/solicitar", method="POST")
+                    input(type="hidden", name="mailPostulante", value=adopcion.mail)
+                    button(type="submit") Adoptar 
+                  
