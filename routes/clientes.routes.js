@@ -99,16 +99,6 @@ router.post('/solicitar-turno', async (req, res) => {
     }
   })
 
-  .post('/adopcion/solicitar', (req, res) => {
-    // Activar para testear un par de veces o en demo para no gastar la cuota de mails (son 100)
-    // await sendEmail(req.user.mail,'OhMyDog - Solicitud de adpopción enviada',
-    //     'Su solicitud de adopción se ha enviado, contactese con ' + req.body.mail + ' para poder coordinar la adopción.' 
-    // );
-
-    res.send('La solicitud fue enviada.');
-  })
-
-
   .post('/modificar-adopcion', async (req, res) => {
     const { dato, nombre, sexo, color, tamaño, origen } = req.body;
     try {
@@ -156,37 +146,6 @@ router.post('/solicitar-turno', async (req, res) => {
     await modificarEstado(req.body.id, 'rechazado');
 
     res.send('<script>alert("Se rechazó la modificación.");window.location.href = "/";</script>');
-  })
-
-  .get('/visualizar-tablon-adopcion', async (req, res) => {
-    try {
-      let adopciones = await Adopcion.find({});
-      if (!adopciones) {
-        res.render('tablonAdopcion', { error: 'No hay adopciones cargadas en el sistema.' })
-      }
-      else {
-        console.log(adopciones);
-        res.render('tablonAdopcion', { adopciones: adopciones, usuarioActual: req.user.mail });
-      }
-    } catch (error) {
-      console.log('Error al obtener las adopciones:', error);
-      return res.status(400).send('Error al obtener las adopciones');
-    }
-  })
-
-  .get('/visualizar-tablon-servicios', async (req, res) => {
-    try {
-      let servicios = await Servicio.find({});
-      if (!servicios) {
-        res.render('tablonServiciosCliente', { error: 'No hay paseadores o cuidadores cargados' })
-      }
-      else {
-        res.render('tablonServiciosCliente', { servicios: servicios });
-      }
-    } catch (error) {
-      console.log('Error al obtener los servicios:', error);
-      return res.status(400).send('Error al obtener los servicios');
-    }
   })
 
   .post('/confirmar-adopcion', async (req, res) => {
