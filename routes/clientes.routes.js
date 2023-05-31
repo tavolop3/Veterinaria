@@ -108,11 +108,6 @@ router.post('/solicitar-turno', async (req, res) => {
     res.send('La solicitud fue enviada.');
   })
 
-  .post('/adopcion/confirmar', async (req, res) => {
-    await Adopcion.findByIdAndUpdate(req.body.id, { confirmado: true });
-
-    res.send('La solicitud fue enviada.');
-  })
 
   .post('/modificar-adopcion', async (req, res) => {
     const { dato, nombre, sexo, color, tamaño, origen } = req.body;
@@ -171,7 +166,7 @@ router.post('/solicitar-turno', async (req, res) => {
       }
       else {
         console.log(adopciones);
-        res.render('tablonAdopcion', { adopciones: adopciones });
+        res.render('tablonAdopcion', { adopciones: adopciones, usuarioActual: req.user.mail });
       }
     } catch (error) {
       console.log('Error al obtener las adopciones:', error);

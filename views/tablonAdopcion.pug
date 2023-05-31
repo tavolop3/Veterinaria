@@ -5,45 +5,46 @@ html
     style.
       table {
         border-collapse: collapse;
-        width: 30%;
+        width: 50%;
       }
       th, td {
-        padding: 12px;
+        padding: 15px;
         text-align: left;
       }
-       td.buttons {
+      td.buttons {
         display: flex;
         gap: 10px;
       }
-      
+  
   body
     if (!adopciones)
-        h1 No hay adopciones cargadas en el sistema.
+      h1 No hay adopciones cargadas en el sistema.
     else
-        div
-            h1 Lista de Adopciones
-            table
-                tr
-                th Nombre
-                th Edad
-                th Sexo
-                th Color
-                th Tamaño
-                th Origen
-                th Confirmado
-                th Mail
-            each adopcion in adopciones
-              tr
-                td= adopcion.nombre
-                td= adopcion.edad
-                td= adopcion.sexo
-                td= adopcion.color
-                td= adopcion.tamaño
-                td= adopcion.origen
-                td= adopcion.confirmado
-                td= adopcion.mail
+      div
+        h1 Lista de Adopciones
+        table
+          tr
+            th Nombre
+            th Edad
+            th Sexo
+            th Color
+            th Tamaño
+            th Origen
+            th Confirmado
+            th Mail
+          each adopcion in adopciones
+            tr
+              td= adopcion.nombre
+              td= adopcion.edad
+              td= adopcion.sexo
+              td= adopcion.color
+              td= adopcion.tamaño
+              td= adopcion.origen
+              td= adopcion.confirmado
+              td= adopcion.mail
+              //chequear, solo el cliente que realizo la publicacion puede darle al boton este
+              if (!(adopcion.confirmado) && (usuarioActual == adopcion.mail))
                 td.buttons
-                //chequear, solo el cliente que realizo la publicacion puede darle al boton este
-                if adopcion.confirmado == false 
-                  form(action="/clientes/aceptar-modificacion", method="POST")
+                  form(action="/clientes/confirmar-adopcion", method="POST")
                     input(type="hidden", name="id", value=adopcion._id)
+                    button(type="submit") Confirmar adopcion
