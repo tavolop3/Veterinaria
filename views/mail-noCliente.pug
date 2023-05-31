@@ -16,6 +16,7 @@ body
             label(for="mail") Mail:
             input(type="email", id="mail", name="mailSolicitante", required)
         li.button
+            input(type="hidden", name="mailPostulante", value=mailPostulante)
             button(type="submit") Ingresar mail
     if error
         li.error= error
