@@ -350,12 +350,14 @@ router.post('/registrar-perro', async (req, res) => {
     disponibilidadHoraria: req.body.disponibilidadHoraria,
     mail: req.body.mail
   }
+  let servicio = await Servicio.findOne({ mail: nuevoServicio.mail});
+  if (servicio) return res.status(400).send('<script>alert("El mail ya se encuentra asignado"); window.location.href = "/admin";</script>');
     try {
       let servicio = new Servicio(nuevoServicio);
       await servicio.save();
-      return res.send('<script>alert("La carga del servicio se realizo correctamente"); window.location.href = "/admin";</script>');
+      return res.send('<script>alert("La carga se realizo correctamente"); window.location.href = "/admin";</script>');
     } catch (error) {
-      return res.send('<script>alert("La carga del servicio no pudo realizarse"); window.location.href = "/admin";</script>');
+      return res.send('<script>alert("La carga no pudo realizarse"); window.location.href = "/admin";</script>');
     }
 })
 
