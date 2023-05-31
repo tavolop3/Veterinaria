@@ -3,6 +3,7 @@ const router = express.Router();
 var crypto = require("crypto");
 const { User, validateCreate, encriptarContraseña } = require('../models/user');
 const { Perro } = require('../models/perro')
+const { Servicio } = require('../models/servicio')
 const { Turno, modificarEstado } = require('../models/turno')
 const _ = require('lodash');
 const { sendEmail } = require('../emails');
@@ -14,7 +15,7 @@ router.post('/registrar-usuario', async (req, res) => {
   // if (error) return res.status(400).render('registro-usuario', { error });
 
   let user = await User.findOne({ mail: req.body.mail });
-  if (user) return res.status(400).render('registro-usuario', { error: 'El mail ya está en uso.' }); // TODO Popup
+  if (user) return res.status(400).render('registro-usuario', { error: 'El mail ya está en uso.' });
 
   user = await User.findOne({ dni: req.body.dni });
   if (user) return res.status(400).render('registro-usuario', { error: 'El dni ya está registrado.' });
@@ -31,7 +32,7 @@ router.post('/registrar-usuario', async (req, res) => {
   user.contraseñaDefault = user.contraseña;
   await user.save();
 
-  res.redirect('/'); // TODO Enviar mensaje con confirmación de creación 
+  res.send('<script>alert("Se registró al usuario."); window.location.href = "/";</script>');
 })
 
   .post('/modificar-usuario', async (req, res) => {
@@ -144,6 +145,7 @@ router.post('/registrar-perro', async (req, res) => {
     var campos = ['rangoHorario', 'fecha', 'estado'];
     campos = _.pickBy(_.pick(req.body, campos), _.identity)
     campos.estado = 'modificado-pendiente';
+
     const turno = await Turno.findByIdAndUpdate(req.body.id, campos);
     if (!turno) res.status(400).send('El turno no fue encontrado');
 
@@ -153,10 +155,10 @@ router.post('/registrar-perro', async (req, res) => {
     //     'Uno de tus turnos fue modificado por la veterinaria, por favor, revisa en tus turnos.'
     // );
 
-    res.redirect('/'); // TODO Mostrar mensaje con confirmación de modificación 
+    res.send('<script>alert("La modificación se realizó correctamente y se informó via mail al cliente."); window.location.href = "/admin/historial-turnos";</script>');
   })
 
-  .post('/aceptar-turno', async (req, res) => { // TODO testear todos los de turnos 
+  .post('/aceptar-turno', async (req, res) => {
     let turno = await modificarEstado(req.body.id, 'aceptado');
 
     const user = await User.findOne({ dni: turno.dni });
@@ -165,7 +167,7 @@ router.post('/registrar-perro', async (req, res) => {
     //     'Tu turno fue aceptado!'
     // );
 
-    res.send('Turno aceptado con exito y notificado al cliente.');
+    res.send('<script>alert("Turno aceptado con exito y notificado al cliente via mail."); window.location.href = "/admin/historial-turnos";</script>');
   })
 
   .post('/rechazar-turno', async (req, res) => {
@@ -177,13 +179,14 @@ router.post('/registrar-perro', async (req, res) => {
     //     'Lamentablemente uno de tus turnos fue rechazado por la veterinaria, por favor, revisa en tus turnos.'
     // );
 
-    res.send('Turno rechazado con exito y notificado al cliente.');
+    res.send('<script>alert("Turno rechazado con exito y notificado al cliente via mail."); window.location.href = "/admin/historial-turnos";</script>');
   })
 
   .post('/confirmar-asistencia', async (req, res) => {
     let turno = await modificarEstado(req.body.id, 'asistido');
 
-    if (turno.motivo != 'Vacunacion generica') return res.send('Turno marcado como asistido.');
+    if (turno.motivo != 'Vacunacion generica') return res.send('<script>alert("Turno marcado como asistido."); window.location.href = "/admin/historial-turnos";</script>');
+
 
     const user = await User.findOne({ dni: turno.dni }).populate('perrosId');
     user.turnosId.push(turno._id);
@@ -213,7 +216,7 @@ router.post('/registrar-perro', async (req, res) => {
     //     'Se asignó un nuevo turno automáticamente para la próxima vacunación, por favor, revisa en tus turnos.'
     // );
 
-    res.send('Se confirmó la asistencia, nuevo turno asignado con exito y notificado al cliente.');
+    res.send('<script>alert("Se confirmó la asistencia, nuevo turno asignado con exito y notificado al cliente."); window.location.href = "/admin/historial-turnos";</script>');
   })
 
   .post('/eliminar-usuario', async (req, res) => {
@@ -328,6 +331,30 @@ router.post('/registrar-perro', async (req, res) => {
     const perros = usuario.perrosId;
     let mail = usuario.mail;
     res.render('listaPerros', { perros, admin: true, mail })
+  })
+
+  .get('/visualizar-tablon-servicios-admin', async (req, res) => {
+    try {
+      let servicios = await Servicio.find({});
+      if (!servicios) {
+        res.render('tablonServiciosAdmin', { error: 'La lista esta vacia' })
+      }
+      else {
+        res.render('tablonServiciosAdmin', { servicios: servicios });
+      }
+    } catch (error) {
+      console.log('Error al obtener los servicios:', error);
+      return res.status(400).send('Error al obtener los servicios');
+    }
+  })
+
+  .post('/eliminar-servicio', async (req, res) => {
+    try {
+      let servicio = await Servicio.findByIdAndDelete(req.body.id);
+      res.send('Eliminacion del paseador/cuidador confirmada.');
+    } catch (err) {
+      res.json({ error: err.message || err.toString() });
+    }
   })
 
 function compararFechas(a, b) {
