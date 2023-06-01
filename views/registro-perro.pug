@@ -3,7 +3,7 @@ doctype html
 html
   head
     meta(charset="UTF-8")
-    title Registrar usuario
+    title Registrar perro
     link(rel="stylesheet", href="/style/registro.css")
   +bannerAdmin()
   body
@@ -41,3 +41,16 @@ html
           button(type="submit") Registrar
         if error
           li.error= error  
+    script.
+      document.addEventListener('DOMContentLoaded', function() {
+        function setMaxDate() {
+          var today = new Date();
+          var year = today.getFullYear();
+          var month = String(today.getMonth() + 1).padStart(2, '0');
+          var day = String(today.getDate()).padStart(2, '0');
+          var todayDate = `${year}-${month}-${day}`;
+          var fechaInput = document.getElementById('fechaDeNacimiento');
+          fechaInput.setAttribute('max', todayDate);
+        }
+        setMaxDate();
+      });

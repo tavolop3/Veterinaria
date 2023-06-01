@@ -1,9 +1,22 @@
+include mixins/bannerCliente.pug
 doctype html
 html
   head
     meta(charset="UTF-8")
     title Solicitar turno
     link(rel="stylesheet", href="/style/registro.css")
+    script.
+      function setMinDate() {
+        var today = new Date();
+        var year = today.getFullYear();
+        var month = String(today.getMonth() + 1).padStart(2, '0');
+        var day = String(today.getDate()).padStart(2, '0');
+        var todayDate = `${year}-${month}-${day}`;
+        var fechaInput = document.getElementById('fecha');
+        fechaInput.setAttribute('min', todayDate);
+      }
+      window.onload = setMinDate;
+  +bannerCliente
   body
     form(action="/clientes/solicitar-turno", method="post")
       ul
