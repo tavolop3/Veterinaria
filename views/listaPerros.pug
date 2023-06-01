@@ -37,7 +37,8 @@ else
         tr
           td= perro.nombre
           td= perro.sexo
-          td= perro.fechaDeNacimiento.toLocaleDateString()
+          - let fecha = `${perro.fechaDeNacimiento.getUTCDate()}/${perro.fechaDeNacimiento.getUTCMonth()+1}/${perro.fechaDeNacimiento.getUTCFullYear()}`
+          td= fecha
           td= perro.raza 
           td= perro.color 
           td= perro.observaciones

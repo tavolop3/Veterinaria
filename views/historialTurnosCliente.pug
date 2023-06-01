@@ -38,7 +38,8 @@ html
             td= turno.dni
             td= turno.motivo
             td= turno.estado 
-            td= turno.fecha.toLocaleDateString()
+            - let fecha = `${turno.fecha.getUTCDate()}/${turno.fecha.getUTCMonth()+1}/${turno.fecha.getUTCFullYear()}`
+            td= fecha
             td.buttons
                 if turno.estado == "modificado-pendiente" 
                   form(action="/clientes/aceptar-modificacion", method="POST")
