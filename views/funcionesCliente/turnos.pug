@@ -1,0 +1,13 @@
+include ../mixins/bannerCliente.pug
+
+doctype html
+
++bannerCliente()
+html
+  head
+    title Turnos
+  body
+    form(action="/clientes/historial-turnos", method="GET")
+        button(type="submit") Ver turnos
+    form(action="/clientes/turno", method="GET")
+        button(type="submit") Solicitar turno

@@ -1,0 +1,15 @@
+include ../mixins/bannerCliente.pug
+
+doctype html
+
++bannerCliente()
+html
+  head
+    title Adopcion
+  body
+    form(action="/clientes/visualizar-tablon-adopcion", method="GET")
+        button(type="submit") Visualizar tablón
+    form(action="/clientes/cargar-adopcion", method="GET")
+        button(type="submit") Cargar adopción
+    form(action="/clientes/listar-adopciones", method="GET")
+        button(type="submit") Mis perros en adopción

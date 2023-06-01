@@ -8,11 +8,6 @@
 	line-height: 1.5em;
 }
 
-img {
-	max-width: 100%;
-	height: auto;
-}
-
 
 #encabezado {
 	background: #9db6ce;
@@ -32,10 +27,9 @@ img {
 	text-decoration: none;
 }	
 	#logo .titulo {
-		display: block;
+		float: right;
 		font-weight: 700;
 		font-size: 1.2em;
-		margin: 18% auto;
 	}
 	
 /*

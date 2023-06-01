@@ -1,0 +1,15 @@
+include ../mixins/bannerAdmin.pug
+
+doctype html
+
++bannerAdmin()
+html
+  head
+    title Usuarios
+  body
+    form(action="/admin/registrar-usuario", method="GET")
+        button(type="submit") Registrar usuario
+    form(action="/admin/registrar-perro", method="GET")
+        button(type="submit") Registrar perro
+    form(action="/admin/listar-usuarios", method="GET")
+        button(type="submit") Listar usuarios

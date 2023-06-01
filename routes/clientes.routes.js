@@ -52,7 +52,7 @@ router.post('/solicitar-turno', async (req, res) => {
     if (!await compararContraseñas(contraseña1, user.contraseña)) return res.status(400).send('<script>alert("La contraseña ingresada no es correcta."); window.location.href = "/clientes";</script>');
     let usuarioConMail = await User.findOne({ mail: mailNuevo });
     if (usuarioConMail) {
-      if (usuarioConMail.mail !== user.mail) return res.status(400).send('<script>alert("El mail ingresado ya se encuentra en uso."); window.location.href = "/clientes";</script>');
+      if (usuarioConMail.mail !== user.mail) return res.status(400).send('<script>alert("El mail ingresado ya se encuentra en uso."); window.location.href = "/";</script>');
     }
     try {
       if (mailNuevo === "") mailNuevo = mailActual;
@@ -69,9 +69,9 @@ router.post('/solicitar-turno', async (req, res) => {
           contraseña: contraseña2
         }
       });
-      return res.send('<script>alert("La modificación se realizó correctamente."); window.location.href = "/clientes";</script>');
+      return res.send('<script>alert("La modificación se realizó correctamente."); window.location.href = "/";</script>');
     } catch (error) {
-      return res.send('<script>alert("La modificación no pudo realizarse."); window.location.href = "/clientes";</script>');
+      return res.send('<script>alert("La modificación no pudo realizarse."); window.location.href = "/";</script>');
     }
   })
 

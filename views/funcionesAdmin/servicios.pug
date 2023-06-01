@@ -1,0 +1,13 @@
+include ../mixins/bannerAdmin.pug
+
+doctype html
+
++bannerAdmin()
+html
+  head
+    title Servicios
+  body
+    form(action="/admin/cargar-servicio", method="GET")
+        button(type="submit") Cargar servicio
+    form(action="/admin/visualizar-tablon-servicios", method="GET")
+        button(type="submit") Listar servicios

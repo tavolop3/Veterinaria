@@ -122,6 +122,14 @@ router.get('', (req, res) => {
         res.render('modificar-adopcion', { perro });
     })
 
+    .get('/clientes/adopcion', autenticado, (req, res) => {
+        res.render('funcionesCliente/adopcion');
+    })
+
+    .get('/clientes/turnos', autenticado, (req, res) => {
+        res.render('funcionesCliente/turnos');
+    })
+
     // ------------------- ADMIN -------------------------
 
     .get('/admin', [autenticado, esAdmin], (req, res) => {
@@ -169,6 +177,22 @@ router.get('', (req, res) => {
     .get('/admin/modificar-servicio', [autenticado, esAdmin], async(req, res) => {
         let servicio = await Servicio.findById(req.query.id);
         res.render('modificar-servicio', {servicio});
+    })
+
+    .get('/admin/usuarios', [autenticado, esAdmin], async(req, res) => {
+        res.render('funcionesAdmin/usuarios');
+    })
+
+    .get('/admin/turnos', [autenticado, esAdmin], async(req, res) => {
+        res.render('funcionesAdmin/turnos');
+    })
+
+    .get('/admin/servicios', [autenticado, esAdmin], async(req, res) => {
+        res.render('funcionesAdmin/servicios');
+    })
+
+    .get('/admin/cargar-servicio', [autenticado, esAdmin], async(req, res) => {
+        res.render('cargar-paseador-cuidador');
     })
 
 module.exports = router;

@@ -5,31 +5,26 @@ mixin bannerAdmin
   body.cuerpoBanner
     header#encabezado
       a#logo(href="/")
-        span.titulo OhMyDog
+        img(src="/logo.png", alt="Logo", style="width: 50px; height: 50px;")
       nav#navBanner
         ul
           li
             select(title="Cuenta", onchange="redirectToPage(this)")
-              option Operaciones
-              option(value="/admin/registrar-usuario") Registrar Usuario
-              option(value="/admin/registrar-perro") Registrar Perro
+              option Mi cuenta
+              option(value='/clientes/modificar-datos') Modificar mis datos 
               option(value='/usuarios/cerrar-sesion') Cerrar sesion
-              option(value="/admin") Operacion x
+
     header#indice
       nav
         ul#lista-funciones
           li
-            a(href="/admin/listar-usuarios") Listar usuarios
+            a(href="/admin/usuarios") Usuarios
           li
-            a(href="#") Autodestruir
+            a(href="/admin/turnos") Turnos
           li
-            a(href="#") Evadir impuestos
-          li
-            a(href="/admin/visualizar-tablon-servicios") Servicios
+            a(href="/admin/servicios") Servicios
           li
             a(href="#") Donaciones
-          li
-            a(href="/admin/historial-turnos") Turnos
           li
             a(href="#") Urgencias
     script.

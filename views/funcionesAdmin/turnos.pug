@@ -1,0 +1,13 @@
+include ../mixins/bannerAdmin.pug
+
+doctype html
+
++bannerAdmin()
+html
+  head
+    title Turnos
+  body
+    form(action="/admin/turnos-diarios", method="GET")
+        button(type="submit") Ver turnos para hoy
+    form(action="/admin/historial-turnos", method="GET")
+        button(type="submit") Historial de turnos
