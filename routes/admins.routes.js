@@ -114,7 +114,7 @@ router.post('/registrar-perro', async (req, res) => {
       return res.status(400).send('<script>alert("El usuario no se encuentra registrado."); window.location.href = "/admin";</script>');
     }
     console.log(user);
-    perro = new Perro(_.pick(req.body, ['nombre', 'sexo', 'fechaDeNacimiento', 'raza', 'color', 'observaciones', 'foto']));
+    perro = new Perro(_.pick(req.body, ['nombre', 'sexo', 'fechaDeNacimiento', 'raza', 'color', 'observaciones', 'foto', 'mail']));
     console.log(perro);
     const perros = user.perrosId; // Array de perros del usuario
     console.log(perros);
