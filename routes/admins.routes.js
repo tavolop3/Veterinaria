@@ -140,8 +140,8 @@ router.post('/registrar-perro', async (req, res) => {
   .get('/turnos-diarios', async (req, res) => {
     try {
       let hoy = new Date();
-      let turnos = await Turno.find({});
-      turnos = turnos.filter(turno => esHoy(turno.fecha, hoy));
+      let todosLosTurnos = await Turno.find({});
+      let turnos = todosLosTurnos.filter(turno => esHoy(turno.fecha, hoy));
       res.render('historialTurnosAdmin', { turnos })
     } catch (error) {
       console.log('Error al obtener los turnos:', error);

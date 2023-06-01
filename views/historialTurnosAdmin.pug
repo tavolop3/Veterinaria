@@ -1,3 +1,4 @@
+include mixins/bannerAdmin.pug
 doctype html
 html
   head
@@ -17,8 +18,9 @@ html
         gap: 10px;
       }
 
+  +bannerAdmin()
   body
-    if(!turnos.length)
+    if(!turnos || turnos.length == 0)
       h1 No hay turnos cargados 
     else
       h1 Lista de turnos

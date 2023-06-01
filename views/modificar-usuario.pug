@@ -1,9 +1,11 @@
+include mixins/bannerAdmin.pug
 doctype html
 html
   head
     meta(charset="utf-8")
     title Modificar usuario
     link(rel="stylesheet", href="/style/login.css")
+  +bannerAdmin()
   body
     form(action="/admin/modificar-usuario", method="post")
       ul

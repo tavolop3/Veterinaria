@@ -1,9 +1,11 @@
+include mixins/bannerAdmin.pug
 doctype html
 html
   head
     meta(charset="UTF-8")
     title Registrar servicio
     link(rel="stylesheet", href="/style/registro.css")
+  +bannerAdmin()
   body
     form(action="/admin/cargar-servicio", method="post")
       ul
