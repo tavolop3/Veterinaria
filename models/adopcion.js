@@ -5,7 +5,7 @@ const adopcionSchema = new mongoose.Schema({
         type: String
     },
     edad: {
-        type: Number
+        type: String
     },
     sexo: {
         type: String

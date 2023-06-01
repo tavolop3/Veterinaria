@@ -83,7 +83,7 @@ router.post('/solicitar-turno', async (req, res) => {
   })
 
   .post('/cargar-adopcion', async (req, res) => {
-    perroParaAdoptar = {
+    let perroParaAdoptar = {
       nombre: req.body.nombre,
       edad: req.body.edad,
       sexo: req.body.sexo,
@@ -100,6 +100,7 @@ router.post('/solicitar-turno', async (req, res) => {
       await req.user.save();
       return res.send('<script>alert("La adopcion se cargo correctamente."); window.location.href = "/clientes";</script>');
     } catch (error) {
+      console.log(error);
       return res.send('<script>alert("La adopcion no puedo cargarse."); window.location.href = "/clientes";</script>');
     }
   })

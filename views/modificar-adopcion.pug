@@ -18,8 +18,10 @@ html
           label(for="edad") Edad:
           input(type="text", id="edad", name="edad", value=perro.edad, required)
         li
-          label(for="sexo") Sexo:
-          input(type="text", id="sexo", name="sexo", value=perro.sexo, required)
+          label(for="sexo") sexo
+          select(id="sexo", name="sexo", required)
+            option(value="macho") Macho
+            option(value="hembra") Hembra
         li
           label(for="color") Color:
           input(type="text", id="color", name="color", value=perro.color, required)

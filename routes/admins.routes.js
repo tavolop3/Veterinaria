@@ -346,7 +346,7 @@ router.post('/registrar-perro', async (req, res) => {
 
 
   .post('/cargar-servicio', async (req, res) => {
-    nuevoServicio = {
+    let nuevoServicio = {
       nombre: req.body.nombre,
       apellido: req.body.apellido,
       tipoServicio: req.body.tipoServicio,
