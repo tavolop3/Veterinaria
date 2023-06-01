@@ -143,9 +143,8 @@ router.post('/registrar-perro', async (req, res) => {
     try {
       let hoy = new Date();
       let turnos = await Turno.find({});
-      let turnosDiarios = turnos.filter(turno => esHoy(turno.fecha, hoy));
-      console.log(turnosDiarios);
-      res.render('turnos-hoy', { turnosDiarios })
+      turnos = turnos.filter(turno => esHoy(turno.fecha, hoy));
+      res.render('historialTurnosAdmin', { turnos })
     } catch (error) {
       console.log('Error al obtener los turnos:', error);
       return res.status(400).send('Error al obtener los turnos');
@@ -200,8 +199,7 @@ router.post('/registrar-perro', async (req, res) => {
   .post('/confirmar-asistencia', async (req, res) => {
     let turno = await modificarEstado(req.body.id, 'asistido');
 
-    if (turno.motivo != 'Vacunacion generica') return res.send('<script>alert("Turno marcado como asistido."); window.location.href = "/admin/historial-turnos";</script>');
-
+    if (turno.motivo != 'Vacunacion generica' && turno.motivo != 'Vacunacion antirrabica') return res.send('<script>alert("Turno marcado como asistido."); window.location.href = "/admin/historial-turnos";</script>');
 
     const user = await User.findOne({ dni: turno.dni }).populate('perrosId');
     user.turnosId.push(turno._id);
@@ -424,9 +422,6 @@ function compararFechas(a, b) {
 function esHoy(fecha1, fecha2) {
   let a = String(fecha1.getUTCDate()).padStart(2, '0') + '/' + String(fecha1.getUTCMonth() + 1).padStart(2, '0') + '/' + fecha1.getUTCFullYear();
   let b = String(fecha2.getUTCDate()).padStart(2, '0') + '/' + String(fecha2.getUTCMonth() + 1).padStart(2, '0') + '/' + fecha2.getUTCFullYear();
-  console.log(a);
-  console.log(b);
-  console.log(a == b);
   return (a == b)
 }
 
