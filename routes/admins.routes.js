@@ -111,7 +111,7 @@ router.post('/registrar-perro', async (req, res) => {
     //if (error) return res.status(400).render('registro-perro', { error });
     let user = await User.findOne({ mail: req.body.mail }).populate('perrosId');
     if (!user) {
-      return res.status(400).send('El usuario no se encuentra registado.');
+      return res.status(400).send('<script>alert("El usuario no se encuentra registrado."); window.location.href = "/admin";</script>');
     }
     console.log(user);
     perro = new Perro(_.pick(req.body, ['nombre', 'sexo', 'fechaDeNacimiento', 'raza', 'color', 'observaciones', 'foto']));
@@ -123,13 +123,11 @@ router.post('/registrar-perro', async (req, res) => {
       console.log('El perro no se encuentra en la lista del usuario');
       user.perrosId.push(perro._id);
       await user.save();
-      console.log("Perro agregado al usuario");
     } else {
-      console.log('El perro ya está en la lista del usuario');
-      return res.status(400).send('El perro ya esta en la lista del usuario');
+      return res.status(400).send('<script>alert("El perro ya esta en la lista del usuario."); window.location.href = "/admin/";</script>');
     }
     await perro.save();
-    res.redirect('/admin');
+    return res.status(400).send('<script>alert("Perro registrado exitosamente."); window.location.href = "/admin";</script>');
   } catch (error) {
     console.log('Error al registrar el perro:', error);
     return res.status(500).send('Internal Server Error');
@@ -237,7 +235,7 @@ router.post('/registrar-perro', async (req, res) => {
       // Obtener el usuario que deseas eliminar
       const usuario = await User.findOne({ mail: req.body.dato });
       if (!usuario) {
-        return res.status(400).send('User not registered.');
+        return res.status(400).send('<script>alert("El usuario no se encuentra registrado."); window.location.href = "/admin/listar-usuarios";</script>');
       }
 
       // Recopilar los IDs de los perros y turnos asociados al usuario
@@ -252,7 +250,7 @@ router.post('/registrar-perro', async (req, res) => {
       // Eliminar el usuario
       await User.deleteOne({ mail: req.body.dato });
       //console.log('Usuario y sus perros/turnos eliminados exitosamente');
-      res.send('El usuario se elimino exitosamente');
+      return res.status(400).send('<script>alert("El usuario se elimino exitosamente."); window.location.href = "/admin/listar-usuarios";</script>');
     } catch (err) {
       res.json({ error: err.message || err.toString() });
     }
@@ -264,7 +262,7 @@ router.post('/registrar-perro', async (req, res) => {
     const usuario = await User.findOne({ mail: req.body.dato })
       .populate('perrosId')
     const perros = usuario.perrosId;
-    res.render('listaPerros', { perros, mailUsuario, admin: true})
+    res.render('listaPerros', { perros, mailUsuario, admin: true })
   })
 
   .post('/eliminar-perro', async (req, res) => {
@@ -280,11 +278,10 @@ router.post('/registrar-perro', async (req, res) => {
       // Obtener el perro a eliminar
       const perro = await Perro.findByIdAndDelete(req.body.id);
       if (!perro) {
-        return res.status(400).send('El perro no estaba en el sistema.');
+        return res.status(400).send('<script>alert("El perro no estaba en el sistema."); window.location.href = "/admin";</script>');
       }
       //console.log('Usuario y sus perros/turnos eliminados exitosamente');
-
-      res.send('Eliminacion del perro confirmada.');
+      return res.status(400).send('<script>alert("La baja del perro fue exitosa."); window.location.href = "/admin";</script>');
     } catch (err) {
       res.json({ error: err.message || err.toString() });
     }
@@ -374,7 +371,7 @@ router.post('/registrar-perro', async (req, res) => {
 
     const servicioExistente = await Servicio.findOne({ mail });
     const servicioModificar = await Servicio.findById(id);
-    if(servicioExistente && servicioExistente.mail != servicioModificar.mail) return res.status(400).send('<script>alert("El mail se encuentra registrado."); window.location.href = "/admin/visualizar-tablon-servicios";</script>');
+    if (servicioExistente && servicioExistente.mail != servicioModificar.mail) return res.status(400).send('<script>alert("El mail se encuentra registrado."); window.location.href = "/admin/visualizar-tablon-servicios";</script>');
 
     try {
       await Servicio.updateOne({ _id: id }, {
