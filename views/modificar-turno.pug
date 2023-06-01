@@ -5,6 +5,17 @@ html
     meta(charset="utf-8")
     title Modificar turno
     link(rel="stylesheet", href="/style/login.css")
+    script.
+      function setMinDate() {
+        var today = new Date();
+        var year = today.getFullYear();
+        var month = String(today.getMonth() + 1).padStart(2, '0');
+        var day = String(today.getDate()).padStart(2, '0');
+        var todayDate = `${year}-${month}-${day}`;
+        var fechaInput = document.getElementById('fecha');
+        fechaInput.setAttribute('min', todayDate);
+      }
+      window.onload = setMinDate;
   +bannerAdmin()
   body
     form(action="/admin/modificar-turno", method="post")
@@ -15,8 +26,8 @@ html
             option(value="manana") Mañana
             option(value="tarde") Tarde
         li
-            label(for="fecha") Fecha:
-            input(type="date", id="fecha", name="fecha")
+          label(for="fecha") Fecha:
+          input(type="date", id="fecha", name="fecha")
         li.button
           input(type="hidden", name="id", value=id)
           button(type="submit") Guardar cambios

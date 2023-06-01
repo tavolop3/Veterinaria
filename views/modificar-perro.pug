@@ -36,3 +36,16 @@ html
           input(type="text", id="foto", name="foto", value=perro.foto)
         li.button
           button(type="submit") Modificar
+    script.
+      document.addEventListener('DOMContentLoaded', function() {
+        function setMaxDate() {
+          var today = new Date();
+          var year = today.getFullYear();
+          var month = String(today.getMonth() + 1).padStart(2, '0');
+          var day = String(today.getDate()).padStart(2, '0');
+          var todayDate = `${year}-${month}-${day}`;
+          var fechaInput = document.getElementById('fecha');
+          fechaInput.setAttribute('max', todayDate);
+        }
+        setMaxDate();
+      });
