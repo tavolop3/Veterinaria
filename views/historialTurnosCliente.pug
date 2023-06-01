@@ -1,3 +1,4 @@
+include mixins/bannerCliente.pug
 doctype html
 html
   head
@@ -16,7 +17,7 @@ html
         display: flex;
         gap: 10px;
       }
-
+  +bannerCliente()
   body
     if(!turnos)
       h1 No hay turnos cargados

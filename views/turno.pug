@@ -1,9 +1,11 @@
+include mixins/bannerCliente.pug
 doctype html
 html
   head
     meta(charset="UTF-8")
     title Solicitar turno
     link(rel="stylesheet", href="/style/registro.css")
+  +bannerCliente
   body
     form(action="/clientes/solicitar-turno", method="post")
       ul

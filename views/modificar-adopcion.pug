@@ -1,9 +1,11 @@
+include mixins/bannerCliente.pug
 doctype html
 html
   head
     meta(charset="utf-8")
     title Modificar adopcion 
     link(rel="stylesheet", href="/style/login.css")
+  +bannerCliente()
   body
     form(action="/clientes/modificar-adopcion", method="post")
       ul
