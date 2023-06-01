@@ -17,11 +17,13 @@ html
           label(for="nombre") Nombre:
           input(type="text", id="nombre", name="nombre", value=perro.nombre, required)
         li
-          label(for="sexo") Sexo:
-          input(type="text", id="sexo", name="sexo", value=perro.sexo, required)
+          label(for="sexo") sexo
+          select(id="sexo", name="sexo", required)
+            option(value="macho") Macho
+            option(value="hembra") Hembra
         li
           label(for="fecha") Fecha de nacimiento:
-          input(type="date", id="fecha", name="fecha", value=perro.fecha, required)
+          input(type="date", id="fecha", name="fecha", value=perro.fecha)
         li
           label(for="raza") Raza:
           input(type="text", id="raza", name="raza", value=perro.raza, required)
