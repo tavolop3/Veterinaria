@@ -24,9 +24,9 @@ router.post('/registrar-usuario', async (req, res) => {
 
   const contraRandom = crypto.randomBytes(8).toString('hex');
   // Activar para testear un par de veces o en demo para no gastar la cuota de mails (son 100)
-  // await sendEmail(user.mail,'OhMyDog - Contraseña predefinida',
-  //     'Bienvenido a OhMyDog, tu cuenta fue creada con exito. Tu contraseña para el primer ingreso va a ser '+ contraRandom + ' es importante que la cambies ni bien accedas por motivos de seguridad, gracias.'
-  // );
+  await sendEmail(user.mail,'OhMyDog - Contraseña predefinida',
+      'Bienvenido a OhMyDog, tu cuenta fue creada con exito. Tu contraseña para el primer ingreso va a ser '+ contraRandom + ' es importante que la cambies ni bien accedas por motivos de seguridad, gracias.'
+  );
   console.log('Contraseña generada:' + contraRandom);
   user.contraseña = await encriptarContraseña(contraRandom);
   user.contraseñaDefault = user.contraseña;
@@ -162,9 +162,9 @@ router.post('/registrar-perro', async (req, res) => {
 
     const user = await User.findOne({ dni: turno.dni });
     // Activar para testear un par de veces o en demo para no gastar la cuota de mails (son 100)
-    // await sendEmail(user.mail,'OhMyDog - Modificación de turno',
-    //     'Uno de tus turnos fue modificado por la veterinaria, por favor, revisa en tus turnos.'
-    // );
+    await sendEmail(user.mail,'OhMyDog - Modificación de turno',
+        'Uno de tus turnos fue modificado por la veterinaria, por favor, revisa en tus turnos.'
+    );
 
     res.send('<script>alert("La modificación se realizó correctamente y se informó via mail al cliente."); window.location.href = "/admin/historial-turnos";</script>');
   })
@@ -174,9 +174,9 @@ router.post('/registrar-perro', async (req, res) => {
 
     const user = await User.findOne({ dni: turno.dni });
     // Activar para testear un par de veces o en demo para no gastar la cuota de mails (son 100)
-    // await sendEmail(user.mail,'OhMyDog - Aceptación de turno',
-    //     'Tu turno fue aceptado!'
-    // );
+    await sendEmail(user.mail,'OhMyDog - Aceptación de turno',
+        'Tu turno fue aceptado!'
+    );
 
     res.send('<script>alert("Turno aceptado con exito y notificado al cliente via mail."); window.location.href = "/admin/historial-turnos";</script>');
   })
@@ -186,9 +186,9 @@ router.post('/registrar-perro', async (req, res) => {
 
     const user = await User.findOne({ dni: turno.dni });
     // Activar para testear un par de veces o en demo para no gastar la cuota de mails (son 100)
-    // await sendEmail(user.mail,'OhMyDog - Rechazo de turno',
-    //     'Lamentablemente uno de tus turnos fue rechazado por la veterinaria, por favor, revisa en tus turnos.'
-    // );
+    await sendEmail(user.mail,'OhMyDog - Rechazo de turno',
+        'Lamentablemente uno de tus turnos fue rechazado por la veterinaria, por favor, revisa en tus turnos.'
+    );
 
     res.send('<script>alert("Turno rechazado con exito y notificado al cliente via mail."); window.location.href = "/admin/historial-turnos";</script>');
   })
@@ -222,9 +222,9 @@ router.post('/registrar-perro', async (req, res) => {
     await turno.save();
 
     // Activar para testear un par de veces o en demo para no gastar la cuota de mails (son 100)
-    // await sendEmail(user.mail,'OhMyDog - Asignación de nuevo turno',
-    //     'Se asignó un nuevo turno automáticamente para la próxima vacunación, por favor, revisa en tus turnos.'
-    // );
+    await sendEmail(user.mail,'OhMyDog - Asignación de nuevo turno',
+        'Se asignó un nuevo turno automáticamente para la próxima vacunación, por favor, revisa en tus turnos.'
+    );
 
     res.send('<script>alert("Se confirmó la asistencia, nuevo turno asignado con exito y notificado al cliente."); window.location.href = "/admin/historial-turnos";</script>');
   })
