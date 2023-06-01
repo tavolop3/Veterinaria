@@ -42,6 +42,6 @@ html
                   input(type="hidden", name="id", value=servicio._id)
                   button(type="submit") Eliminar
 
-                form(action="/admin/modificar-servicio", method="POST")
+                form(action="/admin/modificar-servicio", method="GET")
                   input(type="hidden", name="id", value=servicio._id)
                   button(type="submit") Modificar

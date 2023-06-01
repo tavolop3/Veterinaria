@@ -11,10 +11,10 @@ html
           input(type="hidden", name="id", value=servicio._id)
         li
           label(for="nombre") Nombre:
-          input(type="text", id="nombre", name="nombre", value=servicio.nombre)
+          input(type="text", id="nombre", name="nombre", value=servicio.nombre, required)
         li
           label(for="apellido") Apellido:
-          input(type="text", id="apellido", name="apellido", value=servicio.apellido)
+          input(type="text", id="apellido", name="apellido", value=servicio.apellido, required)
         li
           label(for="tiposervicio") Tipo de servicio:
           select(name="tiposervicio", id="tiposervicio", required)
@@ -22,12 +22,12 @@ html
             option(value="cuidador") Cuidador
         li
           label(for="zona") Zona:
-          input(type="text", id="zona", name="zona", value=servicio.zona)
+          input(type="text", id="zona", name="zona", value=servicio.zona, required)
         li 
           label(for="disponibilidadHoraria") Disponibilidad horaria:
-          input(type="text", id="disponibilidadHoraria", name="disponibilidadHoraria", value=servicio.disponibilidadHoraria) 
+          input(type="text", id="disponibilidadHoraria", name="disponibilidadHoraria", value=servicio.disponibilidadHoraria, required) 
         li 
           label(for="mail") Mail: 
-          input(type="mail", id="mail", name="mail", value=servicio.mail)  
+          input(type="mail", id="mail", name="mail", value=servicio.mail, required)  
         li.button
           button(type="submit") Modificar

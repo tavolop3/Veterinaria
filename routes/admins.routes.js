@@ -371,6 +371,11 @@ router.post('/registrar-perro', async (req, res) => {
 
   .post('/modificar-servicio', async (req, res) => {
     const { id, nombre, apellido, tiposervicio, zona, disponibilidadHoraria, mail } = req.body;
+
+    const servicioExistente = await Servicio.findOne({ mail });
+    const servicioModificar = await Servicio.findById(id);
+    if(servicioExistente && servicioExistente.mail != servicioModificar.mail) return res.status(400).send('<script>alert("El mail se encuentra registrado."); window.location.href = "/admin/visualizar-tablon-servicios";</script>');
+
     try {
       await Servicio.updateOne({ _id: id }, {
         $set: {
