@@ -67,7 +67,7 @@ router.post('/registrar-usuario', async (req, res) => {
     const { id, mailUsuario, nombre, sexo, fecha, raza, color, observaciones, foto } = req.body;
     let usuario = await User.findOne({ mail: mailUsuario }).populate('perrosId')
     let perros = usuario.perrosId;
-    if (perros.filter(perro => perro.nombre === nombre).lenght > 1) {
+    if (perros.filter(perro => perro.nombre === nombre).length !== 0) {
       return res.status(400).send('<script>alert("El usuario ya tiene un perro con ese nombre."); window.location.href = "/admin";</script>');
     }
     try {
