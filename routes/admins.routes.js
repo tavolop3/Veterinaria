@@ -354,7 +354,7 @@ router.post('/registrar-perro', async (req, res) => {
       disponibilidadHoraria: req.body.disponibilidadHoraria,
       mail: req.body.mail
     }
-    let servicio = await Servicio.findOne({ mail: nuevoServicio.mail });
+    let servicio = await Servicio.findOne({ mail: nuevoServicio.mail, tipoServicio: nuevoServicio.tipoServicio});
     if (servicio) return res.status(400).send('<script>alert("El mail ya se encuentra asignado"); window.location.href = "/admin";</script>');
     try {
       let servicio = new Servicio(nuevoServicio);
