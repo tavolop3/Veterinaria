@@ -46,9 +46,10 @@ router.post('/solicitar-turno', async (req, res) => {
 })
 
   .post('/modificar-datos', async (req, res) => {
-    let { mailNuevo, contraseña1, contraseña2 } = req.body;
+    let { mailNuevo, contraseña1, contraseña2, contraseñaNueva } = req.body;
     let mailActual = req.user.mail;
     let user = await User.findOne({ mail: mailActual });
+    if (contraseña1 !== contraseña2) return res.status(400).send('<script>alert("Las contraseñas ingresadas no son iguales."); window.location.href = "/clientes";</script>');
     if (!await compararContraseñas(contraseña1, user.contraseña)) return res.status(400).send('<script>alert("La contraseña ingresada no es correcta."); window.location.href = "/clientes";</script>');
     let usuarioConMail = await User.findOne({ mail: mailNuevo });
     if (usuarioConMail) {
@@ -56,17 +57,17 @@ router.post('/solicitar-turno', async (req, res) => {
     }
     try {
       if (mailNuevo === "") mailNuevo = mailActual;
-      if (contraseña2 !== "") {
-        contraseña2 = await encriptarContraseña(contraseña2);
+      if (contraseñaNueva !== "") {
+        contraseñaNueva = await encriptarContraseña(contraseñaNueva);
       }
       else {
-        contraseña2 = contraseña1;
-        contraseña2 = await encriptarContraseña(contraseña2);
+        contraseñaNueva = contraseña1;
+        contraseñaNueva = await encriptarContraseña(contraseñaNueva);
       }
       await User.updateOne({ mail: mailActual }, {
         $set: {
           mail: mailNuevo,
-          contraseña: contraseña2
+          contraseña: contraseñaNueva
         }
       });
       return res.send('<script>alert("La modificación se realizó correctamente."); window.location.href = "/";</script>');

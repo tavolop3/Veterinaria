@@ -11,11 +11,14 @@ html
           label(for="contraseña1") Contraseña actual:
           input(type="password", id="contraseña1", name="contraseña1", required)
         li
+          label(for="contraseña2") Ingrese la contraseña actual nuevamente:
+          input(type="password", id="contraseña2", name="contraseña2", required)
+        li
           label(for="mailNuevo") Mail nuevo:
           input(type="email", id="mailNuevo", name="mailNuevo")
         li
-          label(for="contraseña2") Contraseña nueva:
-          input(type="password", id="contraseña2", name="contraseña2")
+          label(for="contraseñaNueva") Contraseña nueva:
+          input(type="password", id="contraseñaNueva", name="contraseñaNueva")
         li.button
           button(type="submit") Guardar cambios
     if error 
