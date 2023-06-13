@@ -35,7 +35,9 @@ const userSchema = new mongoose.Schema({
     montoDescuento: Number,
     perrosId: [{ type : ObjectId, ref: 'Perro' }],
     turnosId: [{ type : ObjectId, ref: 'Turno' }],
-    perrosEnAdopcion: [{ type : ObjectId, ref: 'Adopcion'}]
+    perrosEnAdopcion: [{ type : ObjectId, ref: 'Adopcion'}],
+    perrosEnCruza: [{type : ObjectId, ref: 'Cruza'}],
+    anuncios: [{type : ObjectId, ref: 'Perdida'}]
 });
 
 const User = mongoose.model('User', userSchema);
