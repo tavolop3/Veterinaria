@@ -7,6 +7,7 @@ const { Perro } = require('../models/perro');
 const { Adopcion } = require('../models/adopcion');
 const { Servicio } = require('../models/servicio');
 const { sendEmail } = require('../emails');
+const { Perdida } = require('../models/perdida');
 
 /* Endpoint para
    guardar un turno solicitado
@@ -185,6 +186,26 @@ router.post('/solicitar-turno', async (req, res) => {
     }
   })
 
+  .post('/cargar-anuncio', async (req, res) => {
+    let perroPerdido = {
+      nombre: req.body.nombre,
+      sexo: req.body.sexo,
+      raza: req.body.raza,
+      color: req.body.color,
+      confirmado: false,
+      mail: req.user.mail
+    }
+    try {
+      let perdido = new Perdida(perroPerdido);
+      await perdido.save();
+      req.user.perrosEnAdopcion.push(perdido._id);
+      await req.user.save();
+      return res.send('<script>alert("El anuncio se cargo correctamente."); window.location.href = "/clientes";</script>');
+    } catch (error) {
+      console.log(error);
+      return res.send('<script>alert("El anuncio no puedo cargarse."); window.location.href = "/clientes";</script>');
+    }
+  })
 
 function compararFechas(a, b) {
   const fechaA = new Date(a.fecha);

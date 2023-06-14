@@ -97,6 +97,14 @@ router.get('', (req, res) => {
         res.render('funcionesCliente/turnos');
     })
 
+    .get('/clientes/anuncio', autenticado, (req, res) => {
+        res.render('funcionesCliente/anuncio');
+    })
+
+    .get('/clientes/cargar-anuncio', autenticado, (req, res) => {
+        res.render('cargar-anuncio')
+    })
+
     // ------------------- ADMIN -------------------------
 
     .get('/admin', [autenticado, esAdmin], (req, res) => {
