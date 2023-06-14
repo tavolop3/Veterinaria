@@ -26,3 +26,5 @@ const cruzaSchema = new mongoose.Schema({
 })
 
 const Cruza = mongoose.model('Cruza', cruzaSchema);
+
+exports.Cruza = Cruza;

@@ -24,9 +24,9 @@ router.post('/registrar-usuario', async (req, res) => {
 
   const contraRandom = crypto.randomBytes(8).toString('hex');
   // Activar para testear un par de veces o en demo para no gastar la cuota de mails (son 100)
-  // await sendEmail(user.mail,'OhMyDog - Contraseña predefinida',
-  //     'Bienvenido a OhMyDog, tu cuenta fue creada con exito. Tu contraseña para el primer ingreso va a ser '+ contraRandom + ' es importante que la cambies ni bien accedas por motivos de seguridad, gracias.'
-  // );
+  await sendEmail(user.mail,'OhMyDog - Contraseña predefinida',
+      'Bienvenido a OhMyDog, tu cuenta fue creada con exito. Tu contraseña para el primer ingreso va a ser '+ contraRandom + ' es importante que la cambies ni bien accedas por motivos de seguridad, gracias.'
+  );
   console.log('Contraseña generada:' + contraRandom);
   user.contraseña = await encriptarContraseña(contraRandom);
   user.contraseñaDefault = user.contraseña;
@@ -66,9 +66,8 @@ router.post('/registrar-usuario', async (req, res) => {
   .post('/modificar-perro', async (req, res) => {
     const { id, mailUsuario, nombre, sexo, fecha, raza, color, observaciones, foto } = req.body;
     let usuario = await User.findOne({ mail: mailUsuario }).populate('perrosId')
-    console.log(usuario)
     let perros = usuario.perrosId;
-    if (perros.some(perro => perro.nombre === nombre)) {
+    if (perros.filter(perro => perro.nombre === nombre).length !== 0) {
       return res.status(400).send('<script>alert("El usuario ya tiene un perro con ese nombre."); window.location.href = "/admin";</script>');
     }
     try {
@@ -140,8 +139,8 @@ router.post('/registrar-perro', async (req, res) => {
   .get('/turnos-diarios', async (req, res) => {
     try {
       let hoy = new Date();
-      let turnos = await Turno.find({});
-      turnos = turnos.filter(turno => esHoy(turno.fecha, hoy));
+      let todosLosTurnos = await Turno.find({});
+      let turnos = todosLosTurnos.filter(turno => esHoy(turno.fecha, hoy));
       res.render('historialTurnosAdmin', { turnos })
     } catch (error) {
       console.log('Error al obtener los turnos:', error);
@@ -163,9 +162,9 @@ router.post('/registrar-perro', async (req, res) => {
 
     const user = await User.findOne({ dni: turno.dni });
     // Activar para testear un par de veces o en demo para no gastar la cuota de mails (son 100)
-    // await sendEmail(user.mail,'OhMyDog - Modificación de turno',
-    //     'Uno de tus turnos fue modificado por la veterinaria, por favor, revisa en tus turnos.'
-    // );
+    await sendEmail(user.mail,'OhMyDog - Modificación de turno',
+        'Uno de tus turnos fue modificado por la veterinaria, por favor, revisa en tus turnos.'
+    );
 
     res.send('<script>alert("La modificación se realizó correctamente y se informó via mail al cliente."); window.location.href = "/admin/historial-turnos";</script>');
   })
@@ -175,9 +174,9 @@ router.post('/registrar-perro', async (req, res) => {
 
     const user = await User.findOne({ dni: turno.dni });
     // Activar para testear un par de veces o en demo para no gastar la cuota de mails (son 100)
-    // await sendEmail(user.mail,'OhMyDog - Aceptación de turno',
-    //     'Tu turno fue aceptado!'
-    // );
+    await sendEmail(user.mail,'OhMyDog - Aceptación de turno',
+        'Tu turno fue aceptado!'
+    );
 
     res.send('<script>alert("Turno aceptado con exito y notificado al cliente via mail."); window.location.href = "/admin/historial-turnos";</script>');
   })
@@ -187,9 +186,9 @@ router.post('/registrar-perro', async (req, res) => {
 
     const user = await User.findOne({ dni: turno.dni });
     // Activar para testear un par de veces o en demo para no gastar la cuota de mails (son 100)
-    // await sendEmail(user.mail,'OhMyDog - Rechazo de turno',
-    //     'Lamentablemente uno de tus turnos fue rechazado por la veterinaria, por favor, revisa en tus turnos.'
-    // );
+    await sendEmail(user.mail,'OhMyDog - Rechazo de turno',
+        'Lamentablemente uno de tus turnos fue rechazado por la veterinaria, por favor, revisa en tus turnos.'
+    );
 
     res.send('<script>alert("Turno rechazado con exito y notificado al cliente via mail."); window.location.href = "/admin/historial-turnos";</script>');
   })
@@ -223,9 +222,9 @@ router.post('/registrar-perro', async (req, res) => {
     await turno.save();
 
     // Activar para testear un par de veces o en demo para no gastar la cuota de mails (son 100)
-    // await sendEmail(user.mail,'OhMyDog - Asignación de nuevo turno',
-    //     'Se asignó un nuevo turno automáticamente para la próxima vacunación, por favor, revisa en tus turnos.'
-    // );
+    await sendEmail(user.mail,'OhMyDog - Asignación de nuevo turno',
+        'Se asignó un nuevo turno automáticamente para la próxima vacunación, por favor, revisa en tus turnos.'
+    );
 
     res.send('<script>alert("Se confirmó la asistencia, nuevo turno asignado con exito y notificado al cliente."); window.location.href = "/admin/historial-turnos";</script>');
   })
@@ -347,7 +346,7 @@ router.post('/registrar-perro', async (req, res) => {
 
 
   .post('/cargar-servicio', async (req, res) => {
-    nuevoServicio = {
+    let nuevoServicio = {
       nombre: req.body.nombre,
       apellido: req.body.apellido,
       tipoServicio: req.body.tipoServicio,
@@ -355,7 +354,7 @@ router.post('/registrar-perro', async (req, res) => {
       disponibilidadHoraria: req.body.disponibilidadHoraria,
       mail: req.body.mail
     }
-    let servicio = await Servicio.findOne({ mail: nuevoServicio.mail });
+    let servicio = await Servicio.findOne({ mail: nuevoServicio.mail, tipoServicio: nuevoServicio.tipoServicio});
     if (servicio) return res.status(400).send('<script>alert("El mail ya se encuentra asignado"); window.location.href = "/admin";</script>');
     try {
       let servicio = new Servicio(nuevoServicio);
@@ -369,9 +368,11 @@ router.post('/registrar-perro', async (req, res) => {
   .post('/modificar-servicio', async (req, res) => {
     const { id, nombre, apellido, tiposervicio, zona, disponibilidadHoraria, mail } = req.body;
 
-    const servicioExistente = await Servicio.findOne({ mail });
+    const servicioExistente = await Servicio.findOne({ mail: mail, tipoServicio: tiposervicio });
     const servicioModificar = await Servicio.findById(id);
-    if (servicioExistente && servicioExistente.mail != servicioModificar.mail) return res.status(400).send('<script>alert("El mail se encuentra registrado."); window.location.href = "/admin/visualizar-tablon-servicios";</script>');
+    if (servicioExistente && servicioExistente._id.toString() !== servicioModificar._id.toString()) {
+      return res.status(400).send('<script>alert("El mail se encuentra registrado."); window.location.href = "/admin/visualizar-tablon-servicios";</script>');
+  } 
 
     try {
       await Servicio.updateOne({ _id: id }, {
@@ -380,7 +381,7 @@ router.post('/registrar-perro', async (req, res) => {
           apellido: apellido,
           tipoServicio: tiposervicio,
           zona: zona,
-          disponibilidHoraria: disponibilidadHoraria,
+          disponibilidadHoraria: disponibilidadHoraria,
           mail: mail
         }
       });

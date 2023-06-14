@@ -25,3 +25,5 @@ const perdidaScheme = new mongoose.Scheme({
 })
 
 const Perdida = mongoose.model('Perdida', perdidaScheme);
+
+exports.Perdida = Perdida;
