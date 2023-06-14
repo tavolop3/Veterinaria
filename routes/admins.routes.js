@@ -292,7 +292,7 @@ router.post('/registrar-perro', async (req, res) => {
     try {
       let turnos = await Turno.find({});
       if (turnos.length === 0) {
-        res.render('historialTurnosAdmin', { error: 'La lista esta vacia' })
+        res.render('historialTurnosAdmin', { turnos: turnos })
       }
       else {
         turnos.sort(compararFechas);

@@ -129,7 +129,7 @@ router.post('/solicitar-turno', async (req, res) => {
       const usuario = await User.findById(req.user.id).populate('turnosId')
       const turnos = usuario.turnosId;
       if (turnos.length === 0) {
-        res.render('historialTurnosCliente', { error: 'La lista esta vacia' });
+        res.render('historialTurnosCliente', { turnos: turnos });
       }
       else {
         turnos.sort(compararFechas);
@@ -161,7 +161,7 @@ router.post('/solicitar-turno', async (req, res) => {
       }
       else {
         console.log(adopciones);
-        res.render('tablonAdopcion', { adopciones: adopciones });
+        res.render('tablonAdopcion', { adopciones: adopciones, usuarioActual: req.user.mail });
       }
     } catch (error) {
       console.log('Error al obtener las adopciones:', error);

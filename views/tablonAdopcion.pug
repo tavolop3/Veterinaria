@@ -48,7 +48,7 @@ html
                   form(action="/clientes/confirmar-adopcion", method="POST")
                     input(type="hidden", name="id", value=adopcion._id)
                     button(type="submit") Confirmar adopcion
-                if (!(usuarioActual == adopcion.mail) && (adopcion.confirmado !== true))
+                if ((!(usuarioActual == adopcion.mail)) && (adopcion.confirmado !== true))
                   form(action="/usuarios/adopcion/solicitar", method="POST")
                     input(type="hidden", name="mailPostulante", value=adopcion.mail)
                     button(type="submit") Adoptar 
