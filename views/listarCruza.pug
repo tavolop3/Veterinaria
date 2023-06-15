@@ -1,0 +1,42 @@
+include mixins/bannerCliente.pug
+
+doctype html
+html
+  head
+    title Perros en cruza
+    style.
+      table {
+        border-collapse: collapse;
+        width: 30%;
+      }
+      th, td {
+        padding: 2px;
+        text-align: left;
+      }
+      td.buttons {
+        display: flex;
+        gap: 10px;
+      }
+
++bannerCliente()  
+if !perros.length || perros.length === 0
+  h1 No tiene perros en cruza
+else
+  div
+    h1 Lista de perros en cruza
+    table
+      tr
+        th Raza:
+        th Sexo:
+        th Fecha de celo:
+        th Edad:
+      each perro in perros
+        tr
+          td= perro.raza
+          td= perro.sexo
+          td= perro.fechaDeCelo
+          td= perro.edad
+          td.buttons
+            form(action="#", method="GET")
+              input(type="hidden", name="dato", value=perro._id)
+              button(type="submit") Modificar
