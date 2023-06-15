@@ -6,6 +6,7 @@ const { User } = require('../models/user');
 const { Perro } = require('../models/perro');
 const { Adopcion } = require('../models/adopcion');
 const { Servicio } = require('../models/servicio');
+const { Perdida } = require('../models/perdida');
 
 router.get('', (req, res) => {
     if (!req.user)
@@ -103,6 +104,12 @@ router.get('', (req, res) => {
 
     .get('/clientes/cargar-anuncio', autenticado, (req, res) => {
         res.render('cargar-anuncio')
+    })
+
+    .get('/clientes/modificar-anuncio', autenticado, async(req, res) => {
+        let id = req.query.dato;
+        let perro = await Perdida.findById(id);
+        res.render('modificar-anuncio', { perro });
     })
 
     // ------------------- ADMIN -------------------------

@@ -207,6 +207,24 @@ router.post('/solicitar-turno', async (req, res) => {
     }
   })
 
+  .post('/modificar-anuncio', async (req, res) => {
+    const { dato, nombre, sexo, raza, color, foto } = req.body;
+    try {
+      await Perdida.updateOne({ _id: dato }, {
+        $set: {
+          nombre: nombre,
+          sexo: sexo,
+          raza: raza,
+          color: color,
+          foto: foto
+        }
+      });
+      return res.send('<script>alert("El perro en anuncio se modifico correctamente."); window.location.href = "/clientes";</script>');
+    } catch (error) {
+      return res.send('<script>alert("El perro en anuncio no pudo modificarse"); window.location.href = "/clientes";</script>');
+    }
+  })
+
 function compararFechas(a, b) {
   const fechaA = new Date(a.fecha);
   const fechaB = new Date(b.fecha);
