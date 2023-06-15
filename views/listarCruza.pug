@@ -19,7 +19,7 @@ html
       }
 
 +bannerCliente()  
-if !perros.length || perros.length === 0
+if !perros.length
   h1 No tiene perros en cruza
 else
   div
@@ -28,13 +28,14 @@ else
       tr
         th Raza:
         th Sexo:
-        th Fecha de celo:
+        th Fecha de celo: 
         th Edad:
       each perro in perros
         tr
           td= perro.raza
           td= perro.sexo
-          td= perro.fechaDeCelo
+          - let fechaDeCelo = `${perro.fechaDeCelo.getUTCDate()}/${perro.fechaDeCelo.getUTCMonth()+1}/${perro.fechaDeCelo.getUTCFullYear()}`
+          td= fechaDeCelo 
           td= perro.edad
           td.buttons
             form(action="#", method="GET")
