@@ -1,0 +1,11 @@
+include ../mixins/bannerCliente.pug
+
+doctype html
+
++bannerCliente()
+html
+  head
+    title Cruza
+  body
+    form(action="/clientes/cargar-cruza", method="GET")
+        button(type="submit") Cargar cruza

@@ -5,6 +5,7 @@ const { Turno, modificarEstado } = require('../models/turno')
 const { User, encriptarContraseña, compararContraseñas } = require('../models/user');
 const { Perro } = require('../models/perro');
 const { Adopcion } = require('../models/adopcion');
+const { Cruza } = require('../models/cruza');
 const { Servicio } = require('../models/servicio');
 const { sendEmail } = require('../emails');
 
@@ -185,6 +186,24 @@ router.post('/solicitar-turno', async (req, res) => {
     }
   })
 
+  .post('/cargar-cruza', async (req, res) => {
+    let camposCruza = {};
+    if(req.body.perro){
+      console.log(req.body.perro);
+      const perro = Perro.findById(req.body.perro.id);
+      camposCruza = _.pick(perro, ['sexo','edad','raza']);
+      camposCruza.fechaDeCelo = req.body.fechaDeCelo;
+    } else {
+      camposCruza = _.pick(req.body, ['sexo','edad','raza','fechaDeCelo']);
+    }
+
+    const cruza = new Cruza(camposCruza);
+    await cruza.save();
+    req.user.perrosEnCruza.push(cruza._id);
+    await req.user.save();
+
+    return res.send('<script>alert("La cruza se cargó correctamente."); window.location.href = "/clientes";</script>');
+  })
 
 function compararFechas(a, b) {
   const fechaA = new Date(a.fecha);

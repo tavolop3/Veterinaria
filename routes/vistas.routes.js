@@ -97,6 +97,16 @@ router.get('', (req, res) => {
         res.render('funcionesCliente/turnos');
     })
 
+    .get('/clientes/cruza', autenticado, (req, res) => {
+        res.render('funcionesCliente/cruza');
+    })
+
+    .get('/clientes/cargar-cruza', autenticado, async(req, res) => {
+        const usuario = await User.findById(req.user.id).populate('perrosId')
+        const perros = usuario.perrosId;
+        res.render('cargar-cruza', {perros});
+    })
+
     // ------------------- ADMIN -------------------------
 
     .get('/admin', [autenticado, esAdmin], (req, res) => {
