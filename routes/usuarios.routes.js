@@ -77,12 +77,39 @@ router.get('/yo', autenticado, async(req,res) => {
 .post('/paseador-cuidador/mail-noCliente', async(req,res) => {
   // Activar para testear un par de veces o en demo para no gastar la cuota de mails (son 100)
   await sendEmail(req.body.mailSolicitante,'OhMyDog - Solicitud de paseo/cuidado enviada',
-      'Su solicitud de adopción se ha enviado, contactese con ' + req.body.mailPostulante + ' para poder coordinar la adopción. Para tener acceso a más funcionalidades acercate a la veterinaria y registrate!' 
+      'Su solicitud se ha enviado, contactese con ' + req.body.mailPostulante + ' para poder coordinar la adopción. Para tener acceso a más funcionalidades acercate a la veterinaria y registrate!' 
   );
   await sendEmail(req.body.mailPostulante,'OhMyDog - Solicitud de paseo/cuidado recibida',
-      'Ha recibido una solicitud de adopción, contactese con ' + req.body.mailSolicitante + ' para poder coordinar la adopción.' 
+      'Ha recibido una solicitud, contactese con ' + req.body.mailSolicitante + ' para poder coordinar el servicio.' 
   );
   res.send('<script>alert("Se solicitó exitosamente no cliente borrar, revisa tu mail."); window.location.href = "/";</script>');
+})
+
+.post('/cruza/solicitar', async(req,res) => {
+  if(req.isAuthenticated()){
+      // Activar para testear un par de veces o en demo para no gastar la cuota de mails (son 100)
+      await sendEmail(req.user.mail,'OhMyDog - Solicitud de cruza fue enviada',
+          'Su solicitud de cruza se ha enviado, contactese con ' + req.body.mailPostulante + ' para poder coordinar.' 
+      );
+      
+      await sendEmail(req.body.mailPostulante,'OhMyDog - Solicitud de cruza recibida',
+          'Ha recibido una solicitud de cruza, contactese con ' + req.user.mail + ' para poder coordinar.' 
+      );
+      res.send('<script>alert("Se solicitó exitosamente, revisa tu mail."); window.location.href = "/";</script>');
+  } else {
+    res.render('mail-noCliente-cruza', { mailPostulante: req.body.mailPostulante });
+  }
+})
+
+.post('/cruza/mail-noCliente', async(req,res) => {
+  // Activar para testear un par de veces o en demo para no gastar la cuota de mails (son 100)
+  await sendEmail(req.body.mailSolicitante,'OhMyDog - Solicitud de cruza enviada',
+      'Su solicitud de cruza se ha enviado, contactese con ' + req.body.mailPostulante + ' para poder coordinar la adopción. Para tener acceso a más funcionalidades acercate a la veterinaria y registrate!' 
+  );
+  await sendEmail(req.body.mailPostulante,'OhMyDog - Solicitud de paseo/cuidado recibida',
+      'Ha recibido una solicitud de cruza, contactese con ' + req.body.mailSolicitante + ' para poder coordinar la adopción.' 
+  );// TODO agregarle algun contexto, como el nombre del perro 
+  res.send('<script>alert("Se solicitó exitosamente, revisa tu mail."); window.location.href = "/";</script>');
 })
 
 .post('/adopcion/solicitar', async(req,res) => {
@@ -98,6 +125,7 @@ router.get('/yo', autenticado, async(req,res) => {
      
       res.send('<script>alert("Se solicitó la adopción, revisa tu mail."); window.location.href = "/";</script>');
   } else {
+    // TODO siempre está autenticado, ademas el pug es para servicios (?)
     res.render('mail-noCliente', { mailPostulante: req.body.mailPostulante });
   }
 })
