@@ -8,6 +8,8 @@ const { Adopcion } = require('../models/adopcion');
 const { Cruza } = require('../models/cruza');
 const { Servicio } = require('../models/servicio');
 const { sendEmail } = require('../emails');
+const _ = require('lodash');
+const moment = require('moment');
 
 /* Endpoint para
    guardar un turno solicitado
@@ -188,17 +190,19 @@ router.post('/solicitar-turno', async (req, res) => {
 
   .post('/cargar-cruza', async (req, res) => {
     let camposCruza = {};
-    if(req.body.perro){
-      console.log(req.body.perro);
-      const perro = Perro.findById(req.body.perro.id);
-      camposCruza = _.pick(perro, ['sexo','edad','raza']);
+    console.log(req.body);
+    if(req.body.id != 'otro'){
+      const perro = await Perro.findById(req.body.id);
+      camposCruza = _.pick(perro, ['sexo','fechaDeNacimiento','raza']);
       camposCruza.fechaDeCelo = req.body.fechaDeCelo;
     } else {
-      camposCruza = _.pick(req.body, ['sexo','edad','raza','fechaDeCelo']);
+      camposCruza = _.pick(req.body, ['sexo','fechaDeNacimiento','raza','fechaDeCelo']);
     }
+    camposCruza.mail = req.user.mail;
 
     const cruza = new Cruza(camposCruza);
     await cruza.save();
+    console.log('cruza : ', cruza.fechaDeNacimiento);
     req.user.perrosEnCruza.push(cruza._id);
     await req.user.save();
 

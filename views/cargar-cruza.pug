@@ -16,42 +16,58 @@ html
         var fechaInput = document.getElementById('fechaDeCelo');
         fechaInput.setAttribute('min', todayDate);
       }
-      window.onload = setMinDate;
-+bannerCliente()
-body
-  form(action="/clientes/cargar-cruza", method="post")
-    ul
-      li
-        label(for="nombreDelPerro") Perro:
-        select(name="nombreDelPerro", id="nombreDelPerro", required)
-          each perro in perros
-            option(value=perro.id)= perro.nombre
-          option(value="otro") Otro
-
-      div(id="camposOtro" style="display: none;")
-        li
-          label(for="sexo") Sexo:
-          input(type="text", id="sexo", name="sexo", required)
-        li
-          label(for="edad") Edad:
-          input(type="text", id="edad", name="edad", required)
-        li
-          label(for="raza") Raza:
-          input(type="text", id="raza", name="raza", required)
-      // TODO raza desplegable  
-      li
-        label(for="fechaDeCelo") Fecha de celo: 
-        input(type="Date", id="fechaDeCelo", name="fechaDeCelo", required)
-      li.button
-        button(type="submit") Cargar
-  if error
-    li.error= error
-  script.
-    document.getElementById("nombreDelPerro").addEventListener("change", function() {
-      var camposOtro = document.getElementById("camposOtro");
-      if (this.value === "otro") {
-        camposOtro.style.display = "block";
-      } else {
-        camposOtro.style.display = "none";
+      function toggleCamposOtro() {
+        var selectPerro = document.getElementById('id');
+        var camposOtro = document.getElementById('camposOtro');
+        var razaInput = document.getElementById('raza');
+        var fechaDeCeloInput = document.getElementById('fechaDeCelo');
+        
+        if (selectPerro.value === "otro") {
+          camposOtro.style.display = "block";
+          razaInput.setAttribute('required', '');
+          fechaDeNacimiento.setAttribute('required', '');
+        } else {
+          camposOtro.style.display = "none";
+          razaInput.removeAttribute('required');
+          fechaDeNacimiento.removeAttribute('required');
+        }
       }
-    });
+
+      window.addEventListener('load', function() {
+        setMinDate();
+        toggleCamposOtro();
+
+        var selectPerro = document.getElementById('id');
+        selectPerro.addEventListener('change', toggleCamposOtro);
+      });
+  body
+    +bannerCliente()
+    form(action="/clientes/cargar-cruza", method="POST")
+      ul
+        li
+          label(for="id") Perro:
+          select(name="id", id="id", required)
+            each perro in perros
+              option(value=perro.id)= perro.nombre
+            option(value="otro") Otro
+
+        div(id="camposOtro" style="display: none;")
+          li
+            label(for="sexo") sexo
+            select(id="sexo", name="sexo")
+              option(value="macho") Macho
+              option(value="hembra") Hembra
+          li
+            label(for="fechaDeNacimiento") Fecha de nacimiento:
+            input(type="Date", id="fechaDeNacimiento", name="fechaDeNacimiento")
+          li
+            label(for="raza") Raza:
+            input(type="text", id="raza", name="raza")
+        // TODO raza desplegable  
+        li
+          label(for="fechaDeCelo") Fecha celo: 
+          input(type="Date", id="fechaDeCelo", name="fechaDeCelo", required)
+        li.button
+          button(type="submit") Cargar
+    if error
+      li.error= error
