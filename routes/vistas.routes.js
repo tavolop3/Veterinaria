@@ -83,6 +83,12 @@ router.get('', (req, res) => {
         res.render('listarAdopcion', { perros })
     })
 
+    .get('/clientes/listar-cruza', autenticado, async(req, res) => {
+        const usuario = await User.findById(req.user._id).populate('perrosEnCruza')
+        const perros = usuario.perrosEnCruza;
+        res.render('listarCruza', { perros })
+    })
+
     .get('/clientes/modificar-adopcion', autenticado, async(req, res) => {
         let id = req.query.dato;
         let perro = await Adopcion.findById(id);
