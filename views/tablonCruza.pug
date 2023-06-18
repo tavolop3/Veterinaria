@@ -1,0 +1,48 @@
+include mixins/bannerCliente.pug
+include mixins/bannerUsuario.pug
+
+doctype html
+html
+  head
+    title Lista de Cruza
+    style.
+      table {
+        border-collapse: collapse;
+        width: 50%;
+      }
+      th, td {
+        padding: 15px;
+        text-align: left;
+      }
+      td.buttons {
+        display: flex;
+        gap: 10px;
+      }
+  body
+    if (usuarioActual === "")
+        +bannerUsuario()
+    else 
+        +bannerCliente()
+    if !cruzas.length
+      h1 No hay cruzas cargadas en el sistema.
+    else
+      div
+        h1 Cruzas
+        table
+          tr
+            th Raza
+            th Sexo
+            th fechaDeCelo
+            th fechaDeNacimineto
+          each cruza in cruzas
+            if (!(usuarioActual == cruza.mail))
+                tr
+                    td= cruza.raza 
+                    td= cruza.sexo 
+                    - let fechaDeCelo = `${cruza.fechaDeCelo.getUTCDate()}/${cruza.fechaDeCelo.getUTCMonth()+1}/${cruza.fechaDeCelo.getUTCFullYear()}`
+                    td= fechaDeCelo 
+                    - let fechaDeNacimiento = `${cruza.fechaDeNacimiento.getUTCDate()}/${cruza.fechaDeNacimiento.getUTCMonth()+1}/${cruza.fechaDeNacimiento.getUTCFullYear()}`
+                    td= fechaDeNacimiento
+                    td.buttons
+                        form(action="#", method="POST")
+                            button(type="submit") Cruzar 

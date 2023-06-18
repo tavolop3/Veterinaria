@@ -6,6 +6,7 @@ const { User } = require('../models/user');
 const { Perro } = require('../models/perro');
 const { Adopcion } = require('../models/adopcion');
 const { Servicio } = require('../models/servicio');
+const { Cruza } = require('../models/cruza');
 
 router.get('', (req, res) => {
     if (!req.user)
@@ -56,6 +57,19 @@ router.get('', (req, res) => {
             return res.status(400).send('Error al obtener los servicios');
         }
     })        
+
+    .get('/usuarios/visualizar-tablon-cruza', async (req, res) => {
+        try {
+            let mail = "";
+            if(req.isAuthenticated())
+               mail = req.user.mail;    
+            let cruzas = (await Cruza.find({})).filter(cruza => cruza.mail !== mail);
+            res.render('tablonCruza', { cruzas: cruzas, usuarioActual: mail });
+        } catch (error) {
+            console.log('Error al obtener las cruzas:', error);
+            return res.status(400).send('Error al obtener las cruzas');
+        }
+        })
 
     // ------------------- CLIENTES -------------------------
 
