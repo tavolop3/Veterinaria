@@ -4,6 +4,7 @@ const passport = require('passport');
 const autenticado = require('../middleware/autenticado');
 const { User, encriptarContraseña, compararContraseñas } = require('../models/user');
 const { sendEmail } = require('../emails');
+const { Cruza } = require('../models/cruza');
 
 // Para ver el usuario actual
 router.get('/yo', autenticado, async(req,res) => {
@@ -142,6 +143,42 @@ router.get('/yo', autenticado, async(req,res) => {
  
   res.send('<script>alert("Se solicitó la adopción, revisa tu mail."); window.location.href = "/";</script>');
 })
+
+.post('/visualizar-tablon-cruza', async (req, res) => {
+  let { raza, sexo, fecha, edad } = req.body;
+  try {
+    let mail = "";
+    if(req.isAuthenticated())
+      mail = req.user.mail;    
+    let cruzas = (await Cruza.find({})).filter(cruza => cruza.mail !== mail);
+    if (raza !== "Cualquiera") 
+      cruzas = cruzas.filter(cruza => cruza.raza === raza);
+    if (sexo !== "Cualquiera")
+      cruzas = cruzas.filter(cruza => cruza.sexo === sexo);
+    if (fecha) {
+      let fechaSeleccionada = new Date(fecha);
+      let fechaLimiteAntes = new Date(fechaSeleccionada.getTime());
+      fechaLimiteAntes.setDate(fechaSeleccionada.getDate() - 5);
+      let fechaLimiteDespues = new Date(fechaSeleccionada.getTime());
+      fechaLimiteDespues.setDate(fechaSeleccionada.getDate() + 5);
+      cruzas = cruzas.filter(cruza => {
+        const fechaCruza = new Date(cruza.fechaDeCelo);
+        return fechaCruza >= fechaLimiteAntes && fechaCruza <= fechaLimiteDespues;
+      });   
+    }
+    if (edad !== "") {
+      let hoy = new Date();
+      cruzas = cruzas.filter(cruza => {
+        const edadCruza = hoy.getUTCFullYear() - cruza.fechaDeNacimiento.getUTCFullYear();
+        return edadCruza === Number(edad);
+      });
+    }
+    res.render('tablonCruza', { cruzas: cruzas, usuarioActual: mail });
+  } catch (error) {
+      console.log('Error al obtener las cruzas:', error);
+      return res.status(400).send('Error al obtener las cruzas');
+  }
+  })
 
 module.exports = router;
 

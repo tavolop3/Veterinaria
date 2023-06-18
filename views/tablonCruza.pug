@@ -18,6 +18,17 @@ html
         display: flex;
         gap: 10px;
       }
+    script.
+      function setMinDate() {
+        var today = new Date();
+        var year = today.getFullYear();
+        var month = String(today.getMonth() + 1).padStart(2, '0');
+        var day = String(today.getDate()).padStart(2, '0');
+        var todayDate = `${year}-${month}-${day}`;
+        var fechaInput = document.getElementById('fecha');
+        fechaInput.setAttribute('min', todayDate);
+      }
+      window.onload = setMinDate;
   body
     if (usuarioActual === "")
         +bannerUsuario()
@@ -28,6 +39,28 @@ html
     else
       div
         h1 Cruzas
+        form(action="/usuarios/visualizar-tablon-cruza", method="POST")
+          // raza
+          label(for="raza") Raza
+          select(id="raza", name="raza", required)
+            option(value="Cualquiera") Cualquiera
+            option(value="Husky") Husky
+            option(value="Pastor Aleman") Pastor Aleman 
+            option(value="Labrador") Labrador
+            option(value="Dogo") Dogo
+          // sexo
+          label(for="sexo") Sexo
+          select(id="sexo", name="sexo", required)
+            option(value="Cualquiera") Cualquiera
+            option(value="macho") Macho
+            option(value="hembra") Hembra
+          // fecha de celo
+          label(for="fecha") Fecha de celo
+          input(type="date", id="fecha", name="fecha")
+          // edad
+          label(for="edad") Edad
+          input(type="text", id="edad", name="edad")              
+          button(type="submit") Filtrar
         table
           tr
             th Raza
@@ -45,4 +78,4 @@ html
                     td= fechaDeNacimiento
                     td.buttons
                         form(action="#", method="POST")
-                            button(type="submit") Cruzar 
+                            button(type="submit") Cruzar        
