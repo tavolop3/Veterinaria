@@ -24,8 +24,8 @@ router.post('/registrar-usuario', async (req, res) => {
 
   const contraRandom = crypto.randomBytes(8).toString('hex');
   // Activar para testear un par de veces o en demo para no gastar la cuota de mails (son 100)
-  await sendEmail(user.mail,'OhMyDog - Contraseña predefinida',
-      'Bienvenido a OhMyDog, tu cuenta fue creada con exito. Tu contraseña para el primer ingreso va a ser '+ contraRandom + ' es importante que la cambies ni bien accedas por motivos de seguridad, gracias.'
+  await sendEmail(user.mail, 'OhMyDog - Contraseña predefinida',
+    'Bienvenido a OhMyDog, tu cuenta fue creada con exito. Tu contraseña para el primer ingreso va a ser ' + contraRandom + ' es importante que la cambies ni bien accedas por motivos de seguridad, gracias.'
   );
   console.log('Contraseña generada:' + contraRandom);
   user.contraseña = await encriptarContraseña(contraRandom);
@@ -162,8 +162,8 @@ router.post('/registrar-perro', async (req, res) => {
 
     const user = await User.findOne({ dni: turno.dni });
     // Activar para testear un par de veces o en demo para no gastar la cuota de mails (son 100)
-    await sendEmail(user.mail,'OhMyDog - Modificación de turno',
-        'Tu turno con fecha '+ moment(turno.fecha).format('DD/MM/YYYY') +' fue modificado por la veterinaria, por favor, revisa en tus turnos.'
+    await sendEmail(user.mail, 'OhMyDog - Modificación de turno',
+      'Tu turno con fecha ' + moment(turno.fecha).format('DD/MM/YYYY') + ' fue modificado por la veterinaria, por favor, revisa en tus turnos.'
     );
 
     res.send('<script>alert("La modificación se realizó correctamente y se informó via mail al cliente."); window.location.href = "/admin/historial-turnos";</script>');
@@ -174,8 +174,8 @@ router.post('/registrar-perro', async (req, res) => {
 
     const user = await User.findOne({ dni: turno.dni });
     // Activar para testear un par de veces o en demo para no gastar la cuota de mails (son 100)
-    await sendEmail(user.mail,'OhMyDog - Aceptación de turno',
-        'Tu turno de la fecha ' + moment(turno.fecha).format('DD/MM/YYYY') + ' fue aceptado!'
+    await sendEmail(user.mail, 'OhMyDog - Aceptación de turno',
+      'Tu turno de la fecha ' + moment(turno.fecha).format('DD/MM/YYYY') + ' fue aceptado!'
     );
 
     res.send('<script>alert("Turno aceptado con exito y notificado al cliente via mail."); window.location.href = "/admin/historial-turnos";</script>');
@@ -186,8 +186,8 @@ router.post('/registrar-perro', async (req, res) => {
 
     const user = await User.findOne({ dni: turno.dni });
     // Activar para testear un par de veces o en demo para no gastar la cuota de mails (son 100)
-    await sendEmail(user.mail,'OhMyDog - Rechazo de turno',
-        'Lamentablemente uno de tu turnos del '+ moment(turno.fecha).format('DD/MM/YYYY') +' fue rechazado por la veterinaria, por favor, revisa en tus turnos.'
+    await sendEmail(user.mail, 'OhMyDog - Rechazo de turno',
+      'Lamentablemente uno de tu turnos del ' + moment(turno.fecha).format('DD/MM/YYYY') + ' fue rechazado por la veterinaria, por favor, revisa en tus turnos.'
     );
 
     res.send('<script>alert("Turno rechazado con exito y notificado al cliente via mail."); window.location.href = "/admin/historial-turnos";</script>');
@@ -222,8 +222,8 @@ router.post('/registrar-perro', async (req, res) => {
     await turno.save();
 
     // Activar para testear un par de veces o en demo para no gastar la cuota de mails (son 100)
-    await sendEmail(user.mail,'OhMyDog - Asignación de nuevo turno',
-        'Se asignó un nuevo turno automáticamente para la próxima vacunación para la fecha '+ moment(turno.fecha).format('DD/MM/YYYY') +', por favor, revisa en tus turnos.'
+    await sendEmail(user.mail, 'OhMyDog - Asignación de nuevo turno',
+      'Se asignó un nuevo turno automáticamente para la próxima vacunación para la fecha ' + moment(turno.fecha).format('DD/MM/YYYY') + ', por favor, revisa en tus turnos.'
     );
 
     res.send('<script>alert("Se confirmó la asistencia, nuevo turno asignado con exito y notificado al cliente."); window.location.href = "/admin/historial-turnos";</script>');
@@ -354,7 +354,7 @@ router.post('/registrar-perro', async (req, res) => {
       disponibilidadHoraria: req.body.disponibilidadHoraria,
       mail: req.body.mail
     }
-    let servicio = await Servicio.findOne({ mail: nuevoServicio.mail, tipoServicio: nuevoServicio.tipoServicio});
+    let servicio = await Servicio.findOne({ mail: nuevoServicio.mail, tipoServicio: nuevoServicio.tipoServicio });
     if (servicio) return res.status(400).send('<script>alert("El mail ya se encuentra asignado"); window.location.href = "/admin";</script>');
     try {
       let servicio = new Servicio(nuevoServicio);
@@ -372,7 +372,7 @@ router.post('/registrar-perro', async (req, res) => {
     const servicioModificar = await Servicio.findById(id);
     if (servicioExistente && servicioExistente._id.toString() !== servicioModificar._id.toString()) {
       return res.status(400).send('<script>alert("El mail se encuentra registrado."); window.location.href = "/admin/visualizar-tablon-servicios";</script>');
-  } 
+    }
 
     try {
       await Servicio.updateOne({ _id: id }, {
