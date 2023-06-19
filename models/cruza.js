@@ -7,14 +7,11 @@ const cruzaSchema = new mongoose.Schema({
     sexo: {
         type: String
     },
-    fechaDeCeloInicio: {
+    fechaDeCelo: {
         type: Date
     },
-    fechaDeCeloFin: {
+    fechaDeNacimiento: {
         type: Date
-    },
-    edad: {
-        type: Number
     },
     mail: {
         type: String

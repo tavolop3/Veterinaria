@@ -163,7 +163,7 @@ router.post('/registrar-perro', async (req, res) => {
     const user = await User.findOne({ dni: turno.dni });
     // Activar para testear un par de veces o en demo para no gastar la cuota de mails (son 100)
     await sendEmail(user.mail,'OhMyDog - Modificación de turno',
-        'Uno de tus turnos fue modificado por la veterinaria, por favor, revisa en tus turnos.'
+        'Tu turno con fecha '+ moment(turno.fecha).format('DD/MM/YYYY') +' fue modificado por la veterinaria, por favor, revisa en tus turnos.'
     );
 
     res.send('<script>alert("La modificación se realizó correctamente y se informó via mail al cliente."); window.location.href = "/admin/historial-turnos";</script>');
@@ -175,7 +175,7 @@ router.post('/registrar-perro', async (req, res) => {
     const user = await User.findOne({ dni: turno.dni });
     // Activar para testear un par de veces o en demo para no gastar la cuota de mails (son 100)
     await sendEmail(user.mail,'OhMyDog - Aceptación de turno',
-        'Tu turno fue aceptado!'
+        'Tu turno de la fecha ' + moment(turno.fecha).format('DD/MM/YYYY') + ' fue aceptado!'
     );
 
     res.send('<script>alert("Turno aceptado con exito y notificado al cliente via mail."); window.location.href = "/admin/historial-turnos";</script>');
@@ -187,7 +187,7 @@ router.post('/registrar-perro', async (req, res) => {
     const user = await User.findOne({ dni: turno.dni });
     // Activar para testear un par de veces o en demo para no gastar la cuota de mails (son 100)
     await sendEmail(user.mail,'OhMyDog - Rechazo de turno',
-        'Lamentablemente uno de tus turnos fue rechazado por la veterinaria, por favor, revisa en tus turnos.'
+        'Lamentablemente uno de tu turnos del '+ moment(turno.fecha).format('DD/MM/YYYY') +' fue rechazado por la veterinaria, por favor, revisa en tus turnos.'
     );
 
     res.send('<script>alert("Turno rechazado con exito y notificado al cliente via mail."); window.location.href = "/admin/historial-turnos";</script>');
@@ -223,7 +223,7 @@ router.post('/registrar-perro', async (req, res) => {
 
     // Activar para testear un par de veces o en demo para no gastar la cuota de mails (son 100)
     await sendEmail(user.mail,'OhMyDog - Asignación de nuevo turno',
-        'Se asignó un nuevo turno automáticamente para la próxima vacunación, por favor, revisa en tus turnos.'
+        'Se asignó un nuevo turno automáticamente para la próxima vacunación para la fecha '+ moment(turno.fecha).format('DD/MM/YYYY') +', por favor, revisa en tus turnos.'
     );
 
     res.send('<script>alert("Se confirmó la asistencia, nuevo turno asignado con exito y notificado al cliente."); window.location.href = "/admin/historial-turnos";</script>');
