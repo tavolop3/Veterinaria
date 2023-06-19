@@ -1,0 +1,40 @@
+doctype html
+html
+  head
+    title Tablon de cruza
+    style.
+      table {
+        border-collapse: collapse;
+        width: 50%;
+      }
+      th, td {
+        padding: 15px;
+        text-align: left;
+      }
+      td.buttons {
+        display: flex;
+        gap: 10px;
+      }
+  
+  body
+    if !cruzas.length
+      h1 No hay cruzas cargadas en el sistema.
+    else
+      div
+        h1 Tablon de cruza
+        table
+          tr
+            th Raza
+            th Sexo
+            th Fecha de celo
+            th Edad
+          each cruza in cruzas
+            tr
+              td= cruza.raza
+              td= cruza.sexo
+              td= cruza.fechaDeCeloInicio
+              td= cruza.edad
+              td.buttons
+                 form(action="/clientes/solicitar-cruza-cliente", method="POST")
+                    input(type="hidden", name="mailPostulante", value=cruza.mail)
+                    button(type="submit") Solicitar cruza 

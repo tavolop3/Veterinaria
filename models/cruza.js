@@ -1,22 +1,22 @@
 const mongoose = require('mongoose');
 
 const cruzaSchema = new mongoose.Schema({
-    raza:{
+    raza: {
         type: String
     },
-    sexo:{
+    sexo: {
         type: String
     },
-    fechaDeCeloInicio:{
+    fechaDeCeloInicio: {
         type: Date
     },
-    fechaDeCeloFin:{
+    fechaDeCeloFin: {
         type: Date
     },
-    edad:{
+    edad: {
         type: Number
     },
-    mial:{
+    mail: {
         type: String
     }
 })

@@ -48,4 +48,6 @@ html
                 form(action="/admin/eliminar-usuario", method="POST")
                   input(type="hidden", name="dato", value=usuario.mail)
                   button(type="submit") Eliminar usuario
-              
+                form(action="/admin/registrar-perro", method="POST")
+                  input(type="hidden", name="mail", value=usuario.mail)
+                  button(type="submit") Registrar perro
