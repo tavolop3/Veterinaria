@@ -45,7 +45,7 @@ html
                 form(action="/admin/listar-perros", method="POST")
                   input(type="hidden", name="dato", value=usuario.mail)
                   button(type="submit") Listar perros
-                form(action="/admin/eliminar-usuario", method="POST")
+                form(action="/admin/eliminar-usuario", method="POST" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este usuario?');")
                   input(type="hidden", name="dato", value=usuario.mail)
                   button(type="submit") Eliminar usuario
                 form(action="/admin/registrar-perro", method="POST")

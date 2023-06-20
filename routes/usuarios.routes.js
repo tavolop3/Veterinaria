@@ -195,71 +195,7 @@ router.get('/yo', autenticado, async (req, res) => {
     }
   })
 
-  .post('/modificar-cruza', async (req, res) => {
-    const { raza, sexo, fechaDeCelo, fechaDeNacimiento, mail } = req.body;
 
-    const cruzaModificar = await Cruza.findById(id);
-
-    try {
-      await Cruza.updateOne({ _id: id }, {
-        $set: {
-          raza: raza,
-          sexo: sexo,
-          fechaDeCelo: FechaDeCelo,
-          fechaDeNacimiento: fechaDeNacimiento,
-          mail: mail
-        }
-      });
-      return res.send('<script>alert("La modificacion de la cruza se realizo correctamente"); window.location.href = "/usuarios";</script>');
-    } catch (error) {
-      return res.send('<script>alert("La modificacion de la cruza no pudo realizarse"); window.location.href = "/usuarios";</script>');
-    }
-  })
-
-  .post('/eliminar-cruza', async (req, res) => {//IMPORTANTE recibir el mail asociado a la cruza a eliminar.
-    try {
-      // Obtener la cruza que deseas eliminar
-      const cruza = await Cruza.findOne({ mail: req.body.mail }); //Ver esto, creo q el mail que hay en cruza es del usuario dueño de la publi
-      if (!cruza) {
-        return res.status(400).send('<script>alert("La cruza no se encuentra en el sistema."); window.location.href = "/usuarios/visualizar-tablon-cruza";</script>');//esto no deberia pasar porque ejecutas desde el listar,tonces no falla
-      }
-      //elimino
-      await Cruza.deleteOne({ mail: req.body.dato });
-
-      return res.status(400).send('<script>alert("La publicacion de cruza fue eliminada exitosamente."); window.location.href = "/usuarios/visualizar-tablon-cruza";</script>');//VER ESTO, arreglar endpoint al visualizar tablon
-    } catch (err) {
-      res.json({ error: err.message || err.toString() });
-    }
-  })
-
-  .post('/recomendar-perro', async (req, res) => {//En realidad,seria mas un recomendar cruza
-    try {
-      const cruzaUsuario = await Cruza.findOne({ _id: req.body.dato });//recibo el id de la cruza desde el pug
-      // Convertir las fechas a números de días
-      const fechaCeloPerro = Math.floor(cruzaUsuario.fechaDeCelo.getTime() / (1000 * 60 * 60 * 24));
-
-      // Buscar un perro recomendado
-      const perroRecomendado = Cruza.find(
-        (p) =>
-          p.sexo !== cruzaUsuario.sexo &&
-          p.raza === cruzaUsuario.raza &&
-          Math.abs(fechaCeloPerro - Math.floor(p.fechaDeCelo.getTime() / (1000 * 60 * 60 * 24))) <= 5
-      );
-      if (perroRecomendado) {
-        res.render('recomendarPerro', { perroRecomendado: perroRecomendado });
-      }
-      else {
-        /*res.render('recomendarPerro', { error: 'El sistema no tiene un perro que cumpla los requisitos para ser recomendado.' });*/
-        //Otra opcion, usar un Pop-up
-        return res.status(400).send('<script>alert("El sistema no tiene un perro que cumpla los requisitos para ser recomendado."); window.location.href = "/usuarios/visualizar-tablon-cruza";</script>');
-        //arreglar el endpoint al que te manda el pop-up
-
-      }
-
-    } catch (err) {
-      res.json({ error: err.message || err.toString() });
-    }
-  })
 
 module.exports = router;
 

@@ -38,6 +38,9 @@ else
           td= fechaDeCelo 
           td= perro.edad
           td.buttons
-            form(action="#", method="GET")
+            form(action="/clientes/modificar-cruza", method="GET")
               input(type="hidden", name="dato", value=perro._id)
               button(type="submit") Modificar
+                form(action="/clientes/eliminar-cruza", method="POST" onsubmit="return confirm('¿Estás seguro de que deseas eliminar esta cruza?');")
+              input(type="hidden", name="dato", value=perro._id)
+              button(type="submit") Eliminar

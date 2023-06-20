@@ -29,19 +29,19 @@ router.get('', (req, res) => {
         try {
             let adopciones = await Adopcion.find({});
             if (!adopciones) {
-            res.render('tablonAdopcion', { error: 'No hay adopciones cargadas en el sistema.' })
+                res.render('tablonAdopcion', { error: 'No hay adopciones cargadas en el sistema.' })
             }
             else {
                 let mail = "";
-                if(req.isAuthenticated())
-                    mail = req.user.mail;    
+                if (req.isAuthenticated())
+                    mail = req.user.mail;
                 res.render('tablonAdopcion', { adopciones: adopciones, usuarioActual: mail });
             }
         } catch (error) {
             console.log('Error al obtener las adopciones:', error);
             return res.status(400).send('Error al obtener las adopciones');
         }
-        })
+    })
 
     .get('/usuarios/visualizar-tablon-servicios', async (req, res) => {
         try {
@@ -56,20 +56,20 @@ router.get('', (req, res) => {
             console.log('Error al obtener los servicios:', error);
             return res.status(400).send('Error al obtener los servicios');
         }
-    })        
+    })
 
     .get('/usuarios/visualizar-tablon-cruza', async (req, res) => {
         try {
             let mail = "";
-            if(req.isAuthenticated())
-               mail = req.user.mail;    
+            if (req.isAuthenticated())
+                mail = req.user.mail;
             let cruzas = (await Cruza.find({})).filter(cruza => cruza.mail !== mail);
             res.render('tablonCruza', { cruzas: cruzas, usuarioActual: mail });
         } catch (error) {
             console.log('Error al obtener las cruzas:', error);
             return res.status(400).send('Error al obtener las cruzas');
         }
-        })
+    })
 
     // ------------------- CLIENTES -------------------------
 
@@ -91,22 +91,28 @@ router.get('', (req, res) => {
         res.render('cargar-adopcion')
     })
 
-    .get('/clientes/listar-adopciones', autenticado, async(req, res) => {
+    .get('/clientes/listar-adopciones', autenticado, async (req, res) => {
         const usuario = await User.findById(req.user._id).populate('perrosEnAdopcion')
         const perros = usuario.perrosEnAdopcion;
         res.render('listarAdopcion', { perros })
     })
 
-    .get('/clientes/listar-cruza', autenticado, async(req, res) => {
+    .get('/clientes/listar-cruza', autenticado, async (req, res) => {
         const usuario = await User.findById(req.user._id).populate('perrosEnCruza')
         const perros = usuario.perrosEnCruza;
         res.render('listarCruza', { perros })
     })
 
-    .get('/clientes/modificar-adopcion', autenticado, async(req, res) => {
+    .get('/clientes/modificar-adopcion', autenticado, async (req, res) => {
         let id = req.query.dato;
         let perro = await Adopcion.findById(id);
         res.render('modificar-adopcion', { perro });
+    })
+
+    .get('/clientes/modificar-cruza', autenticado, async (req, res) => {
+        let id = req.query.dato;
+        let cruza = await Cruza.findById(id);
+        res.render('modificar-cruza', { cruza });
     })
 
     .get('/clientes/adopcion', autenticado, (req, res) => {
@@ -121,10 +127,10 @@ router.get('', (req, res) => {
         res.render('funcionesCliente/cruza');
     })
 
-    .get('/clientes/cargar-cruza', autenticado, async(req, res) => {
+    .get('/clientes/cargar-cruza', autenticado, async (req, res) => {
         const usuario = await User.findById(req.user.id).populate('perrosId')
         const perros = usuario.perrosId;
-        res.render('cargar-cruza', {perros});
+        res.render('cargar-cruza', { perros });
     })
 
     // ------------------- ADMIN -------------------------
@@ -140,14 +146,14 @@ router.get('', (req, res) => {
     .get('/admin/modificar-usuario', [autenticado, esAdmin], async (req, res) => {
         let userMail = req.query.dato;
         let usuario = await User.findOne({ mail: userMail })
-        res.render('modificar-usuario', {usuario, userMail})
+        res.render('modificar-usuario', { usuario, userMail })
     })
 
     .get('/admin/modificar-perro', [autenticado, esAdmin], async (req, res) => {
         mailUsuario = req.query.mailUsuario
-        let perro = await Perro.findById({ _id: req.query.id});
+        let perro = await Perro.findById({ _id: req.query.id });
         console.log(mailUsuario);
-        res.render('modificar-perro', {perro, mailUsuario});
+        res.render('modificar-perro', { perro, mailUsuario });
     })
 
     .get('/admin/registrar-perro', [autenticado, esAdmin], (req, res) => {
@@ -158,37 +164,37 @@ router.get('', (req, res) => {
         res.render('eliminar-perro');
     })
 
-    .get('/admin/cargar/paseador-cuidador', [autenticado, esAdmin], async(req, res) => {
+    .get('/admin/cargar/paseador-cuidador', [autenticado, esAdmin], async (req, res) => {
         res.render('cargar-paseador-cuidador');
     })
 
-    .get('/admin/modificar-servicio', [autenticado, esAdmin], async(req, res) => {
+    .get('/admin/modificar-servicio', [autenticado, esAdmin], async (req, res) => {
         let servicio = await Servicio.findById(req.query.id);
-        res.render('modificar-servicio', {servicio});
+        res.render('modificar-servicio', { servicio });
     })
 
-    .get('/admin/cargar/paseador-cuidador', [autenticado, esAdmin], async(req, res) => {
+    .get('/admin/cargar/paseador-cuidador', [autenticado, esAdmin], async (req, res) => {
         res.render('cargar-paseador-cuidador');
     })
-    
-    .get('/admin/modificar-servicio', [autenticado, esAdmin], async(req, res) => {
+
+    .get('/admin/modificar-servicio', [autenticado, esAdmin], async (req, res) => {
         let servicio = await Servicio.findById(req.query.id);
-        res.render('modificar-servicio', {servicio});
+        res.render('modificar-servicio', { servicio });
     })
 
-    .get('/admin/usuarios', [autenticado, esAdmin], async(req, res) => {
+    .get('/admin/usuarios', [autenticado, esAdmin], async (req, res) => {
         res.render('funcionesAdmin/usuarios');
     })
 
-    .get('/admin/turnos', [autenticado, esAdmin], async(req, res) => {
+    .get('/admin/turnos', [autenticado, esAdmin], async (req, res) => {
         res.render('funcionesAdmin/turnos');
     })
 
-    .get('/admin/servicios', [autenticado, esAdmin], async(req, res) => {
+    .get('/admin/servicios', [autenticado, esAdmin], async (req, res) => {
         res.render('funcionesAdmin/servicios');
     })
 
-    .get('/admin/cargar-servicio', [autenticado, esAdmin], async(req, res) => {
+    .get('/admin/cargar-servicio', [autenticado, esAdmin], async (req, res) => {
         res.render('cargar-paseador-cuidador');
     })
 
