@@ -77,5 +77,6 @@ html
                     - let fechaDeNacimiento = `${cruza.fechaDeNacimiento.getUTCDate()}/${cruza.fechaDeNacimiento.getUTCMonth()+1}/${cruza.fechaDeNacimiento.getUTCFullYear()}`
                     td= fechaDeNacimiento
                     td.buttons
-                        form(action="#", method="POST")
+                        form(action="/usuarios/cruza/solicitar", method="POST")
+                            input(type="hidden", name="mailPostulante", value=cruza.mail)
                             button(type="submit") Cruzar        
