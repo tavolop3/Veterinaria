@@ -1,5 +1,5 @@
 include mixins/bannerCliente.pug
-doctype html
+doctype html 
 html
   head
     meta(charset="utf-8")
@@ -26,10 +26,12 @@ html
             option(value="hembra", selected=cruza.sexo==="hembra") Hembra
         li
           label(for="fechaDeCelo") Fecha de celo:
-          input(type="date", id="fechaDeCelo", name="fechaDeCelo", value=cruza.fechaDeCelo)  
+          - const fechaDeCeloValue = cruza.fechaDeCelo ? cruza.fechaDeCelo.toISOString().split('T')[0] : '';
+          input(type="date", id="fechaDeCelo", name="fechaDeCelo", value=fechaDeCeloValue)  
         li
           label(for="fechaDeNacimiento") Fecha de nacimiento:
-          input(type="date", id="fechaDeNacimiento", name="fechaDeNacimiento", value=cruza.fechaDeNacimiento)  
+          - const fechaDeNacimientoValue = cruza.fechaDeNacimiento ? cruza.fechaDeNacimiento.toISOString().split('T')[0] : '';
+          input(type="date", id="fechaDeNacimiento", name="fechaDeNacimiento", value=fechaDeNacimientoValue)  
         li.button
           button(type="submit") Modificar
     script.
@@ -37,7 +39,7 @@ html
         function setMaxDate() {
           var today = new Date();
           var year = today.getFullYear();
-          var month = String(today.getMonth() + 1).padStart(2, '0');
+          var month = String(today.getMonth() + 1).padStart(2, '0');s
           var day = String(today.getDate()).padStart(2, '0');
           var todayDate = `${year}-${month}-${day}`;
           var fechaInput = document.getElementById('fechaDeNacimiento');

@@ -213,7 +213,7 @@ router.post('/solicitar-turno', async (req, res) => {
   .post('/modificar-cruza', async (req, res) => {
     const { id, raza, sexo, fechaDeCelo, fechaDeNacimiento } = req.body;
     //const cruzaModificar = await Cruza.findById(id);
-    console.log("fechaDeCelo", req.body.fechaDeCelo);
+    console.log("fechaDeCelo de req", req.body.fechaDeCelo, "fechaDeCelo de coso", fechaDeCelo);
     try {
       await Cruza.updateOne({ _id: id }, {
         $set: {
