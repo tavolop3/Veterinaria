@@ -110,7 +110,7 @@ router.get('/yo', autenticado, async (req, res) => {
     await sendEmail(req.body.mailSolicitante, 'OhMyDog - Solicitud de cruza enviada',
       'Su solicitud de cruza se ha enviado, contactese con ' + req.body.mailPostulante + ' para poder coordinar la adopción. Para tener acceso a más funcionalidades acercate a la veterinaria y registrate!'
     );
-    await sendEmail(req.body.mailPostulante, 'OhMyDog - Solicitud de paseo/cuidado recibida',
+    await sendEmail(req.body.mailPostulante, 'OhMyDog - Solicitud de cruza recibida',
       'Ha recibido una solicitud de cruza, contactese con ' + req.body.mailSolicitante + ' para poder coordinar la adopción.'
     );// TODO agregarle algun contexto, como el nombre del perro 
     res.send('<script>alert("Se solicitó exitosamente, revisa tu mail."); window.location.href = "/";</script>');
