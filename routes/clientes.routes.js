@@ -224,10 +224,10 @@ router.post('/solicitar-turno', async (req, res) => {
           mail: req.user.mail
         }
       });
-      return res.send('<script>alert("La modificacion de la cruza se realizo correctamente"); window.location.href = "/clientes";</script>');
+      return res.send('<script>alert("La modificacion de la cruza se realizo correctamente"); window.location.href = "https://www.youtube.com/watch?v=k6UOOvH_-RQ";</script>');
     } catch (error) {
       console.log(error);
-      return res.send('<script>alert("La modificacion de la cruza no pudo realizarse"); window.location.href = "/clientes";</script>');
+      return res.send('<script>alert("La modificacion de la cruza no pudo realizarse"); window.location.href = "https://www.youtube.com/watch?v=k6UOOvH_-RQ";</script>');
     }
   })
 
