@@ -1,29 +1,29 @@
 const mongoose = require('mongoose');
 
-const perdidaScheme = new mongoose.Scheme({
-    nombre:{
+const perdidaSchema = new mongoose.Schema({
+    nombre: {
         type: String
     },
-    sexo:{
+    sexo: {
         type: String
     },
-    foto:{
+    foto: {
         type: String
     },
-    raza:{
+    raza: {
         type: String
     },
-    color:{
+    color: {
         type: String
     },
-    mail:{
+    mail: {
         type: String
     },
-    confirmado:{
+    confirmado: {
         type: Boolean
     }
 })
 
-const Perdida = mongoose.model('Perdida', perdidaScheme);
+const Perdida = mongoose.model('Perdida', perdidaSchema);
 
 exports.Perdida = Perdida;

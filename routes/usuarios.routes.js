@@ -5,6 +5,7 @@ const { Cruza } = require('../models/cruza')
 const autenticado = require('../middleware/autenticado');
 const { User, encriptarContraseña, compararContraseñas } = require('../models/user');
 const { sendEmail } = require('../emails');
+const { Perdida } = require('../models/perdida');
 
 // Para ver el usuario actual
 router.get('/yo', autenticado, async (req, res) => {
@@ -195,6 +196,20 @@ router.get('/yo', autenticado, async (req, res) => {
     }
   })
 
+  .post('/visualizar-tablon-perdida', async (req, res) => {
+    let { nombre, sexo, foto, raza, color, mail, confirmado } = req.body;
+    try {
+      let mail = "";
+      if (req.isAuthenticated())
+        mail = req.user.mail;
+      let perdidas = (await Perdida.find({})).filter(perdida => perdida.mail !== mail);
+
+      res.render('tablonPerdida', { perdidas: perdidas, usuarioActual: mail });
+    } catch (error) {
+      console.log('Error al obtener las busquedas/perdidas:', error);
+      return res.status(400).send('Error al obtener las busquedas/perdidas');
+    }
+  })
 
 
 module.exports = router;

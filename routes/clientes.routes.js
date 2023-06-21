@@ -8,6 +8,7 @@ const { Adopcion } = require('../models/adopcion');
 const { Cruza } = require('../models/cruza');
 const { Servicio } = require('../models/servicio');
 const { sendEmail } = require('../emails');
+const { Perdida } = require('../models/perdida');
 const _ = require('lodash');
 const moment = require('moment');
 
@@ -276,7 +277,21 @@ router.post('/solicitar-turno', async (req, res) => {
     }
   })
 
-
+  .post('/confirmar-anuncio', async (req, res) => {
+    try {
+      Perdida.findByIdAndUpdate(req.body.id, { confirmado: true })
+        .then(documentoActualizado => {
+          console.log('Documento actualizado:', documentoActualizado);
+          res.send('<script>alert("El anuncio fue confirmado con exito"); window.location.href = "/clientes/listar-perdida";</script>');
+        })
+        .catch(error => {
+          console.error('Error al actualizar el documento:', error);
+          res.status(500).send('<script>alert("Error al confirmar el anuncio"); window.location.href = "/clientes/listar-perdida";</script>');
+        });
+    } catch (err) {
+      res.json({ error: err.message || err.toString() });
+    }
+  })
 
 
 

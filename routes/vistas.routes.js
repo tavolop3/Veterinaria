@@ -7,6 +7,7 @@ const { Perro } = require('../models/perro');
 const { Adopcion } = require('../models/adopcion');
 const { Servicio } = require('../models/servicio');
 const { Cruza } = require('../models/cruza');
+const { Perdida } = require('../models/perdida');
 
 router.get('', (req, res) => {
     if (!req.user)
@@ -70,6 +71,18 @@ router.get('', (req, res) => {
             return res.status(400).send('Error al obtener las cruzas');
         }
     })
+    .get('/usuarios/visualizar-tablon-perdida', async (req, res) => {
+        try {
+            let mail = "";
+            if (req.isAuthenticated())
+                mail = req.user.mail;
+            let perdidas = (await Perdida.find({})).filter(perdida => perdida.mail !== mail);
+            res.render('tablonPerdida', { perdidas: perdidas, usuarioActual: mail });
+        } catch (error) {
+            console.log('Error al obtener las busquedas/perdidas:', error);
+            return res.status(400).send('Error al obtener las busquedas/perdidas');
+        }
+    })
 
     // ------------------- CLIENTES -------------------------
 
@@ -101,6 +114,12 @@ router.get('', (req, res) => {
         const usuario = await User.findById(req.user._id).populate('perrosEnCruza')
         const perros = usuario.perrosEnCruza;
         res.render('listarCruza', { perros })
+    })
+
+    .get('/clientes/listar-anuncios', autenticado, async (req, res) => {
+        const usuario = await User.findById(req.user._id).populate('anuncios')
+        const anuncios = usuario.anuncios;
+        res.render('listarAnuncios', { anuncios })
     })
 
     .get('/clientes/modificar-adopcion', autenticado, async (req, res) => {
