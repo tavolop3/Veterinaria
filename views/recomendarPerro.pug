@@ -1,0 +1,51 @@
+include mixins/bannerCliente.pug
+doctype html
+html
+  head
+    title Perro recomendado
+
+    style.
+      table {
+        border-collapse: collapse;
+        width: 30%;
+      }
+      th, td {
+        padding: 2px;
+        text-align: left;
+      }
+      td.buttons {
+        display: flex;
+        gap: 10px;
+      }
+    script.
+      function mostrarPopUp() {
+        alert("El sistema no dispone de un perro que cumpla los requisitos para ser recomendado.");
+        window.location.href = "/clientes/listar-cruza";
+      }
+  +bannerCliente() 
+  if (!perroRecomendado) 
+    script.
+      window.onload = function() {
+        mostrarPopUp();
+      }
+  else 
+    div
+      h1 Perro recomendado
+      table
+        tr
+          th Raza
+          th Sexo
+          th Fecha de nacimiento
+          th Fecha de celo
+          tr
+            td= perroRecomendado.raza
+            td= perroRecomendado.sexo
+            - let fechaNac = `${perroRecomendado.fechaDeNacimiento.getUTCDate()}/${perroRecomendado.fechaDeNacimiento.getUTCMonth()+1}/${perroRecomendado.fechaDeNacimiento.getUTCFullYear()}`
+            td= fechaNac
+            - let fechaCelo = `${perroRecomendado.fechaDeCelo.getUTCDate()}/${perroRecomendado.fechaDeCelo.getUTCMonth()+1}/${perroRecomendado.fechaDeCelo.getUTCFullYear()}`
+            td= fechaCelo
+            td.buttons
+              form(action="#", method="POST") 
+                input(type="hidden", name="dato", value=perroRecomendado.raza)
+                button(type="submit") Cruzar
+            //Arreglar esto de aca arriba, mandando datos necesarios!!!!!!

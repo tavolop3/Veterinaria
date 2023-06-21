@@ -1,0 +1,60 @@
+include mixins/bannerCliente.pug
+doctype html 
+html
+  head
+    meta(charset="utf-8")
+    title Modificar cruza
+    link(rel="stylesheet", href="/style/login.css")
+  +bannerCliente()
+  body
+    form(action="/clientes/modificar-cruza", method="post")
+      ul
+        li
+          input(type="hidden", name="id", value=cruza._id)
+        li
+          label(for="raza") Raza:
+          select(name="raza",value=cruza.raza, id="raza", required)
+            option(value="Chihuahua", selected=cruza.raza==="Chihuahua") Chihuahua
+            option(value="Caniche", selected=cruza.raza==="Caniche") Caniche
+            option(value="Boxer", selected=cruza.raza==="Boxer") Boxer
+            option(value="Pastor alemán", selected=cruza.raza==="Pastor alemán") Pastor alemán
+            option(value="Dogo argentino", selected=cruza.raza==="Dogo argentino") Dogo argentino
+        li
+          label(for="sexo") Sexo:
+          select(name="sexo", id="sexo", required)
+            option(value="macho", selected=cruza.sexo==="macho") Macho
+            option(value="hembra", selected=cruza.sexo==="hembra") Hembra
+        li
+          label(for="fechaDeCelo") Fecha de celo:
+          - const fechaDeCeloValue = cruza.fechaDeCelo ? cruza.fechaDeCelo.toISOString().split('T')[0] : '';
+          input(type="date", id="fechaDeCelo", name="fechaDeCelo", value=fechaDeCeloValue)  
+        li
+          label(for="fechaDeNacimiento") Fecha de nacimiento:
+          - const fechaDeNacimientoValue = cruza.fechaDeNacimiento ? cruza.fechaDeNacimiento.toISOString().split('T')[0] : '';
+          input(type="date", id="fechaDeNacimiento", name="fechaDeNacimiento", value=fechaDeNacimientoValue)  
+        li.button
+          button(type="submit") Modificar
+    script.
+      document.addEventListener('DOMContentLoaded', function() {
+        function setMaxDate() {
+          var today = new Date();
+          var year = today.getFullYear();
+          var month = String(today.getMonth() + 1).padStart(2, '0');s
+          var day = String(today.getDate()).padStart(2, '0');
+          var todayDate = `${year}-${month}-${day}`;
+          var fechaInput = document.getElementById('fechaDeNacimiento');
+          fechaInput.setAttribute('max', todayDate);
+        }
+        setMaxDate();
+
+        function setMinDate() {
+          var today = new Date();
+          var year = today.getFullYear();
+          var month = String(today.getMonth() + 1).padStart(2, '0');
+          var day = String(today.getDate()-5).padStart(2, '0');
+          var todayDate = `${year}-${month}-${day}`;
+          var fechaInput = document.getElementById('fechaDeCelo');
+          fechaInput.setAttribute('min', todayDate);
+      }
+      setMinDate()
+      });
