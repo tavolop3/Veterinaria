@@ -9,7 +9,7 @@ const { Cruza } = require('../models/cruza');
 const { Servicio } = require('../models/servicio');
 const { sendEmail } = require('../emails');
 const { Perdida } = require('../models/perdida');
-const _ = require('lodash');
+const _ = require('lodash'); f
 const moment = require('moment');
 
 /* Endpoint para

@@ -39,8 +39,13 @@ else
           td= anuncio.raza
           td= anuncio.color
           td.buttons
-            form(action="/clientes/confirmar-anuncio", method="POST")
+            if !(anuncio.confirmado)
+              form(action="/clientes/confirmar-anuncio", method="POST")
+                input(type="hidden", name="id", value=anuncio._id)
+                button(type="submit") Confirmar anuncio
+            form(action="/clientes/modificar-anuncio", method="POST")
               input(type="hidden", name="id", value=anuncio._id)
-              button(type="submit") Confirmar
+              button(type="submit") Modificar
+            
         
               

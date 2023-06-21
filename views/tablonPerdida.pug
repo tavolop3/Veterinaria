@@ -42,5 +42,12 @@ html
                 td= perdida.sexo 
                 td= fechaDeCelo 
                 td= fechaDeNacimiento
+                td.buttons
+                  if perdida.confirmado
+                    button(type="button") Adoptado
+                  else
+                    form(action="/usuarios/anuncio/contactar", method="POST")
+                      input(type="hidden", name="mailPostulante", value=usuarioActual)
+                      button(type="submit") Contactar               
 
   
