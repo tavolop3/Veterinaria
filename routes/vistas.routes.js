@@ -134,7 +134,9 @@ router.get('', (req, res) => {
     })
 
     .get('/clientes/modificar-datos', autenticado, (req, res) => {
-        res.render('modificar-datos');
+        let dato = req.user.isAdmin;
+        console.log(dato);
+        res.render('modificar-datos', { dato });
     })
 
     .get('/clientes/cargar-adopcion', autenticado, (req, res) => {
