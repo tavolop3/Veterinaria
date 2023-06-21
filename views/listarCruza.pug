@@ -29,14 +29,15 @@ else
         th Raza:
         th Sexo:
         th Fecha de celo: 
-        th Edad:
+        th Fecha de nacimiento:
       each perro in perros
         tr
           td= perro.raza
           td= perro.sexo
           - let fechaDeCelo = `${perro.fechaDeCelo.getUTCDate()}/${perro.fechaDeCelo.getUTCMonth()+1}/${perro.fechaDeCelo.getUTCFullYear()}`
           td= fechaDeCelo 
-          td= perro.edad
+          - let fechaDeNacimiento = `${perro.fechaDeNacimiento.getUTCDate()}/${perro.fechaDeNacimiento.getUTCMonth()+1}/${perro.fechaDeNacimiento.getUTCFullYear()}`
+          td= fechaDeNacimiento
           td.buttons
             form(action="/clientes/modificar-cruza", method="GET")
               input(type="hidden", name="dato", value=perro._id)
@@ -46,5 +47,5 @@ else
               button(type="submit") Eliminar
             form(action="/clientes/recomendar-perro", method="POST")
               input(type="hidden", name="id", value=perro._id)
-              button(type="submit") Recomendar cruza
+              button(type="submit") Recomendar
               
