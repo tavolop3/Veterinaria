@@ -282,21 +282,16 @@ router.post('/solicitar-turno', async (req, res) => {
       Perdida.findByIdAndUpdate(req.body.id, { confirmado: true })
         .then(documentoActualizado => {
           console.log('Documento actualizado:', documentoActualizado);
-          res.send('<script>alert("El anuncio fue confirmado con exito"); window.location.href = "/clientes/listar-perdida";</script>');
+          res.send('<script>alert("El anuncio fue confirmado con exito"); window.location.href = "/clientes/listar-anuncios";</script>');
         })
         .catch(error => {
           console.error('Error al actualizar el documento:', error);
-          res.status(500).send('<script>alert("Error al confirmar el anuncio"); window.location.href = "/clientes/listar-perdida";</script>');
+          res.status(500).send('<script>alert("Error al confirmar el anuncio"); window.location.href = "/clientes/listar-anuncios";</script>');
         });
     } catch (err) {
       res.json({ error: err.message || err.toString() });
     }
   })
-
-
-
-
-
 
   .post('/cargar-anuncio', async (req, res) => {
     let perroPerdido = {
