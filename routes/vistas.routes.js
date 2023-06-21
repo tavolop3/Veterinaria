@@ -6,6 +6,8 @@ const { User } = require('../models/user');
 const { Perro } = require('../models/perro');
 const { Adopcion } = require('../models/adopcion');
 const { Servicio } = require('../models/servicio');
+const { Cruza } = require('../models/cruza');
+const { Perdida } = require('../models/perdida');
 
 router.get('', (req, res) => {
     if (!req.user)
@@ -89,7 +91,32 @@ router.get('', (req, res) => {
             console.log('Error al obtener los servicios:', error);
             return res.status(400).send('Error al obtener los servicios');
         }
-    })        
+    })
+
+    .get('/usuarios/visualizar-tablon-cruza', async (req, res) => {
+        try {
+            let mail = "";
+            if (req.isAuthenticated())
+                mail = req.user.mail;
+            let cruzas = (await Cruza.find({})).filter(cruza => cruza.mail !== mail);
+            res.render('tablonCruza', { cruzas: cruzas, usuarioActual: mail });
+        } catch (error) {
+            console.log('Error al obtener las cruzas:', error);
+            return res.status(400).send('Error al obtener las cruzas');
+        }
+    })
+    .get('/usuarios/visualizar-tablon-perdida', async (req, res) => {
+        try {
+            let mail = "";
+            if (req.isAuthenticated())
+                mail = req.user.mail;
+            let perdidas = (await Perdida.find({})).filter(perdida => perdida.mail !== mail);
+            res.render('tablonPerdida', { perdidas: perdidas, usuarioActual: mail });
+        } catch (error) {
+            console.log('Error al obtener las busquedas/perdidas:', error);
+            return res.status(400).send('Error al obtener las busquedas/perdidas');
+        }
+    })
 
     // ------------------- CLIENTES -------------------------
 
@@ -120,10 +147,28 @@ router.get('', (req, res) => {
         res.render('listarAdopcion', { perros })
     })
 
-    .get('/clientes/modificar-adopcion', autenticado, async (req, res) => {
+    .get('/clientes/listar-cruza', autenticado, async (req, res) => {
+        const usuario = await User.findById(req.user._id).populate('perrosEnCruza')
+        const perros = usuario.perrosEnCruza;
+        res.render('listarCruza', { perros })
+    })
+
+    .get('/clientes/listar-anuncios', autenticado, async (req, res) => {
+        const usuario = await User.findById(req.user._id).populate('anuncios')
+        const anuncios = usuario.anuncios;
+        res.render('listarAnuncios', { anuncios })
+    })
+
+    .get('/clientes/modificar-adopcion', autenticado, async  (req, res) => {
         let id = req.query.dato;
         let perro = await Adopcion.findById(id);
         res.render('modificar-adopcion', { perro });
+    })
+
+    .get('/clientes/modificar-cruza', autenticado, async (req, res) => {
+        let id = req.query.dato;
+        let cruza = await Cruza.findById(id);
+        res.render('modificar-cruza', { cruza });
     })
 
     .get('/clientes/adopcion', autenticado, (req, res) => {
@@ -132,6 +177,30 @@ router.get('', (req, res) => {
 
     .get('/clientes/turnos', autenticado, (req, res) => {
         res.render('funcionesCliente/turnos');
+    })
+
+    .get('/clientes/cruza', autenticado, (req, res) => {
+        res.render('funcionesCliente/cruza');
+    })
+
+    .get('/clientes/cargar-cruza', autenticado, async (req, res) => {
+        const usuario = await User.findById(req.user.id).populate('perrosId')
+        const perros = usuario.perrosId;
+        res.render('cargar-cruza', { perros });
+    })
+
+    .get('/clientes/anuncio', autenticado, (req, res) => {
+        res.render('funcionesCliente/anuncio');
+    })
+
+    .get('/clientes/cargar-anuncio', autenticado, (req, res) => {
+        res.render('cargar-anuncio')
+    })
+
+    .get('/clientes/modificar-anuncio', autenticado, async(req, res) => {
+        let id = req.query.dato;
+        let perro = await Perdida.findById(id);
+        res.render('modificar-anuncio', { perro });
     })
 
     // ------------------- ADMIN -------------------------

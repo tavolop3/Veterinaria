@@ -1,0 +1,46 @@
+include mixins/bannerCliente.pug
+
+doctype html
+html
+  head
+    title Perros en cruza
+    style.
+      table {
+        border-collapse: collapse;
+        width: 30%;
+      }
+      th, td {
+        padding: 2px;
+        text-align: left;
+      }
+      td.buttons {
+        display: flex;
+        gap: 10px;
+      }
+
++bannerCliente()  
+if !anuncios.length
+  h1 No tiene anuncios cargados
+else
+  div
+    h1 Lista de anuncios del cliente
+    table
+      tr
+        th Nombre:
+        th Sexo:
+        th Foto: 
+        th Raza:
+        th Color:
+      each anuncio in anuncios
+        tr
+          td= anuncio.nombre
+          td= anuncio.sexo
+          td= anuncio.foto
+          td= anuncio.raza
+          td= anuncio.color
+          td.buttons
+            form(action="/clientes/confirmar-anuncio", method="POST")
+              input(type="hidden", name="id", value=anuncio._id)
+              button(type="submit") Confirmar
+        
+              

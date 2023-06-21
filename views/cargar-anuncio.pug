@@ -1,0 +1,35 @@
+include mixins/bannerCliente.pug
+doctype html
+html
+  head
+    meta(charset="UTF-8")
+    title Registrar anuncio
+    link(rel="stylesheet", href="/style/registro.css")
+  +bannerCliente()
+  body
+    form(action="/clientes/cargar-anuncio", method="post")
+      ul
+        li
+          label(for="nombre") Nombre:
+          input(type="text", id="nombre", name="nombre")
+        li
+          label(for="sexo") *Sexo:
+          select(id="sexo", name="sexo", required)
+            option(value="macho") Macho
+            option(value="hembra") Hembra
+        li
+          label(for="raza") Raza:
+          input(type="text", id="raza", name="raza")
+        li
+          label(for="color") *Color:
+          input(type="text", id="color", name="color", required)
+        li
+        li
+          label(for="foto") *Foto:
+          input(type="String", id="foto", name="foto", required)
+        li
+        li.button
+          button(type="submit") Registrar
+        p Los datos marcados con * son obligatorios 
+        if error
+          li.error= error  

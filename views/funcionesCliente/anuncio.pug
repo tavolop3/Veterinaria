@@ -1,0 +1,11 @@
+include ../mixins/bannerCliente.pug
+
+doctype html
+
++bannerCliente()
+html
+  head
+    title Adopcion
+  body
+    form(action="/clientes/cargar-anuncio", method="GET")
+        button(type="submit") Cargar anuncio
