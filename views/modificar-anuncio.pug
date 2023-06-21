@@ -20,8 +20,13 @@ html
             option(value="macho") Macho
             option(value="hembra") Hembra
         li 
-          label(for="raza") Raza: 
-          input(type="text", id="raza", name="raza", value=perro.raza)
+          label(for="raza") Raza:
+          select(name="raza", id="raza", required)
+            option(value="Chihuahua") Chihuahua
+            option(value="Caniche") Caniche
+            option(value="Boxer") Boxer
+            option(value="Pastor alemán") Pastor alemán
+            option(value="Dogo argentino") Dogo argentino
         li
           label(for="color") *Color:
           input(type="text", id="color", name="color", value=perro.color, required)
@@ -32,4 +37,4 @@ html
         p La foto debe de ser una URL
         li.button
           button(type="submit") Modificar
-          button(onclick="window.history.go(-1)") Cancelar
+          button(type="button", onclick="window.history.go(-1)") Cancelar

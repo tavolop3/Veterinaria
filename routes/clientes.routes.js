@@ -327,9 +327,9 @@ router.post('/solicitar-turno', async (req, res) => {
           foto: foto
         }
       });
-      return res.send('<script>alert("El perro en anuncio se modifico correctamente."); window.location.href = "/clientes";</script>');
+      return res.send('<script>alert("El perro en anuncio se modifico correctamente."); window.location.href = "/clientes/listar-anuncios";</script>');
     } catch (error) {
-      return res.send('<script>alert("El perro en anuncio no pudo modificarse"); window.location.href = "/clientes";</script>');
+      return res.send('<script>alert("El perro en anuncio no pudo modificarse"); window.location.href = "/clientes/listar-anuncios";</script>');
     }
   })
 
