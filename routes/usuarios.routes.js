@@ -120,5 +120,32 @@ router.get('/yo', autenticado, async(req,res) => {
   res.send('<script>alert("Se solicitó la adopción, revisa tu mail."); window.location.href = "/";</script>');
 })
 
+.post('/anuncio/contactar', async (req, res) => {
+  if (req.isAuthenticated()) {
+    // Activar para testear un par de veces o en demo para no gastar la cuota de mails (son 100)
+    await sendEmail(req.user.mail, 'OhMyDog - Solicitud de contacto enviada',
+      'Su información de contacto se ha enviado, contactese con ' + req.body.mailPostulante + ' para poder coordinar.'
+    );
+
+    await sendEmail(req.body.mailPostulante, 'OhMyDog - Solicitud de contacto recibida',
+      'Ha recibido una solicitud de contacto por su anuncio, contactese con ' + req.user.mail + ' para poder coordinar.'
+    );
+    res.send('<script>alert("Se solicitó exitosamente, revisa tu mail."); window.location.href = "/";</script>');
+  } else {
+    res.render('mail-noCliente-anuncio', { mailPostulante: req.body.mailPostulante });
+  }
+})
+
+.post('/anuncio/mail-noCliente', async (req, res) => {
+  // Activar para testear un par de veces o en demo para no gastar la cuota de mails (son 100)
+  await sendEmail(req.body.mailSolicitante, 'OhMyDog - Solicitud de contacto enviada',
+    'Su información de contacto se ha enviado, contactese con ' + req.body.mailPostulante + ' para poder coordinar. Para tener acceso a más funcionalidades acercate a la veterinaria y registrate!'
+  );
+  await sendEmail(req.body.mailPostulante, 'OhMyDog - Solicitud de contacto recibida',
+    'Ha recibido una solicitud de contacto por su anuncio, contactese con ' + req.body.mailSolicitante + ' para poder coordinar.'
+  ); 
+  res.send('<script>alert("Se solicitó exitosamente, revisa tu mail."); window.location.href = "/";</script>');
+})
+
 module.exports = router;
 
