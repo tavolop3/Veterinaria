@@ -41,6 +41,10 @@ else
             form(action="/clientes/modificar-cruza", method="GET")
               input(type="hidden", name="dato", value=perro._id)
               button(type="submit") Modificar
-                form(action="/clientes/eliminar-cruza", method="POST" onsubmit="return confirm('¿Estás seguro de que deseas eliminar esta cruza?');")
-              input(type="hidden", name="dato", value=perro._id)
+            form(action="/clientes/eliminar-cruza", method="POST" onsubmit="return confirm('¿Estás seguro de que deseas eliminar esta cruza?');")
+              input(type="hidden", name="id", value=perro._id)
               button(type="submit") Eliminar
+            form(action="/clientes/recomendar-perro", method="POST")
+              input(type="hidden", name="id", value=perro._id)
+              button(type="submit") Recomendar cruza
+              

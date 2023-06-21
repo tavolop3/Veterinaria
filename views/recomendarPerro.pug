@@ -1,3 +1,4 @@
+include mixins/bannerCliente.pug
 doctype html
 html
   head
@@ -16,34 +17,35 @@ html
         display: flex;
         gap: 10px;
       }
-
-//if !perroRecomendado.length !!esto no deberia pasar xq lo controlo en el back
-  h1 No tiene perros cargados todavía.
-else
-  div
-    h1 Lista de perros
-    table
-      tr
-        th Raza
-        th Sexo
-        th Fecha de nacimiento
-        th Fecha de celo
+    script.
+      function mostrarPopUp() {
+        alert("El sistema no dispone de un perro que cumpla los requisitos para ser recomendado.");
+        window.location.href = "/clientes/listar-cruza";
+      }
+  +bannerCliente() 
+  if (!perroRecomendado) 
+    script.
+      window.onload = function() {
+        mostrarPopUp();
+      }
+  else 
+    div
+      h1 Perro recomendado
+      table
         tr
-          td= perroRecomendado.raza
-          td= perroRecomendado.sexo
-          - let fechaNac = `${perroRecomendado.fechaDeNacimiento.getUTCDate()}/${perroRecomendado.fechaDeNacimiento.getUTCMonth()+1}/${perroRecomendado.fechaDeNacimiento.getUTCFullYear()}`
-          td= fechaNac
-          - let fechaCelo = `${perroRecomendado.fechaDeCelo.getUTCDate()}/${perro.fechaDeCelo.getUTCMonth()+1}/${perro.fechaDeCelo.getUTCFullYear()}`
-          td= fechaCelo
-          td= perro.color 
-          td= perro.observaciones
-          if admin
+          th Raza
+          th Sexo
+          th Fecha de nacimiento
+          th Fecha de celo
+          tr
+            td= perroRecomendado.raza
+            td= perroRecomendado.sexo
+            - let fechaNac = `${perroRecomendado.fechaDeNacimiento.getUTCDate()}/${perroRecomendado.fechaDeNacimiento.getUTCMonth()+1}/${perroRecomendado.fechaDeNacimiento.getUTCFullYear()}`
+            td= fechaNac
+            - let fechaCelo = `${perroRecomendado.fechaDeCelo.getUTCDate()}/${perroRecomendado.fechaDeCelo.getUTCMonth()+1}/${perroRecomendado.fechaDeCelo.getUTCFullYear()}`
+            td= fechaCelo
             td.buttons
-              form(action="/admin/modificar-perro", method="GET")
-                input(type="hidden", name="id", value=perro._id)
-                input(type="hidden", name="mailUsuario", value=mailUsuario)
-                button(type="submit") Modificar perro
-              form(action="/admin/eliminar-perro", method="POST")
-                input(type="hidden", name="id", value=perro._id)
-                input(type="hidden", name="mail", value=perro.mail)
-                button(type="submit") Eliminar perro
+              form(action="#", method="POST") 
+                input(type="hidden", name="dato", value=perroRecomendado.raza)
+                button(type="submit") Cruzar
+            //Arreglar esto de aca arriba, mandando datos necesarios!!!!!!
