@@ -52,4 +52,5 @@ html
                   form(action="/usuarios/adopcion/solicitar", method="POST")
                     input(type="hidden", name="mailPostulante", value=adopcion.mail)
                     button(type="submit") Adoptar 
-                  
+        button(onclick="window.history.go(-1)") Volver
+

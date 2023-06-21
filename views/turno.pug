@@ -42,5 +42,7 @@ html
             option(value="Otro") Otro
         li.button
           button(type="submit") Solicitar turno
+          button(onclick="window.history.go(-1)") Cancelar
+
         if error
           li.error= error

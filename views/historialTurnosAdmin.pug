@@ -13,7 +13,7 @@ html
         padding: 12px;
         text-align: left;
       }
-       td.buttons {
+      td.buttons {
         display: flex;
         gap: 10px;
       }
@@ -59,16 +59,4 @@ html
                 form(action="/admin/confirmar-asistencia", method="POST") 
                   input(type="hidden", name="id", value=turno._id)
                   button(type="submit") Confirmar asistencia
-                  
-              //estos dos botones irian para el cliente que no se si va a ser 2 pugs distintos o 1 pug para los 2
-            //if turno.estado = modificado-pendiente && !usuario.isAdmin
-            //button(type="button" onclick="window.location.href='/clientes/aceptar-modificacion?id=64713320cb306b9ce17965f4'") Aceptar ////modificación
-            //button(type="button" onclick="window.location.href='/clientes/rechazar-modificacion?id=64713320cb306b9ce17965f4'") Rechazar modificación
-
-             // form(action="/admin/modificar-perro", method="POST")
-             //   input(type="hidden", name="id", value=perro._id)
-             //   button(type="submit") Modificar perro
-//mandar al post de " /clientes/mostrar-modificar-turno " el turno completo a modificar. (NO el id!!!!!!)
-//acordarse tambien de ordenar por fecha!
-// modificar - eliminar - aceptar - rechazar (Admin) - confirmar asistencia (una vez q el cliente asistio, al admin lo confirma)
-// aceptar modificacion - rechazar modificacion 
+      button(onclick="window.history.go(-1)") Cancelar
