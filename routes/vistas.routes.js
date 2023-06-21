@@ -11,7 +11,7 @@ router.get('', (req, res) => {
     if (!req.user)
         res.render('index');
     else {
-        if (req.user.isAdmin)
+        if (req.user.isAdmin) 
             res.redirect('/admin');
         else
             res.redirect('/clientes');
@@ -60,7 +60,10 @@ router.get('', (req, res) => {
     // ------------------- CLIENTES -------------------------
 
     .get('/clientes', autenticado, (req, res) => {
-        res.render('indexCliente')
+        let usuario = {};
+        usuario.nombre = req.user.nombre;
+        usuario.rol = 'Usuario'
+        res.render('indexCliente', { usuario })
     })
 
     .get('/clientes/turno', autenticado, async (req, res) => {
@@ -100,7 +103,10 @@ router.get('', (req, res) => {
     // ------------------- ADMIN -------------------------
 
     .get('/admin', [autenticado, esAdmin], (req, res) => {
-        res.render('indexAdmin');
+        let usuario = {};
+        usuario.nombre = req.user.nombre;
+        usuario.rol = 'Administrador'
+        res.render('indexAdmin', { usuario });
     })
 
     .get('/admin/registrar-usuario', [autenticado, esAdmin], (req, res) => {

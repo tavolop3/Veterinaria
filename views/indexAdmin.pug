@@ -12,6 +12,5 @@ body
   section#pantalla
     article.columna
       header
-        h1 Campañas de donaciones activas
-      div.contenido
-        p Actualmente no se encuentran campañas de donaciones activas.
+        - let mensaje = "¡Bienvenido " + usuario.rol + " " + usuario.nombre + "!"
+        h1= mensaje
