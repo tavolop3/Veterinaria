@@ -230,7 +230,7 @@ router.get('', (req, res) => {
     })
 
     .get('/admin/registrar-perro', [autenticado, esAdmin], (req, res) => {
-        res.render('registro-perro');
+        res.render('registro-perro', { mail: req.query.mail });
     })
 
     .get('/admin/eliminar-perro', [autenticado, esAdmin], (req, res) => {

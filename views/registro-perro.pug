@@ -10,9 +10,6 @@ html
     form(action="/admin/registrar-perro", method="post")
       ul
         li
-          label(for="mail") Mail
-          input(type="email", id="mail", name="mail" , required)
-        li
           label(for="nombre") *Nombre
           input(type="text", id="nombre", name="nombre" ,required)
         li
@@ -24,8 +21,13 @@ html
           label(for="fechaDeNacimiento") *fechaDeNacimiento
           input(type="Date", id="fechaDeNacimiento", name="fechaDeNacimiento" ,required)
         li
-          label(for="raza") *raza
-          input(type="text", id="raza", name="raza",required)
+          label(for="raza") *Raza
+          select(name="raza", id="raza", required)
+              option(value="Chihuahua") Chihuahua
+              option(value="Caniche") Caniche
+              option(value="Boxer") Boxer
+              option(value="Pastor alemán") Pastor alemán
+              option(value="Dogo argentino") Dogo argentino
         li
           label(for="color") *color
           input(type="text", id="color", name="color",required)
@@ -36,6 +38,7 @@ html
           label(for="foto") foto
           input(type="String", id="foto", name="foto")
         li.button
+          input(type="hidden", id="mail", name="mail", value=mail)
           button(type="submit") Registrar
           button(onclick="window.history.go(-1)") Cancelar
         p Los datos marcados con * son obligatorios.

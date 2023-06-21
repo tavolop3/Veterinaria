@@ -43,8 +43,8 @@ else
               form(action="/clientes/confirmar-anuncio", method="POST")
                 input(type="hidden", name="id", value=anuncio._id)
                 button(type="submit") Confirmar anuncio
-            form(action="/clientes/modificar-anuncio", method="POST")
-              input(type="hidden", name="id", value=anuncio._id)
+            form(action="/clientes/modificar-anuncio", method="GET")
+              input(type="hidden", name="dato", value=anuncio._id)
               button(type="submit") Modificar
             
     button(onclick="window.history.go(-1)") Volver

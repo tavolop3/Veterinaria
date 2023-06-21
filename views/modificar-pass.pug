@@ -15,6 +15,6 @@ html
           input(type="password", id="contraseña2", name="contraseña2", required)
         li.button
           button(type="submit") Guardar cambios
-          button(onclick="window.history.go(-1)") Cancelar
+          button(type="button" onclick="window.history.go(-1)") Cancelar 
     if error 
       li.error= error

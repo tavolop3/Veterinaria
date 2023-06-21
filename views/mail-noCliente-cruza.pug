@@ -18,6 +18,6 @@ body
         li.button
             input(type="hidden", name="mailPostulante", value=mailPostulante)
             button(type="submit") Ingresar mail
-            button(onclick="window.history.go(-1)") Cancelar
+            button(type="button" onclick="window.history.go(-1)") Cancelar 
     if error
         li.error= error

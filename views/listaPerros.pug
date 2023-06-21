@@ -1,3 +1,5 @@
+include mixins/bannerAdmin.pug
+
 doctype html
 html
   head
@@ -16,7 +18,7 @@ html
         display: flex;
         gap: 10px;
       }
-
++bannerAdmin()
 if !perros.length
   h1 No tiene perros cargados todavía.
 else

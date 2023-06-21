@@ -32,23 +32,24 @@ html
             th Apellido
             th Telefono 
           each usuario in usuarios
-            tr
-              td= usuario.dni
-              td= usuario.mail
-              td= usuario.nombre
-              td= usuario.apellido
-              td= usuario.telefono
-              td.buttons
-                form(action="/admin/modificar-usuario", method="GET")
-                  input(type="hidden", name="dato", value=usuario.mail)
-                  button(type="submit") Modificar usuario
-                form(action="/admin/listar-perros", method="POST")
-                  input(type="hidden", name="dato", value=usuario.mail)
-                  button(type="submit") Listar perros
-                form(action="/admin/eliminar-usuario", method="POST" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este usuario?');")
-                  input(type="hidden", name="dato", value=usuario.mail)
-                  button(type="submit") Eliminar usuario
-                form(action="/admin/registrar-perro", method="POST")
-                  input(type="hidden", name="mail", value=usuario.mail)
-                  button(type="submit") Registrar perro
+            if(!(usuario.isAdmin))
+              tr
+                td= usuario.dni
+                td= usuario.mail
+                td= usuario.nombre
+                td= usuario.apellido
+                td= usuario.telefono
+                td.buttons
+                  form(action="/admin/modificar-usuario", method="GET")
+                    input(type="hidden", name="dato", value=usuario.mail)
+                    button(type="submit") Modificar usuario
+                  form(action="/admin/listar-perros", method="POST")
+                    input(type="hidden", name="dato", value=usuario.mail)
+                    button(type="submit") Listar perros
+                  form(action="/admin/eliminar-usuario", method="POST" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este usuario?');")
+                    input(type="hidden", name="dato", value=usuario.mail)
+                    button(type="submit") Eliminar usuario
+                  form(action="/admin/registrar-perro", method="GET")
+                    input(type="hidden", name="mail", value=usuario.mail)
+                    button(type="submit") Registrar perro
         button(onclick="window.history.go(-1)") Volver

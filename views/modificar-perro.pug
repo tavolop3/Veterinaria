@@ -38,7 +38,7 @@ html
           input(type="text", id="foto", name="foto", value=perro.foto)
         li.button
           button(type="submit") Modificar
-          button(onclick="window.history.go(-1)") Cancelar
+          button(type="button" onclick="window.history.go(-1)") Cancelar 
     script.
       document.addEventListener('DOMContentLoaded', function() {
         function setMaxDate() {

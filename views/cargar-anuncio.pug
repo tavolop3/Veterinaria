@@ -19,7 +19,12 @@ html
             option(value="hembra") Hembra
         li
           label(for="raza") Raza:
-          input(type="text", id="raza", name="raza")
+          select(name="raza", id="raza", required)
+            option(value="Chihuahua") Chihuahua
+            option(value="Caniche") Caniche
+            option(value="Boxer") Boxer
+            option(value="Pastor alemán") Pastor alemán
+            option(value="Dogo argentino") Dogo argentino
         li
           label(for="color") *Color:
           input(type="text", id="color", name="color", required)

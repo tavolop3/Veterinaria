@@ -305,12 +305,13 @@ router.post('/solicitar-turno', async (req, res) => {
       raza: req.body.raza,
       color: req.body.color,
       confirmado: false,
-      mail: req.user.mail
+      mail: req.user.mail,
+      foto: req.body.foto
     }
     try {
       let perdido = new Perdida(perroPerdido);
       await perdido.save();
-      req.user.perrosEnAdopcion.push(perdido._id);
+      req.user.anuncios.push(perdido._id);
       await req.user.save();
       return res.send('<script>alert("El anuncio se cargo correctamente."); window.location.href = "/clientes";</script>');
     } catch (error) {

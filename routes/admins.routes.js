@@ -108,6 +108,7 @@ router.post('/registrar-perro', async (req, res) => {
     let perro = new Perro(_.pick(req.body, ['nombre', 'sexo', 'fechaDeNacimiento', 'raza', 'color', 'observaciones', 'foto', 'mail']));
     //const { error } = validateCreatePerro(perro);
     //if (error) return res.status(400).render('registro-perro', { error });
+    console.log(req.body.mail,req.body);
     let user = await User.findOne({ mail: req.body.mail }).populate('perrosId');
     if (!user) {
       return res.status(400).send('<script>alert("El usuario no se encuentra registrado."); window.location.href = "/admin";</script>');
@@ -267,12 +268,12 @@ router.post('/registrar-perro', async (req, res) => {
   .post('/eliminar-perro', async (req, res) => {
     try {
       const usuario = await User.findOne({ mail: req.body.mail });
-      console.log(req.body);
       console.log(usuario);
       const index = usuario.perrosId.indexOf(req.body.id);
       if (index !== -1) {
         usuario.perrosId.splice(index, 1); // Elimina 1 elemento en el índice especificado
       }
+      console.log(usuario);
       await usuario.save();
       // Obtener el perro a eliminar
       const perro = await Perro.findByIdAndDelete(req.body.id);
