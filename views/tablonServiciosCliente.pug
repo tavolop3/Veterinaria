@@ -1,7 +1,10 @@
+include mixins/bannerCliente.pug
+include mixins/bannerUsuario.pug
+
 doctype html
 html
   head
-    title Lista de Adopciones
+    title Lista de Servicios
     style.
       table {
         border-collapse: collapse;
@@ -16,6 +19,10 @@ html
         gap: 10px;
       }
   body
+    if (usuarioActual == "")
+      +bannerUsuario()
+    else 
+      +bannerCliente()
     if !servicios.length
       h1 No hay paseadores o cuidadores cargados.
     else
@@ -37,9 +44,8 @@ html
               td= servicio.zona
               td= servicio.disponibilidadHoraria
               td= servicio.mail
-              if !(usuarioActual == servicio.mail)
-                td.buttons
-                  form(action="/usuarios/paseador-cuidador/solicitar", method="POST")
-                    input(type="hidden", name="mailPostulante", value=servicio.mail)
-                    button(type="submit") Contactar
+              td.buttons
+                form(action="/usuarios/paseador-cuidador/solicitar", method="POST")
+                  input(type="hidden", name="mailPostulante", value=servicio.mail)
+                  button(type="submit") Contactar
         button(onclick="window.history.go(-1)") Volver

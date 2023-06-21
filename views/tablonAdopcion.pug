@@ -1,3 +1,6 @@
+include mixins/bannerCliente.pug
+include mixins/bannerUsuario.pug
+
 doctype html
 html
   head
@@ -17,6 +20,10 @@ html
       }
   
   body
+    if (usuarioActual == "")
+      +bannerUsuario()
+    else 
+      +bannerCliente()
     if !adopciones.length
       h1 No hay adopciones cargadas en el sistema.
     else

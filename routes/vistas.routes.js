@@ -8,6 +8,7 @@ const { Adopcion } = require('../models/adopcion');
 const { Servicio } = require('../models/servicio');
 const { Cruza } = require('../models/cruza');
 const { Perdida } = require('../models/perdida');
+const MailMessage = require('nodemailer/lib/mailer/mail-message');
 
 router.get('', (req, res) => {
     if (!req.user)
@@ -44,26 +45,26 @@ router.get('', (req, res) => {
         }
     })
 
-    .get('/usuarios/visualizar-tablon-servicios', async (req, res) => {
-        try {
-            let servicios = await Servicio.find({});
-            if (!servicios) {
-                res.render('tablonServiciosCliente', { error: 'No hay paseadores o cuidadores cargados' })
-            }
-            else {
-                res.render('tablonServiciosCliente', { servicios: servicios });
-            }
-        } catch (error) {
-            console.log('Error al obtener los servicios:', error);
-            return res.status(400).send('Error al obtener los servicios');
-        }
-    })
+    // .get('/usuarios/visualizar-tablon-servicios', async (req, res) => {
+    //     try {
+    //         let servicios = await Servicio.find({});
+    //         if (!servicios) {
+    //             res.render('tablonServiciosCliente', { error: 'No hay paseadores o cuidadores cargados' })
+    //         }
+    //         else {
+    //             res.render('tablonServiciosCliente', { servicios: servicios });
+    //         }
+    //     } catch (error) {
+    //         console.log('Error al obtener los servicios:', error);
+    //         return res.status(400).send('Error al obtener los servicios');
+    //     }
+    // })
 
     .get('/usuarios/visualizar-tablon-servicios', async (req, res) => {
         try {
             let servicios = await Servicio.find({});
             if (!servicios) {
-                res.render('tablonServiciosCliente', { error: 'No hay postulaciones cargadas en el sistema.' })
+                res.render('tablonServiciosCliente', { error: 'No hay postulaciones cargadas en el sistema.'})
             }
             else {
                 let mail = "";
@@ -78,20 +79,24 @@ router.get('', (req, res) => {
     })
 
 
-    .get('/usuarios/visualizar-tablon-servicios', async (req, res) => {
+    /* .get('/usuarios/visualizar-tablon-servicios', async (req, res) => {
+        let dato = req.isAuthenticated();
+        console.log(req.isAuthenticated());
+        console.log(dato);
         try {
             let servicios = await Servicio.find({});
             if (!servicios) {
-                res.render('tablonServiciosCliente', { error: 'No hay paseadores o cuidadores cargados' })
+                res.render('tablonServiciosCliente', { error: 'No hay paseadores o cuidadores cargados', dato })
             }
             else {
-                res.render('tablonServiciosCliente', { servicios });
+                res.render('tablonServiciosCliente', { servicios, dato });
             }
         } catch (error) {
             console.log('Error al obtener los servicios:', error);
             return res.status(400).send('Error al obtener los servicios');
         }
     })
+    */
 
     .get('/usuarios/visualizar-tablon-cruza', async (req, res) => {
         try {
