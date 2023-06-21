@@ -33,5 +33,6 @@ body
         input(type="text", id="origen", name="origen", required)
       li.button
         button(type="submit") Cargar
+        button(onclick="window.history.go(-1)") Cancelar
   if error
     li.error= error

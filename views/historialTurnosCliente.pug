@@ -48,3 +48,4 @@ html
                   form(action="/clientes/rechazar-modificacion", method="POST")
                     input(type="hidden", name="id", value=turno._id)
                     button(type="submit") Rechazar modificacion
+      button(onclick="window.history.go(-1)") Cancelar

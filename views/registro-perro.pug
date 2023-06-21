@@ -37,6 +37,7 @@ html
           input(type="String", id="foto", name="foto")
         li.button
           button(type="submit") Registrar
+          button(onclick="window.history.go(-1)") Cancelar
         p Los datos marcados con * son obligatorios.
         p El campo foto debe contener el URL de la misma. 
         if error

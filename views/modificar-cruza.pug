@@ -34,6 +34,7 @@ html
           input(type="date", id="fechaDeNacimiento", name="fechaDeNacimiento", value=fechaDeNacimientoValue)  
         li.button
           button(type="submit") Modificar
+          button(onclick="window.history.go(-1)") Cancelar
     script.
       document.addEventListener('DOMContentLoaded', function() {
         function setMaxDate() {

@@ -32,5 +32,6 @@ html
           input(type="mail", id="mail", name="mail", required)  
         li.button
           button(type="submit") Cargar
+          button(onclick="window.history.go(-1)") Cancelar
         if error
           li.error= error  

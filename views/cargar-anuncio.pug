@@ -30,6 +30,7 @@ html
         li
         li.button
           button(type="submit") Registrar
+          button(onclick="window.history.go(-1)") Cancelar
         p Los datos marcados con * son obligatorios 
         if error
           li.error= error  
