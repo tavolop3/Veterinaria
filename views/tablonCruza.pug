@@ -59,15 +59,15 @@ html
           label(for="fecha") Fecha de celo
           input(type="date", id="fecha", name="fecha")
           // edad
-          label(for="edad") Edad
+          label(for="edad") Edad (años)
           input(type="number", id="edad", name="edad")              
           button(type="submit") Filtrar
         table
           tr
             th Raza
             th Sexo
-            th fechaDeCelo
-            th fechaDeNacimineto
+            th FechaDeCelo
+            th FechaDeNacimiento
           each cruza in cruzas
             if (!(usuarioActual == cruza.mail))
                 tr

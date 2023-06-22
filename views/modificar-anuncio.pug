@@ -15,18 +15,18 @@ html
           label(for="nombre") Nombre:
           input(type="text", id="nombre", name="nombre", value=perro.nombre)
         li
-          label(for="sexo") *Sexo:
-          select(id="sexo", name="sexo", value=perro.sexo, required)
-            option(value="macho") Macho
-            option(value="hembra") Hembra
+          label(for="sexo") Sexo:
+          select(name="sexo", id="sexo", required)
+            option(value="macho", selected=perro.sexo==="macho") Macho
+            option(value="hembra", selected=perro.sexo==="hembra") Hembra
         li 
           label(for="raza") Raza:
-          select(name="raza", id="raza", required)
-            option(value="Chihuahua") Chihuahua
-            option(value="Caniche") Caniche
-            option(value="Boxer") Boxer
-            option(value="Pastor alemán") Pastor alemán
-            option(value="Dogo argentino") Dogo argentino
+          select(name="raza",value=perro.raza, id="raza", required)
+            option(value="Chihuahua", selected=perro.raza==="Chihuahua") Chihuahua
+            option(value="Caniche", selected=perro.raza==="Caniche") Caniche
+            option(value="Boxer", selected=perro.raza==="Boxer") Boxer
+            option(value="Pastor alemán", selected=perro.raza==="Pastor alemán") Pastor alemán
+            option(value="Dogo argentino", selected=perro.raza==="Dogo argentino") Dogo argentino
         li
           label(for="color") *Color:
           input(type="text", id="color", name="color", value=perro.color, required)
