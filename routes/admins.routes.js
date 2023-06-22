@@ -332,11 +332,6 @@ router.post('/registrar-perro', async (req, res) => {
 
 
 
-  //Por alguna razon , esta funcion tiene que estar abajo de todo, sino te tira error.  
-
-
-
-
   .post('/listar-perros', async (req, res) => {
     const usuario = await User.findOne({ mail: req.body.dato })
       .populate('perrosId')
