@@ -1,4 +1,4 @@
-include mixins/bannerCliente.pug
+include mixins/bannerAdmin.pug
 
 doctype html
 html
@@ -18,7 +18,7 @@ html
         display: flex;
         gap: 10px;
       }
-+bannerCliente()
++bannerAdmin()
 if !perros.length
   h1 No tiene perros cargados todavía.
 else
@@ -52,10 +52,3 @@ else
                 input(type="hidden", name="mail", value=perro.mail)
                 button(type="submit") Eliminar perro
     button(onclick="window.history.go(-1)") Volver           
-
-
-
-                  form(action="/clientes/confirmar-anuncio", method="POST" onsubmit="return confirm('¿Estás seguro de que deseas confirmar este anuncio?');")
-
-
-                                form(action="/admin/eliminar-perro", method="POST")

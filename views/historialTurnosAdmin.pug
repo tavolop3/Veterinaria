@@ -54,7 +54,7 @@ html
                 form(action="/admin/rechazar-turno", method="POST")
                   input(type="hidden", name="id", value=turno._id)
                   button(type="submit") Rechazar turno
-                  
+
               - let fechaActual = new Date()
               - let fechaTurno = new Date(turno.fecha)
               - let diferenciaDias = Math.ceil((fechaTurno - fechaActual) / (1000 * 60 * 60 * 24))
