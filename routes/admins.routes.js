@@ -68,7 +68,7 @@ router.post('/registrar-usuario', async (req, res) => {
     let usuario = await User.findOne({ mail: mailUsuario }).populate('perrosId')
     let perros = usuario.perrosId;
     if (perros.filter(perro => perro.nombre === nombre).length !== 0) {
-      return res.status(400).send('<script>alert("El usuario ya tiene un perro con ese nombre."); window.location.href = "/admin";</script>');
+      return res.status(400).send('<script>alert("El usuario ya tiene un perro con ese nombre."); window.location.href = "/";</script>');
     }
     try {
       await Perro.updateOne({ _id: id }, {
@@ -82,9 +82,9 @@ router.post('/registrar-usuario', async (req, res) => {
           foto: foto
         }
       });
-      return res.send('<script>alert("La modificación se realizó correctamente."); window.location.href = "/admin";</script>');
+      return res.send('<script>alert("La modificación se realizó correctamente."); window.location.href = "/";</script>');
     } catch (error) {
-      return res.send('<script>alert("La modificación no pudo realizarse."); window.location.href = "/admin";</script>');
+      return res.send('<script>alert("La modificación no pudo realizarse."); window.location.href = "/";</script>');
     }
   })
 
@@ -164,7 +164,7 @@ router.post('/registrar-perro', async (req, res) => {
     const user = await User.findOne({ dni: turno.dni });
     // Activar para testear un par de veces o en demo para no gastar la cuota de mails (son 100)
     await sendEmail(user.mail, 'OhMyDog - Modificación de turno',
-      'Tu turno con fecha ' + moment(turno.fecha).format('DD/MM/YYYY') + ' fue modificado por la veterinaria, por favor, revisa en tus turnos.'
+      'Tu turno con fecha ' + moment(turno.fecha).add(1, 'days').format('DD/MM/YYYY') + ' fue modificado por la veterinaria, por favor, revisa en tus turnos.'
     );
 
     res.send('<script>alert("La modificación se realizó correctamente y se informó via mail al cliente."); window.location.href = "/admin/historial-turnos";</script>');
@@ -176,7 +176,7 @@ router.post('/registrar-perro', async (req, res) => {
     const user = await User.findOne({ dni: turno.dni });
     // Activar para testear un par de veces o en demo para no gastar la cuota de mails (son 100)
     await sendEmail(user.mail, 'OhMyDog - Aceptación de turno',
-      'Tu turno de la fecha ' + moment(turno.fecha).format('DD/MM/YYYY') + ' fue aceptado!'
+      'Tu turno de la fecha ' + moment(turno.fecha).add(1, 'days').format('DD/MM/YYYY') + ' fue aceptado!'
     );
 
     res.send('<script>alert("Turno aceptado con exito y notificado al cliente via mail."); window.location.href = "/admin/historial-turnos";</script>');
@@ -188,7 +188,7 @@ router.post('/registrar-perro', async (req, res) => {
     const user = await User.findOne({ dni: turno.dni });
     // Activar para testear un par de veces o en demo para no gastar la cuota de mails (son 100)
     await sendEmail(user.mail, 'OhMyDog - Rechazo de turno',
-      'Lamentablemente uno de tu turnos del ' + moment(turno.fecha).format('DD/MM/YYYY') + ' fue rechazado por la veterinaria, por favor, revisa en tus turnos.'
+      'Lamentablemente uno de tu turnos del ' + moment(turno.fecha).add(1, 'days').format('DD/MM/YYYY') + ' fue rechazado por la veterinaria, por favor, revisa en tus turnos.'
     );
 
     res.send('<script>alert("Turno rechazado con exito y notificado al cliente via mail."); window.location.href = "/admin/historial-turnos";</script>');
@@ -224,7 +224,7 @@ router.post('/registrar-perro', async (req, res) => {
 
     // Activar para testear un par de veces o en demo para no gastar la cuota de mails (son 100)
     await sendEmail(user.mail, 'OhMyDog - Asignación de nuevo turno',
-      'Se asignó un nuevo turno automáticamente para la próxima vacunación para la fecha ' + moment(turno.fecha).format('DD/MM/YYYY') + ', por favor, revisa en tus turnos.'
+      'Se asignó un nuevo turno automáticamente para la próxima vacunación para la fecha ' + moment(turno.fecha).add(1, 'days').format('DD/MM/YYYY') + ', por favor, revisa en tus turnos.'
     );
 
     res.send('<script>alert("Se confirmó la asistencia, nuevo turno asignado con exito y notificado al cliente."); window.location.href = "/admin/historial-turnos";</script>');
