@@ -197,7 +197,7 @@ router.get('/yo', autenticado, async (req, res) => {
   })
 
   .post('/visualizar-tablon-perdida', async (req, res) => {
-    let { nombre, sexo, foto, raza, color, mail, confirmado } = req.body;
+    //let { nombre, sexo, foto, raza, color, mail, confirmado } = req.body;
     try {
       let mail = "";
       if (req.isAuthenticated())

@@ -38,26 +38,23 @@ html
             th Tamaño
             th Origen
             th Confirmado
-            th Mail
+            //th Mail
           each adopcion in adopciones
-            tr
-              td= adopcion.nombre
-              td= adopcion.edad
-              td= adopcion.sexo
-              td= adopcion.color
-              td= adopcion.tamaño
-              td= adopcion.origen
-              td= adopcion.confirmado
-              td= adopcion.mail
-              //chequear, solo el cliente que realizo la publicacion puede darle al boton este
-              td.buttons
-                if (!(adopcion.confirmado) && (usuarioActual == adopcion.mail))
-                  form(action="/clientes/confirmar-adopcion", method="POST")
-                    input(type="hidden", name="id", value=adopcion._id)
-                    button(type="submit") Confirmar adopcion
-                if ((!(usuarioActual == adopcion.mail)) && (adopcion.confirmado !== true))
-                  form(action="/usuarios/adopcion/solicitar", method="POST")
-                    input(type="hidden", name="mailPostulante", value=adopcion.mail)
-                    button(type="submit") Adoptar 
+            if (!(usuarioActual == adopcion.mail))
+              tr
+                td= adopcion.nombre
+                td= adopcion.edad
+                td= adopcion.sexo
+                td= adopcion.color
+                td= adopcion.tamaño
+                td= adopcion.origen
+                td= adopcion.confirmado
+                //td= adopcion.mail
+                //chequear, solo el cliente que realizo la publicacion puede darle al boton este
+                td.buttons
+                  if ((!(usuarioActual == adopcion.mail)) && (adopcion.confirmado !== true))
+                    form(action="/usuarios/adopcion/solicitar", method="POST")
+                      input(type="hidden", name="mailPostulante", value=adopcion.mail)
+                      button(type="submit") Adoptar 
         button(onclick="window.history.go(-1)") Volver
 

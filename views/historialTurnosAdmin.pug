@@ -55,8 +55,10 @@ html
                   input(type="hidden", name="id", value=turno._id)
                   button(type="submit") Rechazar turno
                   
-              if (turno.estado == "aceptado")
-                form(action="/admin/confirmar-asistencia", method="POST") 
+              - let fechaActual = new Date()
+              - let fechaTurno = new Date(fecha)
+              if (turno.estado == "aceptado" && fechaTurno < fechaActual)
+                form(action="/admin/confirmar-asistencia", method="POST")
                   input(type="hidden", name="id", value=turno._id)
                   button(type="submit") Confirmar asistencia
       button(onclick="window.history.go(-1)") Cancelar

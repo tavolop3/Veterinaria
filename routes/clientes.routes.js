@@ -181,11 +181,11 @@ router.post('/solicitar-turno', async (req, res) => {
       if ((adopcion) && (adopcion.mail == req.user.mail)) {
         adopcion.confirmado = true;
         adopcion.save();
-        res.send('<script>alert("La adopcion se confirmo exitosamente.");window.location.href = "/";</script>');
+        res.send('<script>alert("La adopcion se confirmo exitosamente.");window.location.href = "/clientes/listar-adopciones";</script>');
       }
     }
     catch {
-      res.send('<script>alert("La adopcion no se confirmo.");window.location.href = "/";</script>');
+      res.send('<script>alert("La adopcion no se confirmo.");window.location.href = "/clientes/listar-adopciones";</script>');
     }
   })
 
