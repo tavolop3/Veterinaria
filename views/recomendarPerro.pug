@@ -45,8 +45,8 @@ html
             - let fechaCelo = `${perroRecomendado.fechaDeCelo.getUTCDate()}/${perroRecomendado.fechaDeCelo.getUTCMonth()+1}/${perroRecomendado.fechaDeCelo.getUTCFullYear()}`
             td= fechaCelo
             td.buttons
-              form(action="#", method="POST") 
-                input(type="hidden", name="dato", value=perroRecomendado.raza)
+              form(action="/usuarios/cruza/solicitar", method="POST") 
+                input(type="hidden", name="mailPostulante", value=perroRecomendado.mail)
                 button(type="submit") Cruzar
         button(onclick="window.history.go(-1)") Cancelar
             //Arreglar esto de aca arriba, mandando datos necesarios!!!!!!
