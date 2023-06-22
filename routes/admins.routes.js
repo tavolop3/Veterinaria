@@ -108,7 +108,7 @@ router.post('/registrar-perro', async (req, res) => {
     let perro = new Perro(_.pick(req.body, ['nombre', 'sexo', 'fechaDeNacimiento', 'raza', 'color', 'observaciones', 'foto', 'mail']));
     //const { error } = validateCreatePerro(perro);
     //if (error) return res.status(400).render('registro-perro', { error });
-    console.log(req.body.mail,req.body);
+    console.log(req.body.mail, req.body);
     let user = await User.findOne({ mail: req.body.mail }).populate('perrosId');
     if (!user) {
       return res.status(400).send('<script>alert("El usuario no se encuentra registrado."); window.location.href = "/admin";</script>');
@@ -317,12 +317,12 @@ router.post('/registrar-perro', async (req, res) => {
         await usuario.save();
       }
 
-      // Obtener el perro a eliminar
+
       turno = await Turno.findByIdAndDelete(turno.id);
       if (!turno) {
         return res.status(400).send('El turno no estaba en el sistema.');
       }
-      //console.log('Usuario y sus perros/turnos eliminados exitosamente');
+
 
       res.send('Eliminacion del turno confirmada.');
     } catch (err) {

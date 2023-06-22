@@ -56,8 +56,9 @@ html
                   button(type="submit") Rechazar turno
                   
               - let fechaActual = new Date()
-              - let fechaTurno = new Date(fecha)
-              if (turno.estado == "aceptado" && fechaTurno < fechaActual)
+              - let fechaTurno = new Date(turno.fecha)
+              - let diferenciaDias = Math.ceil((fechaTurno - fechaActual) / (1000 * 60 * 60 * 24))
+              if (turno.estado == "aceptado" && diferenciaDias <= 0)
                 form(action="/admin/confirmar-asistencia", method="POST")
                   input(type="hidden", name="id", value=turno._id)
                   button(type="submit") Confirmar asistencia
