@@ -7,15 +7,6 @@ html
     title Cargar cruza
     link(rel="stylesheet", href="/style/login.css")
     script.
-      function setMinDate() {
-        var today = new Date();
-        var year = today.getFullYear();
-        var month = String(today.getMonth() + 1).padStart(2, '0');
-        var day = String(today.getDate() - 5).padStart(2, '0');
-        var todayDate = `${year}-${month}-${day}`;
-        var fechaInput = document.getElementById('fechaDeCelo');
-        fechaInput.setAttribute('min', todayDate);
-      }
       function toggleCamposOtro() {
         var selectPerro = document.getElementById('id');
         var camposOtro = document.getElementById('camposOtro');
@@ -43,7 +34,6 @@ html
       }
 
       window.addEventListener('load', function() {
-        setMinDate();
         setMaxDate();
         toggleCamposOtro();
 
@@ -78,7 +68,6 @@ html
               option(value="Boxer") Boxer
               option(value="Pastor alemán") Pastor alemán
               option(value="Dogo argentino") Dogo argentino
-        // TODO raza desplegable  
         li
           label(for="fechaDeCelo") Fecha celo: 
           input(type="Date", id="fechaDeCelo", name="fechaDeCelo", required)

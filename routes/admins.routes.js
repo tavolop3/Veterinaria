@@ -16,7 +16,7 @@ router.post('/registrar-usuario', async (req, res) => {
 
   let user = await User.findOne({ mail: req.body.mail });
   if (user) return res.status(400).render('registro-usuario', { error: 'El mail ya está en uso.' });
-
+  console.log(req.body);
   user = await User.findOne({ dni: req.body.dni });
   if (user) return res.status(400).render('registro-usuario', { error: 'El dni ya está registrado.' });
 
@@ -67,7 +67,7 @@ router.post('/registrar-usuario', async (req, res) => {
     const { id, mailUsuario, nombre, sexo, fecha, raza, color, observaciones, foto } = req.body;
     let usuario = await User.findOne({ mail: mailUsuario }).populate('perrosId')
     let perros = usuario.perrosId;
-    if (perros.filter(perro => perro.nombre === nombre).length !== 0) {
+    if (perros.filter(perro => perro.nombre === nombre && perro.id != id).length !== 0) {
       return res.status(400).send('<script>alert("El usuario ya tiene un perro con ese nombre."); window.location.href = "/";</script>');
     }
     try {
@@ -139,9 +139,8 @@ router.post('/registrar-perro', async (req, res) => {
   */
   .get('/turnos-diarios', async (req, res) => {
     try {
-      let hoy = new Date();
       let todosLosTurnos = await Turno.find({});
-      let turnos = todosLosTurnos.filter(turno => esHoy(turno.fecha, hoy));
+      let turnos = todosLosTurnos.filter(turno => esHoy(turno.fecha));
       res.render('historialTurnosAdmin', { turnos })
     } catch (error) {
       console.log('Error al obtener los turnos:', error);
@@ -418,10 +417,10 @@ function compararFechas(a, b) {
   return fechaA - fechaB;
 }
 
-function esHoy(fecha1, fecha2) {
-  let a = String(fecha1.getUTCDate()).padStart(2, '0') + '/' + String(fecha1.getUTCMonth() + 1).padStart(2, '0') + '/' + fecha1.getUTCFullYear();
-  let b = String(fecha2.getUTCDate()).padStart(2, '0') + '/' + String(fecha2.getUTCMonth() + 1).padStart(2, '0') + '/' + fecha2.getUTCFullYear();
-  return (a == b)
+function esHoy(fecha1) {
+  let fechaFormateada = String(fecha1.getUTCDate()).padStart(2, '0') + '-' + String(fecha1.getUTCMonth() + 1).padStart(2, '0') + '-' + fecha1.getUTCFullYear();
+  let hoy = moment().format('DD-MM-YYYY');
+  return (fechaFormateada == hoy)
 }
 
 module.exports = router;

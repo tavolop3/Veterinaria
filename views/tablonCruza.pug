@@ -18,17 +18,6 @@ html
         display: flex;
         gap: 10px;
       }
-    script.
-      function setMinDate() {
-        var today = new Date();
-        var year = today.getFullYear();
-        var month = String(today.getMonth() + 1).padStart(2, '0');
-        var day = String(today.getDate()).padStart(2, '0');
-        var todayDate = `${year}-${month}-${day}`;
-        var fechaInput = document.getElementById('fecha');
-        fechaInput.setAttribute('min', todayDate);
-      }
-      window.onload = setMinDate;
   body
     if (usuarioActual === "")
         +bannerUsuario()
