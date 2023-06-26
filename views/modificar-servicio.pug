@@ -20,8 +20,8 @@ html
         li
           label(for="tiposervicio") Tipo de servicio:
           select(name="tiposervicio", id="tiposervicio", required)
-            option(value="paseador") Paseador
-            option(value="cuidador") Cuidador
+            option(value="paseador", selected=servicio.tipoServicio==="paseador") Paseador
+            option(value="cuidador", selected=servicio.tipoServicio==="cuidador") Cuidador
         li
           label(for="zona") Zona:
           input(type="text", id="zona", name="zona", value=servicio.zona, required)

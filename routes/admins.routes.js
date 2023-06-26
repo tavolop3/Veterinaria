@@ -380,9 +380,9 @@ router.post('/registrar-perro', async (req, res) => {
           mail: mail
         }
       });
-      return res.send('<script>alert("La modificacion del servicio se realizo correctamente"); window.location.href = "/admin";</script>');
+      return res.send('<script>alert("La modificacion del servicio se realizo correctamente"); window.location.href = "/admin/visualizar-tablon-servicios";</script>');
     } catch (error) {
-      return res.send('<script>alert("La modificacion del servicio no pudo realizarse"); window.location.href = "/admin";</script>');
+      return res.send('<script>alert("La modificacion del servicio no pudo realizarse"); window.location.href = "/admin/visualizar-tablon-servicios";</script>');
     }
   })
 
