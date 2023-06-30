@@ -50,10 +50,10 @@ router.post('/solicitar-turno', async (req, res) => {
 })
 
   .post('/modificar-datos', async (req, res) => {
-    let { mailNuevo, contraseña1, contraseña2, contraseñaNueva } = req.body;
+    let { mailNuevo, contraseña1, contraseñaNueva, contraseñaNueva2 } = req.body;
     let mailActual = req.user.mail;
     let user = await User.findOne({ mail: mailActual });
-    if (contraseña1 !== contraseña2) return res.status(400).send('<script>alert("Las contraseñas ingresadas no son iguales."); window.location.href = "/clientes";</script>');
+    if (contraseñaNueva !== contraseñaNueva2) return res.status(400).send('<script>alert("Las contraseñas ingresadas no son iguales."); window.location.href = "/clientes";</script>');
     if (!await compararContraseñas(contraseña1, user.contraseña)) return res.status(400).send('<script>alert("La contraseña ingresada no es correcta."); window.location.href = "/clientes";</script>');
     let usuarioConMail = await User.findOne({ mail: mailNuevo });
     if (usuarioConMail) {
