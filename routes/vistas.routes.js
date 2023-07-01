@@ -8,6 +8,7 @@ const { Adopcion } = require('../models/adopcion');
 const { Servicio } = require('../models/servicio');
 const { Cruza } = require('../models/cruza');
 const { Perdida } = require('../models/perdida');
+const { Donacion } = require('../models/donacion');
 const MailMessage = require('nodemailer/lib/mailer/mail-message');
 
 router.get('', (req, res) => {
@@ -122,6 +123,19 @@ router.get('', (req, res) => {
             return res.status(400).send('Error al obtener las busquedas/perdidas');
         }
     })
+
+    .get('/visualizar-tablon-donaciones', async (req, res) => {
+        try {
+          let mail = "";
+          if (req.isAuthenticated())
+            mail = req.user.mail;
+          let donaciones = await Donacion.find({});
+          res.render('tablonDonaciones', { donaciones: donaciones, usuarioActual: mail });
+        } catch (error) {
+          console.log(error);
+          return res.status(400).send('Error al obtener las donaciones');
+        }
+      })
 
     // ------------------- CLIENTES -------------------------
 

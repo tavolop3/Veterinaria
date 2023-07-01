@@ -1,6 +1,9 @@
 const mongoose = require('mongoose');
 
-const donacionScheme = new mongoose.Schema({
+const donacionSchema = new mongoose.Schema({
+    nombre:{
+        type: String
+    },
     montoObjetivo:{
         type: Number
     },
@@ -13,3 +16,5 @@ const donacionScheme = new mongoose.Schema({
 })
 
 const Donacion = mongoose.model('Donacion', donacionSchema);
+
+exports.Donacion = Donacion;
