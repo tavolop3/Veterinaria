@@ -45,7 +45,7 @@ html
                 //td= adopcion.mail
                 //chequear, solo el cliente que realizo la publicacion puede darle al boton este
                 td.buttons
-                    form(action="#", method="POST")
-                      input(type="hidden", name="donacion", value=donacion.nombre)
+                    form(action="/usuarios/realizar-donacion", method="GET")
+                      input(type="hidden", name="nombre", value=donacion.nombre)
                       button(type="submit") Donar 
         button(onclick="window.history.go(-1)") Volver

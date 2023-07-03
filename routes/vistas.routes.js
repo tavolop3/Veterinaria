@@ -124,7 +124,7 @@ router.get('', (req, res) => {
         }
     })
 
-    .get('/visualizar-tablon-donaciones', async (req, res) => {
+    .get('/usuarios/visualizar-tablon-donaciones', async (req, res) => {
         try {
           let mail = "";
           if (req.isAuthenticated())
@@ -136,7 +136,19 @@ router.get('', (req, res) => {
           return res.status(400).send('Error al obtener las donaciones');
         }
       })
-
+    
+    .get('/usuarios/realizar-donacion', async(req, res) => {
+        try {
+            let nombre = req.body.nombre;
+            let mail = "";
+            if (req.isAuthenticated())
+                mail = req.user.mail;
+            res.render('realizar-donacion', { mail: mail, nombre: nombre })
+        } catch (error) {
+            console.log(error);
+            return res.status(400).send('Error la donar');
+        }
+    })
     // ------------------- CLIENTES -------------------------
 
     .get('/clientes', autenticado, (req, res) => {
