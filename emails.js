@@ -11,6 +11,9 @@ var transporter = nodemailer.createTransport({
 
 // async..await is not allowed in global scope, must use a wrapper
 async function main(to,subject,text) {
+  if(process.env.NODE_ENV != 'DEMO') {
+    console.log('Hacia: '+ to + ', Asunto: ' + subject + ', Texo: ' + text );
+  } else { 
     try{
         let info = await transporter.sendMail({
         from: '"OhMyDog 🐶" <widearrow.ohmydog@gmail.com>',
@@ -22,6 +25,7 @@ async function main(to,subject,text) {
     }catch(err) {
         console.error(err);
     }
+  }
 }
   
 module.exports.sendEmail = main;
