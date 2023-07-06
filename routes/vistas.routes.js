@@ -123,6 +123,14 @@ router.get('', (req, res) => {
         }
     })
 
+    router.get('/urgencias', (req, res) => {
+        var rol = '';
+        if(req.user)
+            rol = 'cliente'
+    
+        res.render('urgencias/urgencias', {coords : [{lat:-34.921388 ,lng: -57.9544169},{lat:-34.9205826 ,lng: -57.9536877}], rol});
+    })
+
     // ------------------- CLIENTES -------------------------
 
     .get('/clientes', autenticado, (req, res) => {

@@ -1,0 +1,34 @@
+include ../mixins/bannerCliente.pug
+include ../mixins/bannerUsuario.pug
+
+head
+  title Urgencias
+  link(rel="stylesheet" type="text/css" href="/urgencias/estilo.css")
+
+script.
+  function initMap() {
+    var coords = !{JSON.stringify(coords)};
+
+    var map = new google.maps.Map(document.getElementById('map'),{
+      zoom: 15,
+      center: coords[0] || {lat:-34.921388 ,lng: -57.9544169} 
+    });
+
+  for(coord in coords) {
+    
+    new google.maps.Marker({
+      position: coords[coord],
+      map: map
+    });
+  }
+
+  }
+
+if(rol == 'cliente')
+  +bannerCliente()
+else 
+  +bannerUsuario()
+
+body
+  div(id="map")
+  script(src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDTuJawSPsGtI7PhESfX7ZFjUxuOmVj8sY&callback=initMap")
