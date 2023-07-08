@@ -9,6 +9,7 @@ const _ = require('lodash');
 const { sendEmail } = require('../emails');
 const { ObjectId } = require('mongoose').Types;
 const moment = require('moment');
+const { PuntoUrgencia } = require('../models/puntoUrgencia');
 
 router.post('/registrar-usuario', async (req, res) => {
   // const { error } = validateCreate(req.body);  Ya no valida porque no está especificado en las hu las microvalidaciones
@@ -408,6 +409,17 @@ router.post('/registrar-perro', async (req, res) => {
     } catch (err) {
       res.json({ error: err.message || err.toString() });
     }
+  })
+
+  .post('/cargar-sucursal', async (req, res) => {
+    const sucursal = new PuntoUrgencia(_.pick(req.body, ['direccion','horarios','infoContacto']));
+    
+    const latlng = JSON.parse(req.body.latlng);
+    sucursal.latlng.push(latlng[0],latlng[1]);
+    
+    await sucursal.save();
+  
+    res.send('<script>alert("Se registró la sucursal."); window.location.href = "/admin/urgencias";</script>');
   })
 
 function compararFechas(a, b) {

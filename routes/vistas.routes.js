@@ -8,6 +8,7 @@ const { Adopcion } = require('../models/adopcion');
 const { Servicio } = require('../models/servicio');
 const { Cruza } = require('../models/cruza');
 const { Perdida } = require('../models/perdida');
+const { PuntoUrgencia } = require('../models/puntoUrgencia');
 const MailMessage = require('nodemailer/lib/mailer/mail-message');
 
 router.get('', (req, res) => {
@@ -123,12 +124,16 @@ router.get('', (req, res) => {
         }
     })
 
-    router.get('/urgencias', (req, res) => {
+    router.get('/urgencias', async(req, res) => {
+        // TODO Pagina para el admin (mapa reutilizable?)
+        // TODO Pasarle una lista de sucursales y en el pug conseguir las coordenadas de cada sucursal
         var rol = '';
         if(req.user)
             rol = 'cliente'
     
-        res.render('urgencias/urgencias', {coords : [{lat:-34.921388 ,lng: -57.9544169},{lat:-34.9205826 ,lng: -57.9536877}], rol});
+        puntos = await PuntoUrgencia.find({});
+
+        res.render('urgencias/urgencias', {puntos, rol});
     })
 
     // ------------------- CLIENTES -------------------------
@@ -283,6 +288,18 @@ router.get('', (req, res) => {
 
     .get('/admin/cargar-servicio', [autenticado, esAdmin], async (req, res) => {
         res.render('cargar-paseador-cuidador');
+    })
+
+    .get('/admin/urgencias',[autenticado, esAdmin], async(req, res) => {    
+        puntos = await PuntoUrgencia.find({});
+
+        res.render('funcionesAdmin/urgencias', {puntos});
+    })
+
+    .get('/admin/cargarSucursal', [autenticado, esAdmin], async(req, res) => {
+        const lat = parseFloat(req.query.lat);
+        const lng = parseFloat(req.query.lng);
+        res.render('funcionesAdmin/cargarSucursal', { latlng: [lat,lng] } );
     })
 
 module.exports = router;

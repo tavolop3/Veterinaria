@@ -1,0 +1,28 @@
+include ../mixins/bannerAdmin.pug
+
+doctype html
+html
+  head
+    meta(charset="UTF-8")
+    title Cargar sucursal
+    link(rel="stylesheet", href="/style/registro.css")
+
++bannerAdmin()
+
+body
+  form(action="/admin/cargar-sucursal", method="post")
+    ul
+      li
+        label(for="direccion") Direccion:
+        input(type="text", id="direccion", name="direccion" , required)
+      li
+        label(for="horarios") Horarios:
+        input(type="text", id="horarios", name="horarios" ,required)
+      li
+        label(for="infoContacto") Info de contacto:
+        input(type="text", id="infoContacto", name="infoContacto" ,required)
+      li.button
+        input(type="hidden", id="latlng", name="latlng" , value=latlng)
+        button(type="submit") Cargar
+      if error
+        li.error= error  

@@ -1,25 +1,24 @@
-include ../mixins/bannerCliente.pug
-include ../mixins/bannerUsuario.pug
+include ../mixins/bannerAdmin.pug
 
 doctype html
 html
   head
     title Urgencias
-    link(rel='stylesheet', type='text/css', href='/urgencias/estilo.css')
     link(rel='stylesheet', href='https://unpkg.com/leaflet@1.9.4/dist/leaflet.css', integrity='sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=', crossorigin='')
     script(src='https://unpkg.com/leaflet@1.9.4/dist/leaflet.js', integrity='sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=', crossorigin='')
 
-if(rol == 'cliente')
-  +bannerCliente()
-else 
-  +bannerUsuario()
++bannerAdmin()
 
 body
-  div#map
+  div#map(style='height: 100%; width: 100% ;')
+
   script.
     function onMapClick(e) {
-        alert("You clicked the map at " + e.latlng);
-    }
+      var popup = L.popup()
+        .setLatLng(e.latlng)
+        .setContent('<button onclick="openPage(' + e.latlng.lat + ', ' + e.latlng.lng + ')">Cargar sucursal <br /> en el punto seleccionado </button>')
+        .openOn(map);
+    }        
 
     var map = L.map('map').setView([-34.921388, -57.9544169], 13);
 
@@ -30,12 +29,7 @@ body
 
     map.on('click', onMapClick);
 
-    var puntos = !{JSON.stringify(puntos)};
-    console.log(puntos)
-    for(punto in puntos) {
-      const marker = L.marker(puntos[punto].latlng).addTo(map);
-      marker.bindPopup('<h3>' + puntos[punto].horarios + '<br />' + puntos[punto].infoContacto);
-
+    function openPage(lat, lng) {
+      var url = '/admin/cargarSucursal?lat=' + lat + '&lng=' + lng;
+      window.open(url, '_blank');
     }
-
-

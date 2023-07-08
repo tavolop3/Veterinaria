@@ -1,10 +1,6 @@
 const mongoose = require('mongoose');
-const Joi = require('joi');
-const config = require('config');
-const jwt = require('jsonwebtoken');
-const { ObjectId } = require('mongodb');
 
-const puntoUrgenciaScheme = new mongoose.Scheme({
+const puntoUrgenciaSchema = new mongoose.Schema({
     direccion:{
         type: String
     },
@@ -13,7 +9,11 @@ const puntoUrgenciaScheme = new mongoose.Scheme({
     },
     infoContacto:{
         type: String
+    },
+    latlng: {
+        type: [Number]
     }
 })
 
-const PuntoUrgencia = mongoose.model('PuntoUrgencia', puntoUrgenciaScheme);
+const PuntoUrgencia = mongoose.model('PuntoUrgencia', puntoUrgenciaSchema);
+exports.PuntoUrgencia = PuntoUrgencia;
