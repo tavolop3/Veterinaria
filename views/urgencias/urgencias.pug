@@ -17,10 +17,6 @@ else
 body
   div#map
   script.
-    function onMapClick(e) {
-        alert("You clicked the map at " + e.latlng);
-    }
-
     var map = L.map('map').setView([-34.921388, -57.9544169], 13);
 
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -28,14 +24,21 @@ body
       attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(map);
 
-    map.on('click', onMapClick);
-
     var puntos = !{JSON.stringify(puntos)};
-    console.log(puntos)
-    for(punto in puntos) {
-      const marker = L.marker(puntos[punto].latlng).addTo(map);
-      marker.bindPopup('<h3>' + puntos[punto].horarios + '<br />' + puntos[punto].infoContacto);
 
+    for(i in puntos) {
+      const punto = puntos[i]; 
+      const marker = L.marker(punto.latlng).addTo(map);
+      marker.bindPopup('<h3> Horarios: ' + punto.horarios + '<br /> Info. contacto: ' +  punto.infoContacto + '<br /> Direccion: ' + punto.direccion);
     }
 
+  h1#titulo Puntos de urgencia
+  for punto in puntos 
+    h2 Direccion #{punto.direccion} 
+    ul
+      li 
+        p Horario: #{punto.horarios} 
+      li
+       p Info. contacto: #{punto.infoContacto}
+    //- <h3> Horarios: ' + punto.horarios + '<br /> Info. contacto: ' +  punto.infoContacto + '<br /> Direccion: ' + punto.direccion);
 

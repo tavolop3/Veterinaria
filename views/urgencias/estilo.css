@@ -1,4 +1,11 @@
 #map {
-	height: 500px;
-	width: 100%;
+	top: 220px;
+	right: 	5%;
+	width: 70%;
+	height: 60%;
+	position: absolute;
+	align-self: flex-end;
+	object-fit: cover;
 }
+
+  
