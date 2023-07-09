@@ -32,7 +32,10 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-    montoDescuento: Number,
+    montoDescuento: {
+        type: Number,
+        default: 0
+    },
     perrosId: [{ type : ObjectId, ref: 'Perro' }],
     turnosId: [{ type : ObjectId, ref: 'Turno' }],
     perrosEnAdopcion: [{ type : ObjectId, ref: 'Adopcion'}],

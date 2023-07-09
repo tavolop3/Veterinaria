@@ -139,7 +139,8 @@ router.get('', (req, res) => {
     
     .get('/usuarios/realizar-donacion', async(req, res) => {
         try {
-            let nombre = req.body.nombre;
+            let nombre = req.query.nombre;
+            console.log(nombre);
             let mail = "";
             if (req.isAuthenticated())
                 mail = req.user.mail;
@@ -297,6 +298,14 @@ router.get('', (req, res) => {
 
     .get('/admin/servicios', [autenticado, esAdmin], async (req, res) => {
         res.render('funcionesAdmin/servicios');
+    })
+
+    .get('/admin/donaciones', [autenticado, esAdmin], async (req, res) => {
+        res.render('funcionesAdmin/donaciones');
+    })
+
+    .get('/admin/cargar-donacion', [autenticado, esAdmin], async (req, res) => {
+        res.render('cargar-donacion');
     })
 
     .get('/admin/cargar-servicio', [autenticado, esAdmin], async (req, res) => {

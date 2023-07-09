@@ -1,0 +1,11 @@
+include ../mixins/bannerAdmin.pug
+
+doctype html
+
++bannerAdmin()
+html
+  head
+    title Donaciones
+  body
+    form(action="/admin/cargar-donacion", method="GET")
+        button(type="submit") Cargar donacion

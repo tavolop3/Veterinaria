@@ -13,12 +13,10 @@ html
       +bannerCliente()
     form(action="/usuarios/realizar-donacion", method="post")
       ul
-        li
-          input(type="hidden", name="nombre", value=nombre)
         li    
           input(type="hidden", name="mail", value=mail)
         li
-          input(type="hidden", id="nombre", name="nombre", value=nombre)
+          input(type="hidden", name="nombre", value=nombre)
         li
           label(for="monto") Monto:
           input(type="number", id="monto", name="monto", min=0, required)

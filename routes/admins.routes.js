@@ -9,6 +9,7 @@ const _ = require('lodash');
 const { sendEmail } = require('../emails');
 const { ObjectId } = require('mongoose').Types;
 const moment = require('moment');
+const { Donacion } = require('../models/donacion');
 
 router.post('/registrar-usuario', async (req, res) => {
   // const { error } = validateCreate(req.body);  Ya no valida porque no está especificado en las hu las microvalidaciones
@@ -409,6 +410,25 @@ router.post('/registrar-perro', async (req, res) => {
       res.json({ error: err.message || err.toString() });
     }
   })
+
+  .post('/cargar-donacion', async (req, res) => {
+    let nuevaDonacion = {
+      nombre: req.body.nombre,
+      descripcion: req.body.descripcion,
+      montoObjetivo: req.body.monto,
+      montoRecaudado: 0
+    }
+    let donacion = await Donacion.findOne({ nombre: nuevaDonacion.nombre });
+    if (donacion) return res.status(400).send('<script>alert("El nombre ya se encuentra asignado a una donacion"); window.location.href = "/admin";</script>');
+    try {
+      let donacion = new Donacion(nuevaDonacion);
+      await donacion.save();
+      return res.send('<script>alert("La carga se realizo correctamente"); window.location.href = "/admin";</script>');
+    } catch (error) {
+      return res.send('<script>alert("La carga no pudo realizarse"); window.location.href = "/admin";</script>');
+    }
+  })
+
 
 function compararFechas(a, b) {
 

@@ -242,10 +242,11 @@ router.get('/yo', autenticado, async (req, res) => {
 })
 
 .post('/realizar-donacion', async (req, res) => {
-  const { nombre, mail, monto, numero, fecha, codigo } = req.body;
+  const { mail, nombre, monto, numero, fecha, codigo } = req.body;
   try {
-    let campaña = await Donacion.find({nombre: nombre});
-    let donador = await User.find({mail: mail});
+    console.log(mail);
+    let campaña = await Donacion.findOne({nombre: nombre});
+    let donador = await User.findOne({mail: mail});
     if (monto < 0)
       return res.status(400).send('<script>alert("El monto no puede ser negativo."); window.location.href = "/usuarios/visualizar-tablon-donaciones";</script>');
     if (numero.length != 16)
@@ -258,13 +259,15 @@ router.get('/yo', autenticado, async (req, res) => {
       return res.status(400).send('<script>alert("La fecha no puede ser menor a hoy."); window.location.href = "/usuarios/visualizar-tablon-donaciones";</script>');
     if (codigo.length != 3)
       return res.status(400).send('<script>alert("El codigo de seguridad debe de tener 3 digitos."); window.location.href = "/usuarios/visualizar-tablon-donaciones";</script>');
-    let nuevoMontoDescuento = donador.montoDescuento + (monto * 0.2);
-    if (nuevoMontoDescuento > 500)
-      nuevoMontoDescuento = 500;
-    donador.montoDescuento = nuevoMontoDescuento;
-    campaña.montoRecaudado = campaña.montoRecaudado + monto;
-    await donador.save(); 
+    campaña.montoRecaudado = parseFloat(campaña.montoRecaudado) + parseFloat(monto);
     await campaña.save();
+    if (donador) {
+      console.log(donador.montoDescuento);
+      let nuevoMontoDescuento = donador.montoDescuento + (monto * 0.2);
+      donador.montoDescuento = nuevoMontoDescuento;
+      await donador.save();
+    } 
+    return res.status(400).send('<script>alert("El pago se realizo correctamente"); window.location.href = "/usuarios/visualizar-tablon-donaciones";</script>');
   } catch (error) {
     console.log(error);
     return res.status(400).send('Error al realizar las donaciones');
