@@ -302,4 +302,9 @@ router.get('', (req, res) => {
         res.render('funcionesAdmin/cargarSucursal', { latlng: [lat,lng] } );
     })
 
+    .get('/admin/modificar-sucursal', [autenticado, esAdmin], async(req, res) => {
+        const sucursal = await PuntoUrgencia.findById(req.query.id);
+        res.render('funcionesAdmin/modificarSucursal', { sucursal } );
+    })
+
 module.exports = router;

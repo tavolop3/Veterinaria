@@ -4,19 +4,23 @@ doctype html
 html
   head
     title Urgencias
+    link(rel="stylesheet", href="/urgencias/estilo.css")
     link(rel='stylesheet', href='https://unpkg.com/leaflet@1.9.4/dist/leaflet.css', integrity='sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=', crossorigin='')
     script(src='https://unpkg.com/leaflet@1.9.4/dist/leaflet.js', integrity='sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=', crossorigin='')
-
+    
 +bannerAdmin()
 
 body
-  div#map(style='height: 100%; width: 100% ;')
+  p *Puede cargar sucursales clickeando un punto o eliminar/modificar clickeando un marcador.
+  div#map
 
   script.
     function onMapClick(e) {
+      var popupContent = '<button onclick="openPage(' + e.latlng.lat + ', ' + e.latlng.lng + ')">Cargar sucursal<br />en el punto seleccionado</button>';
+
       var popup = L.popup()
         .setLatLng(e.latlng)
-        .setContent('<button onclick="openPage(' + e.latlng.lat + ', ' + e.latlng.lng + ')">Cargar sucursal <br /> en el punto seleccionado </button>')
+        .setContent(popupContent)
         .openOn(map);
     }        
 
@@ -27,9 +31,43 @@ body
       attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(map);
 
+    var puntos = !{JSON.stringify(puntos)};
+    for(i in puntos) {
+      const punto = puntos[i]; 
+      const marker = L.marker(punto.latlng).addTo(map);
+      marker.bindPopup(`<h3> Direccion: ${punto.direccion} <h3> ` +
+                        `<h3> Horarios: ${punto.horarios} <h3> ` +
+                        `<h3> Info. contacto: ${punto.infoContacto} <h3> ` +
+                        `<button onclick="editMarker('${punto._id}')">Modificar</button>` +
+                        `<button onclick="deleteMarker('${punto._id}')">Eliminar</button>`);
+    }
+
     map.on('click', onMapClick);
 
     function openPage(lat, lng) {
       var url = '/admin/cargarSucursal?lat=' + lat + '&lng=' + lng;
       window.open(url, '_blank');
     }
+
+    function deleteMarker(id) {
+      if(!confirm('¿Seguro que desea eliminarlo?'))
+        return
+
+      var url = '/admin/eliminar-sucursal?id='+id;
+      window.location.href = url;
+    }
+
+    function editMarker(id) {
+      var url = '/admin/modificar-sucursal?id='+id;
+      window.location.href = url;
+    }
+
+  if(puntos.length)
+    h1#titulo Puntos de urgencia
+    for punto in puntos 
+      h2 Direccion #{punto.direccion} 
+      ul
+        li 
+          p Horario: #{punto.horarios} 
+        li
+          p Info. contacto: #{punto.infoContacto}

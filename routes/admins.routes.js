@@ -422,6 +422,26 @@ router.post('/registrar-perro', async (req, res) => {
     res.send('<script>alert("Se registró la sucursal."); window.location.href = "/admin/urgencias";</script>');
   })
 
+  .get('/eliminar-sucursal', async (req, res) => {
+    try {
+      const sucursal = await PuntoUrgencia.findByIdAndDelete(req.query.id);   
+    } catch (error) {
+      console.error(error)
+    }
+  
+    res.send('<script>alert("Se eliminó la sucursal exitosamente."); window.location.href = "/admin/urgencias";</script>');
+  })
+
+  .post('/modificar-sucursal', async (req, res) => {
+    var campos = ['direccion','horarios','infoContacto'];
+    campos = _.pickBy(_.pick(req.body, campos), _.identity);
+
+    const sucursal = await PuntoUrgencia.findByIdAndUpdate(req.body.id, campos);
+    if (!sucursal) res.status(400).send('La sucursal no fue encontrada');
+
+    res.send('<script>alert("La modificación se realizó correctamente."); window.location.href = "/admin/urgencias";</script>');
+  })
+
 function compararFechas(a, b) {
 
   const fechaA = new Date(a.fecha);
