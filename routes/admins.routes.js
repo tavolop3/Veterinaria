@@ -429,6 +429,35 @@ router.post('/registrar-perro', async (req, res) => {
     }
   })
 
+  .post('/pagar-turno', async (req, res) => {
+    const { id, monto, numero, fecha, codigo } = req.body;
+    try {
+      console.log(id);
+      let turno = await Turno.findOne({id: id});
+      console.log(turno);
+      if (monto < 0)
+        return res.status(400).send('<script>alert("El monto no puede ser negativo."); window.location.href = "/admin/historial-turnos";</script>');
+      if (numero.length != 16)
+        return res.status(400).send('<script>alert("El numero de la tarjeta debe de tener 16 digitos."); window.location.href = "/admin/historial-turnos";</script>');
+      if (!/^([45])/.test(numero))
+        return res.status(400).send('<script>alert("El número de tarjeta debe comenzar con 4 o 5."); window.location.href = "/admin/historial-turnos";</script>');
+      let hoy = new Date();
+      let fechaIngresada = new Date(fecha);
+      if (fechaIngresada.getTime() < hoy.getTime()) 
+        return res.status(400).send('<script>alert("La fecha no puede ser menor a hoy."); window.location.href = "/admin/historial-turnos";</script>');
+      if (codigo.length != 3)
+        return res.status(400).send('<script>alert("El codigo de seguridad debe de tener 3 digitos."); window.location.href = "/admin/historial-turnos";</script>');
+      let usuario = await User.findOne({dni: turno.dni});
+      usuario.montoDescuento = 0;
+      turno.estado = "pagado";
+      await usuario.save();
+      await turno.save();
+      return res.status(400).send('<script>alert("El pago se realizo correctamente"); window.location.href = "/admin/historial-turnos";</script>');
+    } catch (error) {
+      console.log(error);
+      return res.status(400).send('Error al realizar el cobro');
+    }
+  })
 
 function compararFechas(a, b) {
 

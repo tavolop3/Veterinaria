@@ -1,0 +1,34 @@
+include mixins/bannerAdmin.pug
+
+doctype html
+html
+  head
+    meta(charset="UTF-8")
+    title Realizar donacion
+    link(rel="stylesheet", href="/style/registro.css")
+  
+  +bannerAdmin()
+  body
+    form(action="/admin/pagar-turno", method="post")
+      ul
+        li
+          input(type="hidden", name="id", value=id)
+        li
+          label(for="monto") Monto:
+          input(type="number", id="monto", name="monto", min=0, required)
+        li
+          label(for="numero") Numero de tarjeta:
+          input(type="number", id="numero", name="numero", min=0, required)
+        li
+          label(for="fecha") Fecha de vencimiento:
+          input(type="month", id="fecha", name="fecha", required)
+        li
+        li
+          label(for="codigo") Codigo de seguiridad:
+          input(type="number", id="codigo", name="codigo", min=0, required)
+        li
+        li.button
+          button(type="submit") Cobrar
+          button(onclick="window.history.go(-1)") Cancelar
+        if error
+          li.error= error

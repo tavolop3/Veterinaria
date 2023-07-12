@@ -312,4 +312,10 @@ router.get('', (req, res) => {
         res.render('cargar-paseador-cuidador');
     })
 
+    .get('/admin/cobrar-turno', [autenticado, esAdmin], async (req, res) => {
+        let id = req.query.id;
+        console.log(id);
+        res.render('pagar-turno',  { id });
+    })
+
 module.exports = router;
