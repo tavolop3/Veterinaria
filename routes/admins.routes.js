@@ -402,10 +402,34 @@ router.post('/registrar-perro', async (req, res) => {
     }
   })
 
+  .get('/ver-donaciones', async (req, res) => {
+    try {
+      let donaciones = await Donacion.find({});
+      if (!donaciones) {
+        res.render('tablonDonaciones', { error: 'Aun no hay donaciones.' })
+      }
+      else {
+        res.render('tablonDonaciones', { donaciones: donaciones });
+      }
+    } catch (error) {
+      console.log('Error al obtener las donaciones:', error);
+      return res.status(400).send('Error al obtener los servicios');
+    }
+  })
+
   .post('/eliminar-servicio', async (req, res) => {
     try {
       let servicio = await Servicio.findByIdAndDelete(req.body.id);
       res.send('<script>alert("Eliminacion del paseador/cuidador confirmada."); window.location.href = "/admin/visualizar-tablon-servicios";</script>');
+    } catch (err) {
+      res.json({ error: err.message || err.toString() });
+    }
+  })
+
+  .post('/eliminar-donacion', async (req, res) => {
+    try {
+      let donacion = await Donacion.findByIdAndDelete(req.body.id);
+      res.send('<script>alert("Eliminacion de la donacion confirmada."); window.location.href = "/admin/ver-adopciones";</script>');
     } catch (err) {
       res.json({ error: err.message || err.toString() });
     }
