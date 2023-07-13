@@ -116,6 +116,7 @@ router.post('/registrar-perro', async (req, res) => {
     }
     console.log(user);
     perro = new Perro(_.pick(req.body, ['nombre', 'sexo', 'fechaDeNacimiento', 'raza', 'color', 'observaciones', 'foto', 'mail']));
+    perro.userId = user._id;
     console.log(perro);
     const perros = user.perrosId; // Array de perros del usuario
     console.log(perros);
@@ -450,6 +451,37 @@ router.post('/registrar-perro', async (req, res) => {
       return res.send('<script>alert("La carga se realizo correctamente"); window.location.href = "/admin";</script>');
     } catch (error) {
       return res.send('<script>alert("La carga no pudo realizarse"); window.location.href = "/admin";</script>');
+    }
+  })
+
+  /*
+    .post('/modificar-usuario', async (req, res) => {
+      const { dato, mail, nombre, apellido, dni, telefono } = req.body;
+      let user = await User.findOne({ mail: dato });
+      if (!user) return res.status(400).send('No se encontro el usuario');
+      let usuarioConMailRegistrado = await User.findOne({ mail: mail });
+      if (usuarioConMailRegistrado) {
+        if (usuarioConMailRegistrado.mail !== user.mail) return res.status(400).send('<script>alert("Ya hay un usuario con el mail asignado."); window.location.href = "/admin";</script>');
+      }
+  */
+
+  .post('/modificar-donacion', async (req, res) => {
+    const { id, nombre, montoObjetivo, montoRecaudado, descripcion } = req.body;
+    //const cruzaModificar = await Cruza.findById(id);
+    console.log("Pinga");
+    try {
+      await Donacion.updateOne({ _id: id }, {
+        $set: {
+          nombre: nombre,
+          montoObjetivo: montoObjetivo,
+          montoRecaudado: montoRecaudado,
+          descripcion: descripcion,
+        }
+      });
+      return res.send('<script>alert("La modificacion de la campaña se realizo correctamente"); window.location.href = "/admin/ver-donaciones";</script>');
+    } catch (error) {
+      console.log(error);
+      return res.send('<script>alert("La modificacion de la campaña no pudo realizarse"); window.location.href = "/clientes/listar-cruza";</script>');
     }
   })
 

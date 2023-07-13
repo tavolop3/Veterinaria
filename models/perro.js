@@ -1,3 +1,4 @@
+const { ObjectId } = require('mongodb');
 const mongoose = require('mongoose');
 
 
@@ -25,6 +26,9 @@ const perroSchema = new mongoose.Schema({
     },
     mail: {
         type: String
+    },
+    userId: {
+        type: ObjectId
     }
 })
 
