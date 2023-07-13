@@ -11,16 +11,43 @@ html
         var selectPerro = document.getElementById('id');
         var camposOtro = document.getElementById('camposOtro');
         var razaInput = document.getElementById('raza');
-        var fechaDeCeloInput = document.getElementById('fechaDeCelo');
-        
+        var fechaDeNacimiento = document.getElementById('fechaDeNacimiento');
+        var campoFechaDeCelo = document.getElementById('campoFechaDeCelo');
+        var fechaDeCelo = document.getElementById('fechaDeCelo');
+        var perros = !{JSON.stringify(perros)};
+
         if (selectPerro.value === "otro") {
           camposOtro.style.display = "block";
           razaInput.setAttribute('required', '');
           fechaDeNacimiento.setAttribute('required', '');
         } else {
+          var perroSeleccionado = perros.find((perro) => {
+            return perro._id === selectPerro.value;
+          });
+          if(perroSeleccionado.sexo == 'hembra') {
+            fechaDeCelo.setAttribute('required', '');
+            campoFechaDeCelo.style.display = "block";
+          } else {
+            fechaDeCelo.removeAttribute('required');
+            campoFechaDeCelo.style.display = "none";
+          }
           camposOtro.style.display = "none";
           razaInput.removeAttribute('required');
           fechaDeNacimiento.removeAttribute('required');
+        }
+      }
+      function toggleFechaCeloOtro() {
+        var campoSexo = document.getElementById('sexo');
+        var fechaDeCelo = document.getElementById('fechaDeCelo');
+        var campoFechaDeCelo = document.getElementById('campoFechaDeCelo');
+
+        console.log(fechaDeCelo)
+        if(campoSexo.value == 'hembra') {
+          campoFechaDeCelo.style.display = "block";
+          fechaDeCelo.setAttribute('required', '');
+        } else {
+          campoFechaDeCelo.style.display = "none";
+          fechaDeCelo.removeAttribute('required');
         }
       }
       function setMaxDate() {
@@ -36,9 +63,12 @@ html
       window.addEventListener('load', function() {
         setMaxDate();
         toggleCamposOtro();
+        toggleFechaCeloOtro();
 
         var selectPerro = document.getElementById('id');
         selectPerro.addEventListener('change', toggleCamposOtro);
+        var selectSexo = document.getElementById('sexo');
+        selectSexo.addEventListener('change', toggleFechaCeloOtro);
       });
   body
     +bannerCliente()
@@ -47,9 +77,9 @@ html
         li
           label(for="id") Perro:
           select(name="id", id="id", required)
+            option(value="otro") Otro
             each perro in perros
               option(value=perro.id)= perro.nombre
-            option(value="otro") Otro
 
         div(id="camposOtro" style="display: none;")
           li
@@ -68,9 +98,9 @@ html
               option(value="Boxer") Boxer
               option(value="Pastor alemán") Pastor alemán
               option(value="Dogo argentino") Dogo argentino
-        li
+        li(id="campoFechaDeCelo", style="display: none;")
           label(for="fechaDeCelo") Fecha celo: 
-          input(type="Date", id="fechaDeCelo", name="fechaDeCelo", required)
+          input(type="Date", id="fechaDeCelo", name="fechaDeCelo")
         li.button
           button(type="submit") Cargar
           button(onclick="window.history.go(-1)") Cancelar

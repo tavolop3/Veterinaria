@@ -10,7 +10,7 @@ html
         width: 30%;
       }
       th, td {
-        padding: 2px;
+        padding: 25px;
         text-align: left;
       }
       td.buttons {
@@ -34,8 +34,11 @@ else
         tr
           td= perro.raza
           td= perro.sexo
-          - let fechaDeCelo = `${perro.fechaDeCelo.getUTCDate()}/${perro.fechaDeCelo.getUTCMonth()+1}/${perro.fechaDeCelo.getUTCFullYear()}`
-          td= fechaDeCelo 
+          if(perro.fechaDeCelo)
+            - let fechaDeCelo = `${perro.fechaDeCelo.getUTCDate()}/${perro.fechaDeCelo.getUTCMonth()+1}/${perro.fechaDeCelo.getUTCFullYear()}`
+            td= fechaDeCelo
+          else 
+            td - 
           - let fechaDeNacimiento = `${perro.fechaDeNacimiento.getUTCDate()}/${perro.fechaDeNacimiento.getUTCMonth()+1}/${perro.fechaDeNacimiento.getUTCFullYear()}`
           td= fechaDeNacimiento
           td.buttons

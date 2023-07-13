@@ -62,8 +62,11 @@ html
                 tr
                     td= cruza.raza 
                     td= cruza.sexo 
-                    - let fechaDeCelo = `${cruza.fechaDeCelo.getUTCDate()}/${cruza.fechaDeCelo.getUTCMonth()+1}/${cruza.fechaDeCelo.getUTCFullYear()}`
-                    td= fechaDeCelo 
+                    if(fechaDeCelo)
+                      - let fechaDeCelo = `${cruza.fechaDeCelo.getUTCDate()}/${cruza.fechaDeCelo.getUTCMonth()+1}/${cruza.fechaDeCelo.getUTCFullYear()}`
+                      td= fechaDeCelo 
+                    else
+                      td -
                     - let fechaDeNacimiento = `${cruza.fechaDeNacimiento.getUTCDate()}/${cruza.fechaDeNacimiento.getUTCMonth()+1}/${cruza.fechaDeNacimiento.getUTCFullYear()}`
                     td= fechaDeNacimiento
                     td.buttons
