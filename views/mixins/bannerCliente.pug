@@ -10,7 +10,7 @@ mixin bannerCliente
         ul
           li
             select(title="Cuenta", onchange="redirectToPage(this)")
-              option Mi Cuenta
+              option(value='placeholder' disabled selected style="display: none;") Mi cuenta
               option(value="/clientes/mis-perros") Mis perros
               option(value='/clientes/modificar-datos') Modificar mis datos 
               option(value="/usuarios/cerrar-sesion") Cerrar sesion

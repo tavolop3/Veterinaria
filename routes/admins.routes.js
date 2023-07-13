@@ -7,9 +7,10 @@ const { Servicio } = require('../models/servicio')
 const { Turno, modificarEstado } = require('../models/turno')
 const _ = require('lodash');
 const { sendEmail } = require('../emails');
-const { ObjectId } = require('mongoose').Types;
+const { ObjectId } = require("mongodb");
 const moment = require('moment');
 const { PuntoUrgencia } = require('../models/puntoUrgencia');
+const { default: mongoose } = require('mongoose');
 
 router.post('/registrar-usuario', async (req, res) => {
   // const { error } = validateCreate(req.body);  Ya no valida porque no está especificado en las hu las microvalidaciones
@@ -265,25 +266,54 @@ router.post('/registrar-perro', async (req, res) => {
     res.render('listaPerros', { perros, mailUsuario, admin: true })
   })
 
-  .post('/eliminar-perro', async (req, res) => {
+  // .post('/eliminar-perro', async (req, res) => {
+  //   try {
+  //     const usuario = await User.findOne({ mail: req.body.mail });
+  //     console.log(usuario);
+  //     const index = usuario.perrosId.indexOf(req.body.id);
+  //     if (index !== -1) {
+  //       usuario.perrosId.splice(index, 1); // Elimina 1 elemento en el índice especificado
+  //     }
+  //     console.log(usuario);
+  //     await usuario.save();
+  //     // Obtener el perro a eliminar
+  //     const perro = await Perro.findByIdAndDelete(req.body.id);
+  //     if (!perro) {
+  //       return res.status(400).send('<script>alert("El perro no estaba en el sistema."); window.location.href = "/admin";</script>');
+  //     }
+  //     //console.log('Usuario y sus perros/turnos eliminados exitosamente');
+  //     return res.status(400).send('<script>alert("La baja del perro fue exitosa."); window.location.href = "/admin";</script>');
+  //   } catch (err) {
+  //     res.json({ error: err.message || err.toString() });
+  //   }
+  // })
+
+  .post('/eliminar-perro', async (req, res) => { // TODO Id del usuario en el cargar perro, tambien en el modificar
     try {
-      const usuario = await User.findOne({ mail: req.body.mail });
-      console.log(usuario);
-      const index = usuario.perrosId.indexOf(req.body.id);
-      if (index !== -1) {
-        usuario.perrosId.splice(index, 1); // Elimina 1 elemento en el índice especificado
+      const idPerro = req.body.id;
+      const userId = ObjectId(req.body.userId);
+
+      const usuario = await User.findById(userId);
+      if(!usuario) return res.status(400).send('El usuario no existe o no se encontró.');
+
+      try {
+        const session = await mongoose.startSession();
+        await session.withTransaction(async()=> {
+          usuario.perrosId.pull({ _id: idPerro });
+          await usuario.save();
+
+          const perroEliminado = await Perro.findByIdAndDelete(idPerro);
+          if(!perroEliminado) return res.status(400).send('El perro no existe o no se encontró.');          
+        });
+        session.endSession();
+      } catch(err) {
+        res.send('La transaccion falló, no se realizaron modificaciones.');
       }
-      console.log(usuario);
-      await usuario.save();
-      // Obtener el perro a eliminar
-      const perro = await Perro.findByIdAndDelete(req.body.id);
-      if (!perro) {
-        return res.status(400).send('<script>alert("El perro no estaba en el sistema."); window.location.href = "/admin";</script>');
-      }
-      //console.log('Usuario y sus perros/turnos eliminados exitosamente');
-      return res.status(400).send('<script>alert("La baja del perro fue exitosa."); window.location.href = "/admin";</script>');
+
+      return res.status(200).send('<script>alert("La baja del perro fue exitosa."); window.location.href = "/admin";</script>');
     } catch (err) {
       res.json({ error: err.message || err.toString() });
+      console.error(err);
     }
   })
 

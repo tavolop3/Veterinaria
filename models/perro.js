@@ -1,3 +1,4 @@
+const { ObjectId } = require('mongodb');
 const mongoose = require('mongoose');
 
 
@@ -23,8 +24,8 @@ const perroSchema = new mongoose.Schema({
     foto: {
         type: String
     },
-    mail: {
-        type: String
+    userId: {
+        type: ObjectId
     }
 })
 
