@@ -9,6 +9,7 @@ const { Servicio } = require('../models/servicio');
 const { Cruza } = require('../models/cruza');
 const { Perdida } = require('../models/perdida');
 const { Donacion } = require('../models/donacion');
+const { Turno } = require('../models/turno');
 const MailMessage = require('nodemailer/lib/mailer/mail-message');
 
 router.get('', (req, res) => {
@@ -310,6 +311,14 @@ router.get('', (req, res) => {
 
     .get('/admin/cargar-servicio', [autenticado, esAdmin], async (req, res) => {
         res.render('cargar-paseador-cuidador');
+    })
+
+    .get('/admin/cobrar-turno', [autenticado, esAdmin], async (req, res) => {
+        let id = req.query.id;
+        let turno = await Turno.findById(id);
+        let usuario = await User.findOne({dni: turno.dni});
+        console.log(usuario.montoDescuento);
+        res.render('pagar-turno',  { id: id, montoDescuento: usuario.montoDescuento });
     })
 
 module.exports = router;

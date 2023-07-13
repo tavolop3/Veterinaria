@@ -62,4 +62,8 @@ html
                 form(action="/admin/confirmar-asistencia", method="POST")
                   input(type="hidden", name="id", value=turno._id)
                   button(type="submit") Confirmar asistencia
+              if (turno.estado == "asistido")
+                form(action="/admin/cobrar-turno", method="GET")
+                  input(type="hidden", name="id", value=turno._id)
+                  button(type="submit") Cobrar turno
       button(onclick="window.history.go(-1)") Cancelar

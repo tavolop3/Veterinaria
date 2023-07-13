@@ -454,37 +454,35 @@ router.post('/registrar-perro', async (req, res) => {
     }
   })
 
-  /*
-    .post('/modificar-usuario', async (req, res) => {
-      const { dato, mail, nombre, apellido, dni, telefono } = req.body;
-      let user = await User.findOne({ mail: dato });
-      if (!user) return res.status(400).send('No se encontro el usuario');
-      let usuarioConMailRegistrado = await User.findOne({ mail: mail });
-      if (usuarioConMailRegistrado) {
-        if (usuarioConMailRegistrado.mail !== user.mail) return res.status(400).send('<script>alert("Ya hay un usuario con el mail asignado."); window.location.href = "/admin";</script>');
-      }
-  */
-
-  .post('/modificar-donacion', async (req, res) => {
-    const { id, nombre, montoObjetivo, montoRecaudado, descripcion } = req.body;
-    //const cruzaModificar = await Cruza.findById(id);
-    console.log("Pinga");
+  .post('/pagar-turno', async (req, res) => {
+    const { id, monto, numero, fecha, codigo } = req.body;
     try {
-      await Donacion.updateOne({ _id: id }, {
-        $set: {
-          nombre: nombre,
-          montoObjetivo: montoObjetivo,
-          montoRecaudado: montoRecaudado,
-          descripcion: descripcion,
-        }
-      });
-      return res.send('<script>alert("La modificacion de la campaña se realizo correctamente"); window.location.href = "/admin/ver-donaciones";</script>');
+      console.log(id);
+      let turno = await Turno.findById(id);
+      console.log(turno);
+      if (monto < 0)
+        return res.status(400).send('<script>alert("El monto no puede ser negativo."); window.location.href = "/admin/historial-turnos";</script>');
+      if (numero.length != 16)
+        return res.status(400).send('<script>alert("El numero de la tarjeta debe de tener 16 digitos."); window.location.href = "/admin/historial-turnos";</script>');
+      if (!/^([45])/.test(numero))
+        return res.status(400).send('<script>alert("El número de tarjeta debe comenzar con 4 o 5."); window.location.href = "/admin/historial-turnos";</script>');
+      let hoy = new Date();
+      let fechaIngresada = new Date(fecha);
+      if (fechaIngresada.getTime() < hoy.getTime())
+        return res.status(400).send('<script>alert("La fecha no puede ser menor a hoy."); window.location.href = "/admin/historial-turnos";</script>');
+      if (codigo.length != 3)
+        return res.status(400).send('<script>alert("El codigo de seguridad debe de tener 3 digitos."); window.location.href = "/admin/historial-turnos";</script>');
+      let usuario = await User.findOne({ dni: turno.dni });
+      usuario.montoDescuento = 0;
+      turno.estado = "pagado";
+      await usuario.save();
+      await turno.save();
+      return res.status(400).send('<script>alert("El pago se realizo correctamente"); window.location.href = "/admin/historial-turnos";</script>');
     } catch (error) {
       console.log(error);
-      return res.send('<script>alert("La modificacion de la campaña no pudo realizarse"); window.location.href = "/clientes/listar-cruza";</script>');
+      return res.status(400).send('Error al realizar el cobro');
     }
   })
-
 
 function compararFechas(a, b) {
 
