@@ -11,6 +11,7 @@ const { ObjectId } = require("mongodb");
 const moment = require('moment');
 const { PuntoUrgencia } = require('../models/puntoUrgencia');
 const { default: mongoose } = require('mongoose');
+const { Donacion } = require('../models/donacion');
 
 router.post('/registrar-usuario', async (req, res) => {
   // const { error } = validateCreate(req.body);  Ya no valida porque no está especificado en las hu las microvalidaciones
@@ -433,6 +434,21 @@ router.post('/registrar-perro', async (req, res) => {
     }
   })
 
+  .get('/ver-donaciones', async (req, res) => {
+    try {
+      let donaciones = await Donacion.find({});
+      if (!donaciones) {
+        res.render('tablonDonacionesAdmin', { error: 'Aun no hay donaciones.' })
+      }
+      else {
+        res.render('tablonDonacionesAdmin', { donaciones: donaciones });
+      }
+    } catch (error) {
+      console.log('Error al obtener las donaciones:', error);
+      return res.status(400).send('Error al obtener los servicios');
+    }
+  })
+
   .post('/eliminar-servicio', async (req, res) => {
     try {
       let servicio = await Servicio.findByIdAndDelete(req.body.id);
@@ -471,6 +487,108 @@ router.post('/registrar-perro', async (req, res) => {
     if (!sucursal) res.status(400).send('La sucursal no fue encontrada');
 
     res.send('<script>alert("La modificación se realizó correctamente."); window.location.href = "/admin/urgencias";</script>');
+  })
+
+  .post('/eliminar-donacion', async (req, res) => {
+    try {
+      let donacion = await Donacion.findByIdAndDelete(req.body.id);
+      res.send('<script>alert("Eliminacion de la donacion confirmada."); window.location.href = "/admin/ver-donaciones";</script>');
+    } catch (err) {
+      res.json({ error: err.message || err.toString() });
+    }
+  })
+
+
+  .post('/modificar-usuario', async (req, res) => {
+    const { dato, mail, nombre, apellido, dni, telefono } = req.body;
+    let user = await User.findOne({ mail: dato });
+    if (!user) return res.status(400).send('No se encontro el usuario');
+    let usuarioConMailRegistrado = await User.findOne({ mail: mail });
+    if (usuarioConMailRegistrado) {
+      if (usuarioConMailRegistrado.mail !== user.mail) return res.status(400).send('<script>alert("Ya hay un usuario con el mail asignado."); window.location.href = "/admin";</script>');
+    }
+  })
+
+
+
+  /*
+      let usuarioConMailRegistrado = await User.findOne({ mail: mail });
+      if (usuarioConMailRegistrado) {
+        if (usuarioConMailRegistrado.mail !== user.mail) return res.status(400).send('<script>alert("Ya hay un usuario con el mail asignado."); window.location.href = "/admin";</script>');
+      }
+  */
+  .post('/modificar-donacion', async (req, res) => {
+    const { id, nombre, montoObjetivo, descripcion } = req.body;
+    let donacionRegistrada = await Donacion.findOne({ nombre: nombre });
+    let donacionActualizar = await Donacion.findById(id);
+    if (donacionRegistrada && donacionActualizar.nombre !== donacionRegistrada.nombre)
+      return res.status(400).send('<script>alert("Ya hay una campaña con ese nombre."); window.location.href = "/admin/ver-donaciones";</script>');
+    //const cruzaModificar = await Cruza.findById(id);
+    try {
+      await Donacion.updateOne({ _id: id }, {
+        $set: {
+          nombre: nombre,
+          montoObjetivo: montoObjetivo,
+          descripcion: descripcion,
+        }
+      });
+      return res.send('<script>alert("La modificacion de la campaña se realizo correctamente"); window.location.href = "/admin/ver-donaciones";</script>');
+    } catch (error) {
+      console.log(error);
+      return res.send('<script>alert("La modificacion de la campaña no pudo realizarse"); window.location.href = "/admin/ver-donaciones";</script>');
+    }
+  })
+
+
+
+
+
+  .post('/cargar-donacion', async (req, res) => {
+    let nuevaDonacion = {
+      nombre: req.body.nombre,
+      descripcion: req.body.descripcion,
+      montoObjetivo: req.body.monto,
+      montoRecaudado: 0
+    }
+    let donacion = await Donacion.findOne({ nombre: nuevaDonacion.nombre });
+    if (donacion) return res.status(400).send('<script>alert("El nombre ya se encuentra asignado a una donacion"); window.location.href = "/admin";</script>');
+    try {
+      let donacion = new Donacion(nuevaDonacion);
+      await donacion.save();
+      return res.send('<script>alert("La carga se realizo correctamente"); window.location.href = "/admin";</script>');
+    } catch (error) {
+      return res.send('<script>alert("La carga no pudo realizarse"); window.location.href = "/admin";</script>');
+    }
+  })
+
+  .post('/pagar-turno', async (req, res) => {
+    const { id, monto, numero, fecha, codigo } = req.body;
+    try {
+      console.log(id);
+      let turno = await Turno.findById(id);
+      console.log(turno);
+      if (monto < 0)
+        return res.status(400).send('<script>alert("El monto no puede ser negativo."); window.location.href = "/admin/historial-turnos";</script>');
+      if (numero.length != 16)
+        return res.status(400).send('<script>alert("El numero de la tarjeta debe de tener 16 digitos."); window.location.href = "/admin/historial-turnos";</script>');
+      if (!/^([45])/.test(numero))
+        return res.status(400).send('<script>alert("El número de tarjeta debe comenzar con 4 o 5."); window.location.href = "/admin/historial-turnos";</script>');
+      let hoy = new Date();
+      let fechaIngresada = new Date(fecha);
+      if (fechaIngresada.getTime() < hoy.getTime())
+        return res.status(400).send('<script>alert("La fecha no puede ser menor a hoy."); window.location.href = "/admin/historial-turnos";</script>');
+      if (codigo.length != 3)
+        return res.status(400).send('<script>alert("El codigo de seguridad debe de tener 3 digitos."); window.location.href = "/admin/historial-turnos";</script>');
+      let usuario = await User.findOne({ dni: turno.dni });
+      usuario.montoDescuento = 0;
+      turno.estado = "pagado";
+      await usuario.save();
+      await turno.save();
+      return res.status(400).send('<script>alert("El pago se realizo correctamente"); window.location.href = "/admin/historial-turnos";</script>');
+    } catch (error) {
+      console.log(error);
+      return res.status(400).send('Error al realizar el cobro');
+    }
   })
 
 function compararFechas(a, b) {

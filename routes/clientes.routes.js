@@ -247,7 +247,7 @@ router.post('/solicitar-turno', async (req, res) => {
     }
   })
 
-  .post('/recomendar-perro', async (req, res) => {
+  /*.post('/recomendar-perro', async (req, res) => {
     try {
       const cruzaUsuario = await Cruza.findOne({ _id: req.body.id });
 
@@ -275,7 +275,35 @@ router.post('/solicitar-turno', async (req, res) => {
     } catch (err) {
       res.json({ error: err.message || err.toString() });
     }
+  })*/
+  .post('/recomendar-perro', async (req, res) => {
+    try {
+      const cruzaUsuario = await Cruza.findOne({ _id: req.body.id });
+
+      if (cruzaUsuario) {
+        const fechaActual = new Date();
+        const fechaLimite = new Date(fechaActual.getFullYear() - 1, fechaActual.getMonth(), fechaActual.getDate());
+
+        const perroRecomendado = await Cruza.findOne({
+          _id: { $ne: cruzaUsuario._id },
+          sexo: { $ne: cruzaUsuario.sexo },
+          raza: cruzaUsuario.raza,
+          fechaDeNacimiento: { $lte: fechaLimite }
+        });
+
+        if (perroRecomendado) {
+          res.render('recomendarPerro', { perroRecomendado: perroRecomendado });
+        } else {
+          return res.status(400).send('<script>alert("El sistema no tiene un perro que cumpla los requisitos para ser recomendado."); window.location.href = "/clientes/listar-cruza";</script>');
+        }
+      } else {
+        return res.status(400).send('<script>alert("No se encontró la cruza solicitada."); window.location.href = "/clientes/listar-cruza";</script>');
+      }
+    } catch (err) {
+      res.json({ error: err.message || err.toString() });
+    }
   })
+
 
   .post('/confirmar-anuncio', async (req, res) => {
     try {

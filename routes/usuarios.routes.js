@@ -6,6 +6,8 @@ const autenticado = require('../middleware/autenticado');
 const { User, encriptarContraseña, compararContraseñas } = require('../models/user');
 const { sendEmail } = require('../emails');
 const { Perdida } = require('../models/perdida');
+const { Donacion } = require('../models/donacion');
+const { defaultTo } = require('lodash');
 
 // Para ver el usuario actual
 router.get('/yo', autenticado, async (req, res) => {
@@ -237,6 +239,39 @@ router.get('/yo', autenticado, async (req, res) => {
     'Ha recibido una solicitud de contacto por su anuncio, contactese con ' + req.body.mailSolicitante + ' para poder coordinar.'
   ); 
   res.send('<script>alert("Se solicitó exitosamente, revisa tu mail."); window.location.href = "/";</script>');
+})
+
+.post('/realizar-donacion', async (req, res) => {
+  const { mail, nombre, monto, numero, fecha, codigo } = req.body;
+  try {
+    console.log(mail);
+    let campaña = await Donacion.findOne({nombre: nombre});
+    let donador = await User.findOne({mail: mail});
+    if (monto < 0)
+      return res.status(400).send('<script>alert("El monto no puede ser negativo."); window.location.href = "/usuarios/visualizar-tablon-donaciones";</script>');
+    if (numero.length != 16)
+      return res.status(400).send('<script>alert("El numero de la tarjeta debe de tener 16 digitos."); window.location.href = "/usuarios/visualizar-tablon-donaciones";</script>');
+    if (!/^([45])/.test(numero))
+      return res.status(400).send('<script>alert("El número de tarjeta debe comenzar con 4 o 5."); window.location.href = "/usuarios/visualizar-tablon-donaciones";</script>');
+    let hoy = new Date();
+    let fechaIngresada = new Date(fecha);
+    if (fechaIngresada.getTime() < hoy.getTime()) 
+      return res.status(400).send('<script>alert("La fecha no puede ser menor a hoy."); window.location.href = "/usuarios/visualizar-tablon-donaciones";</script>');
+    if (codigo.length != 3)
+      return res.status(400).send('<script>alert("El codigo de seguridad debe de tener 3 digitos."); window.location.href = "/usuarios/visualizar-tablon-donaciones";</script>');
+    campaña.montoRecaudado = parseFloat(campaña.montoRecaudado) + parseFloat(monto);
+    await campaña.save();
+    if (donador) {
+      console.log(donador.montoDescuento);
+      let nuevoMontoDescuento = donador.montoDescuento + (monto * 0.2);
+      donador.montoDescuento = nuevoMontoDescuento;
+      await donador.save();
+    } 
+    return res.status(400).send('<script>alert("El pago se realizo correctamente"); window.location.href = "/usuarios/visualizar-tablon-donaciones";</script>');
+  } catch (error) {
+    console.log(error);
+    return res.status(400).send('Error al realizar las donaciones');
+  }
 })
 
 module.exports = router;

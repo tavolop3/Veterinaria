@@ -8,6 +8,8 @@ const { Adopcion } = require('../models/adopcion');
 const { Servicio } = require('../models/servicio');
 const { Cruza } = require('../models/cruza');
 const { Perdida } = require('../models/perdida');
+const { Donacion } = require('../models/donacion');
+const { Turno } = require('../models/turno');
 const { PuntoUrgencia } = require('../models/puntoUrgencia');
 const MailMessage = require('nodemailer/lib/mailer/mail-message');
 
@@ -15,7 +17,7 @@ router.get('', (req, res) => {
     if (!req.user)
         res.render('index');
     else {
-        if (req.user.isAdmin) 
+        if (req.user.isAdmin)
             res.redirect('/admin');
         else
             res.redirect('/clientes');
@@ -65,7 +67,7 @@ router.get('', (req, res) => {
         try {
             let servicios = await Servicio.find({});
             if (!servicios) {
-                res.render('tablonServiciosCliente', { error: 'No hay postulaciones cargadas en el sistema.'})
+                res.render('tablonServiciosCliente', { error: 'No hay postulaciones cargadas en el sistema.' })
             }
             else {
                 let mail = "";
@@ -124,9 +126,7 @@ router.get('', (req, res) => {
         }
     })
 
-    router.get('/urgencias', async(req, res) => {
-        // TODO Pagina para el admin (mapa reutilizable?)
-        // TODO Pasarle una lista de sucursales y en el pug conseguir las coordenadas de cada sucursal
+    .get('/urgencias', async(req, res) => {
         var rol = '';
         if(req.user)
             rol = 'cliente'
@@ -178,11 +178,13 @@ router.get('', (req, res) => {
         res.render('listarAnuncios', { anuncios })
     })
 
-    .get('/clientes/modificar-adopcion', autenticado, async  (req, res) => {
+    .get('/clientes/modificar-adopcion', autenticado, async (req, res) => {
         let id = req.query.dato;
         let perro = await Adopcion.findById(id);
         res.render('modificar-adopcion', { perro });
     })
+
+
 
     .get('/clientes/modificar-cruza', autenticado, async (req, res) => {
         let id = req.query.dato;
@@ -216,7 +218,7 @@ router.get('', (req, res) => {
         res.render('cargar-anuncio')
     })
 
-    .get('/clientes/modificar-anuncio', autenticado, async(req, res) => {
+    .get('/clientes/modificar-anuncio', autenticado, async (req, res) => {
         let id = req.query.dato;
         let perro = await Perdida.findById(id);
         res.render('modificar-anuncio', { perro });
@@ -286,6 +288,14 @@ router.get('', (req, res) => {
         res.render('funcionesAdmin/servicios');
     })
 
+    .get('/admin/donaciones', [autenticado, esAdmin], async (req, res) => {
+        res.render('funcionesAdmin/donaciones');
+    })
+
+    .get('/admin/cargar-donacion', [autenticado, esAdmin], async (req, res) => {
+        res.render('cargar-donacion');
+    })
+
     .get('/admin/cargar-servicio', [autenticado, esAdmin], async (req, res) => {
         res.render('cargar-paseador-cuidador');
     })
@@ -305,6 +315,20 @@ router.get('', (req, res) => {
     .get('/admin/modificar-sucursal', [autenticado, esAdmin], async(req, res) => {
         const sucursal = await PuntoUrgencia.findById(req.query.id);
         res.render('funcionesAdmin/modificarSucursal', { sucursal } );
+    })
+
+    .get('/admin/cobrar-turno', [autenticado, esAdmin], async (req, res) => {
+        let id = req.query.id;
+        let turno = await Turno.findById(id);
+        let usuario = await User.findOne({ dni: turno.dni });
+        console.log(usuario.montoDescuento);
+        res.render('pagar-turno', { id: id, montoDescuento: usuario.montoDescuento });
+    })
+
+    .get('/admin/modificar-donacion', autenticado, async (req, res) => {
+        let id = req.query.dato;
+        let donacion = await Donacion.findById(id);
+        res.render('modificar-donacion', { donacion });
     })
 
 module.exports = router;

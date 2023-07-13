@@ -48,7 +48,12 @@ else
             form(action="/clientes/eliminar-cruza", method="POST" onsubmit="return confirm('¿Estás seguro de que deseas eliminar esta cruza?');")
               input(type="hidden", name="id", value=perro._id)
               button(type="submit") Eliminar
-            form(action="/clientes/recomendar-perro", method="POST")
-              input(type="hidden", name="id", value=perro._id)
-              button(type="submit") Recomendar
+            - let fechaActual = new Date()
+            - let fechaLimite = new Date(fechaActual.getFullYear() - 1, fechaActual.getMonth(), fechaActual.getDate())
+            - let perroCumpleRequisito = perro.fechaDeNacimiento <= fechaLimite
+            if perroCumpleRequisito
+              form(action="/clientes/recomendar-perro", method="POST")
+                input(type="hidden", name="id", value=perro._id)
+                button(type="submit") Recomendar cruza
     button(onclick="window.history.go(-1)") Volver  
+  
