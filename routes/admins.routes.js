@@ -407,10 +407,10 @@ router.post('/registrar-perro', async (req, res) => {
     try {
       let donaciones = await Donacion.find({});
       if (!donaciones) {
-        res.render('tablonDonaciones', { error: 'Aun no hay donaciones.' })
+        res.render('tablonDonacionesAdmin', { error: 'Aun no hay donaciones.' })
       }
       else {
-        res.render('tablonDonaciones', { donaciones: donaciones });
+        res.render('tablonDonacionesAdmin', { donaciones: donaciones });
       }
     } catch (error) {
       console.log('Error al obtener las donaciones:', error);
@@ -430,11 +430,56 @@ router.post('/registrar-perro', async (req, res) => {
   .post('/eliminar-donacion', async (req, res) => {
     try {
       let donacion = await Donacion.findByIdAndDelete(req.body.id);
-      res.send('<script>alert("Eliminacion de la donacion confirmada."); window.location.href = "/admin/ver-adopciones";</script>');
+      res.send('<script>alert("Eliminacion de la donacion confirmada."); window.location.href = "/admin/ver-donaciones";</script>');
     } catch (err) {
       res.json({ error: err.message || err.toString() });
     }
   })
+
+
+  .post('/modificar-usuario', async (req, res) => {
+    const { dato, mail, nombre, apellido, dni, telefono } = req.body;
+    let user = await User.findOne({ mail: dato });
+    if (!user) return res.status(400).send('No se encontro el usuario');
+    let usuarioConMailRegistrado = await User.findOne({ mail: mail });
+    if (usuarioConMailRegistrado) {
+      if (usuarioConMailRegistrado.mail !== user.mail) return res.status(400).send('<script>alert("Ya hay un usuario con el mail asignado."); window.location.href = "/admin";</script>');
+    }
+  })
+
+
+
+  /*
+      let usuarioConMailRegistrado = await User.findOne({ mail: mail });
+      if (usuarioConMailRegistrado) {
+        if (usuarioConMailRegistrado.mail !== user.mail) return res.status(400).send('<script>alert("Ya hay un usuario con el mail asignado."); window.location.href = "/admin";</script>');
+      }
+  */
+  .post('/modificar-donacion', async (req, res) => {
+    const { id, nombre, montoObjetivo, descripcion } = req.body;
+    let donacionRegistrada = await User.findOne({ nombre: nombre });
+    if (donacionRegistrada) {
+      if (donacionRegistrada.nombre !== nombre) return res.status(400).send('<script>alert("Ya hay una campaña con ese nombre."); window.location.href = "/admin";</script>');
+      //const cruzaModificar = await Cruza.findById(id);
+      try {
+        await Donacion.updateOne({ _id: id }, {
+          $set: {
+            nombre: nombre,
+            montoObjetivo: montoObjetivo,
+            descripcion: descripcion,
+          }
+        });
+        return res.send('<script>alert("La modificacion de la campaña se realizo correctamente"); window.location.href = "/admin/ver-donaciones";</script>');
+      } catch (error) {
+        console.log(error);
+        return res.send('<script>alert("La modificacion de la campaña no pudo realizarse"); window.location.href = "/clientes/listar-cruza";</script>');
+      }
+    }
+  })
+
+
+
+
 
   .post('/cargar-donacion', async (req, res) => {
     let nuevaDonacion = {

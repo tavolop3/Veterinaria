@@ -16,7 +16,7 @@ router.get('', (req, res) => {
     if (!req.user)
         res.render('index');
     else {
-        if (req.user.isAdmin) 
+        if (req.user.isAdmin)
             res.redirect('/admin');
         else
             res.redirect('/clientes');
@@ -66,7 +66,7 @@ router.get('', (req, res) => {
         try {
             let servicios = await Servicio.find({});
             if (!servicios) {
-                res.render('tablonServiciosCliente', { error: 'No hay postulaciones cargadas en el sistema.'})
+                res.render('tablonServiciosCliente', { error: 'No hay postulaciones cargadas en el sistema.' })
             }
             else {
                 let mail = "";
@@ -127,18 +127,18 @@ router.get('', (req, res) => {
 
     .get('/usuarios/visualizar-tablon-donaciones', async (req, res) => {
         try {
-          let mail = "";
-          if (req.isAuthenticated())
-            mail = req.user.mail;
-          let donaciones = await Donacion.find({});
-          res.render('tablonDonaciones', { donaciones: donaciones, usuarioActual: mail });
+            let mail = "";
+            if (req.isAuthenticated())
+                mail = req.user.mail;
+            let donaciones = await Donacion.find({});
+            res.render('tablonDonaciones', { donaciones: donaciones, usuarioActual: mail });
         } catch (error) {
-          console.log(error);
-          return res.status(400).send('Error al obtener las donaciones');
+            console.log(error);
+            return res.status(400).send('Error al obtener las donaciones');
         }
-      })
-    
-    .get('/usuarios/realizar-donacion', async(req, res) => {
+    })
+
+    .get('/usuarios/realizar-donacion', async (req, res) => {
         try {
             let nombre = req.query.nombre;
             console.log(nombre);
@@ -193,10 +193,16 @@ router.get('', (req, res) => {
         res.render('listarAnuncios', { anuncios })
     })
 
-    .get('/clientes/modificar-adopcion', autenticado, async  (req, res) => {
+    .get('/clientes/modificar-adopcion', autenticado, async (req, res) => {
         let id = req.query.dato;
         let perro = await Adopcion.findById(id);
         res.render('modificar-adopcion', { perro });
+    })
+
+    .get('/admin/modificar-donacion', autenticado, async (req, res) => {
+        let id = req.query.dato;
+        let donacion = await Donacion.findById(id);
+        res.render('modificar-donacion', { donacion });
     })
 
     .get('/clientes/modificar-cruza', autenticado, async (req, res) => {
@@ -231,7 +237,7 @@ router.get('', (req, res) => {
         res.render('cargar-anuncio')
     })
 
-    .get('/clientes/modificar-anuncio', autenticado, async(req, res) => {
+    .get('/clientes/modificar-anuncio', autenticado, async (req, res) => {
         let id = req.query.dato;
         let perro = await Perdida.findById(id);
         res.render('modificar-anuncio', { perro });
@@ -316,9 +322,9 @@ router.get('', (req, res) => {
     .get('/admin/cobrar-turno', [autenticado, esAdmin], async (req, res) => {
         let id = req.query.id;
         let turno = await Turno.findById(id);
-        let usuario = await User.findOne({dni: turno.dni});
+        let usuario = await User.findOne({ dni: turno.dni });
         console.log(usuario.montoDescuento);
-        res.render('pagar-turno',  { id: id, montoDescuento: usuario.montoDescuento });
+        res.render('pagar-turno', { id: id, montoDescuento: usuario.montoDescuento });
     })
 
 module.exports = router;
