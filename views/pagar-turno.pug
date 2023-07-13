@@ -27,8 +27,23 @@ html
           label(for="codigo") Codigo de seguiridad:
           input(type="number", id="codigo", name="codigo", min=0, required)
         li
+            p El monto final es: 
+                span#resultado
         li.button
           button(type="submit") Cobrar
           button(onclick="window.history.go(-1)") Cancelar
         if error
           li.error= error
+  script.
+    const montoInput = document.getElementById('monto');
+    var montoDescuento = !{JSON.stringify(montoDescuento)};
+    
+    montoInput.addEventListener('input', function() {
+      const monto = parseInt(this.value) || 0;
+
+      let resultado = monto - montoDescuento;
+      if (resultado < 0) {
+        resultado = 0
+      }
+      document.getElementById('resultado').textContent = resultado;
+    });
