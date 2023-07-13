@@ -9,13 +9,14 @@ html
   body
     form(action="/admin/modificar-donacion", method="post")
       ul
+        li 
+          input(type="hidden", id="id", name="id", value=donacion._id, required)
         li
           label(for="nombre") Nombre:
           input(type="text", id="nombre", name="nombre", value=donacion.nombre, required)
         li
-        li
           label(for="montoObjetivo") Monto objetivo:
-          input(type="text", id="montoObjetivo", name="montoObjetivo", value=donacion.montoObjetivo, required)
+          input(type="number", id="montoObjetivo", name="montoObjetivo", value=donacion.montoObjetivo, min=0,required)
         li
           label(for="descripcion") Descripcion:
           input(type="text", id="descripcion", name="descripcion", value=donacion.descripcion, required)

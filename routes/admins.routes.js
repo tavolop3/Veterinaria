@@ -457,23 +457,23 @@ router.post('/registrar-perro', async (req, res) => {
   */
   .post('/modificar-donacion', async (req, res) => {
     const { id, nombre, montoObjetivo, descripcion } = req.body;
-    let donacionRegistrada = await User.findOne({ nombre: nombre });
-    if (donacionRegistrada) {
-      if (donacionRegistrada.nombre !== nombre) return res.status(400).send('<script>alert("Ya hay una campaña con ese nombre."); window.location.href = "/admin";</script>');
-      //const cruzaModificar = await Cruza.findById(id);
-      try {
-        await Donacion.updateOne({ _id: id }, {
-          $set: {
-            nombre: nombre,
-            montoObjetivo: montoObjetivo,
-            descripcion: descripcion,
-          }
-        });
-        return res.send('<script>alert("La modificacion de la campaña se realizo correctamente"); window.location.href = "/admin/ver-donaciones";</script>');
-      } catch (error) {
-        console.log(error);
-        return res.send('<script>alert("La modificacion de la campaña no pudo realizarse"); window.location.href = "/clientes/listar-cruza";</script>');
-      }
+    let donacionRegistrada = await Donacion.findOne({ nombre: nombre });
+    let donacionActualizar = await Donacion.findById(id);
+    if (donacionRegistrada && donacionActualizar.nombre !== donacionRegistrada.nombre)
+      return res.status(400).send('<script>alert("Ya hay una campaña con ese nombre."); window.location.href = "/admin/ver-donaciones";</script>');
+    //const cruzaModificar = await Cruza.findById(id);
+    try {
+      await Donacion.updateOne({ _id: id }, {
+        $set: {
+          nombre: nombre,
+          montoObjetivo: montoObjetivo,
+          descripcion: descripcion,
+        }
+      });
+      return res.send('<script>alert("La modificacion de la campaña se realizo correctamente"); window.location.href = "/admin/ver-donaciones";</script>');
+    } catch (error) {
+      console.log(error);
+      return res.send('<script>alert("La modificacion de la campaña no pudo realizarse"); window.location.href = "/admin/ver-donaciones";</script>');
     }
   })
 

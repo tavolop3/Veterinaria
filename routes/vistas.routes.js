@@ -199,11 +199,7 @@ router.get('', (req, res) => {
         res.render('modificar-adopcion', { perro });
     })
 
-    .get('/admin/modificar-donacion', autenticado, async (req, res) => {
-        let id = req.query.dato;
-        let donacion = await Donacion.findById(id);
-        res.render('modificar-donacion', { donacion });
-    })
+
 
     .get('/clientes/modificar-cruza', autenticado, async (req, res) => {
         let id = req.query.dato;
@@ -325,6 +321,12 @@ router.get('', (req, res) => {
         let usuario = await User.findOne({ dni: turno.dni });
         console.log(usuario.montoDescuento);
         res.render('pagar-turno', { id: id, montoDescuento: usuario.montoDescuento });
+    })
+
+    .get('/admin/modificar-donacion', autenticado, async (req, res) => {
+        let id = req.query.dato;
+        let donacion = await Donacion.findById(id);
+        res.render('modificar-donacion', { donacion });
     })
 
 module.exports = router;
