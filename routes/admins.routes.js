@@ -433,7 +433,7 @@ router.post('/registrar-perro', async (req, res) => {
     const { id, monto, numero, fecha, codigo } = req.body;
     try {
       console.log(id);
-      let turno = await Turno.findOne({id: id});
+      let turno = await Turno.findById(id);
       console.log(turno);
       if (monto < 0)
         return res.status(400).send('<script>alert("El monto no puede ser negativo."); window.location.href = "/admin/historial-turnos";</script>');
