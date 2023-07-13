@@ -117,6 +117,7 @@ router.post('/registrar-perro', async (req, res) => {
     }
     console.log(user);
     perro = new Perro(_.pick(req.body, ['nombre', 'sexo', 'fechaDeNacimiento', 'raza', 'color', 'observaciones', 'foto', 'mail']));
+    perro.userId = user._id;
     console.log(perro);
     const perros = user.perrosId; // Array de perros del usuario
     console.log(perros);

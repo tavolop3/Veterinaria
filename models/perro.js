@@ -24,6 +24,9 @@ const perroSchema = new mongoose.Schema({
     foto: {
         type: String
     },
+    mail: {
+        type: String
+    },
     userId: {
         type: ObjectId
     }
