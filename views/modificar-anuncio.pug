@@ -1,0 +1,40 @@
+include mixins/bannerCliente.pug
+doctype html
+html
+  head
+    meta(charset="utf-8")
+    title Modificar adopcion 
+    link(rel="stylesheet", href="/style/login.css")
+  +bannerCliente()
+  body
+    form(action="/clientes/modificar-anuncio", method="post")
+      ul
+        li
+          input(type="hidden", name="dato", value=perro._id)
+        li
+          label(for="nombre") Nombre:
+          input(type="text", id="nombre", name="nombre", value=perro.nombre)
+        li
+          label(for="sexo") Sexo:
+          select(name="sexo", id="sexo", required)
+            option(value="macho", selected=perro.sexo==="macho") Macho
+            option(value="hembra", selected=perro.sexo==="hembra") Hembra
+        li 
+          label(for="raza") Raza:
+          select(name="raza",value=perro.raza, id="raza", required)
+            option(value="Chihuahua", selected=perro.raza==="Chihuahua") Chihuahua
+            option(value="Caniche", selected=perro.raza==="Caniche") Caniche
+            option(value="Boxer", selected=perro.raza==="Boxer") Boxer
+            option(value="Pastor alemán", selected=perro.raza==="Pastor alemán") Pastor alemán
+            option(value="Dogo argentino", selected=perro.raza==="Dogo argentino") Dogo argentino
+        li
+          label(for="color") *Color:
+          input(type="text", id="color", name="color", value=perro.color, required)
+        li
+          label(for="foto") *Foto:
+          input(type="text", id="foto", name="foto", value=perro.foto, required)
+        p Los datos marcados con * son obligatorios
+        p La foto debe de ser una URL
+        li.button
+          button(type="submit") Modificar
+          button(type="button", onclick="window.history.go(-1)") Cancelar

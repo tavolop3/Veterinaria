@@ -1,0 +1,52 @@
+include mixins/bannerAdmin.pug
+
+doctype html
+html
+  head
+    title Lista de Donaciones
+    style.
+      table {
+        border-collapse: collapse;
+        width: 50%;
+      }
+      th, td {
+        padding: 15px;
+        text-align: left;
+      }
+      td.buttons {
+        display: flex;
+        gap: 10px;
+      }
+  
+  body
+    +bannerAdmin()
+    if !donaciones.length
+      h1 No hay donaciones cargadas en el sistema.
+    else
+      div
+        h1 Lista de donaciones
+        table
+          tr
+            th Nombre
+            th Descripcion
+            th Monto objetivo
+            th Monto recaudado
+          each donacion in donaciones
+            tr
+              td= donacion.nombre
+              td= donacion.descripcion 
+              td= donacion.montoObjetivo
+              td= donacion.montoRecaudado
+              //td= adopcion.mail
+              //chequear, solo el cliente que realizo la publicacion puede darle al boton este
+              td.buttons
+                  form(action="/admin/eliminar-donacion", method="POST" onsubmit="return confirm('¿Estás seguro de que deseas eliminar esta campaña?');")
+                    input(type="hidden", id="id", name="id", value=donacion._id)
+                    button(type="submit") Eliminar campaña 
+                  form(action="/admin/modificar-donacion", method="GET")
+                    input(type="hidden", name="dato", value=donacion._id)
+                    button(type="submit") Modificar campaña
+      button(onclick="window.history.go(-1)") Volver
+
+
+//form(action="/admin/eliminar-usuario", method="POST" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este usuario?');")

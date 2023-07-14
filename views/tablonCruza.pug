@@ -1,0 +1,76 @@
+include mixins/bannerCliente.pug
+include mixins/bannerUsuario.pug
+
+doctype html
+html
+  head
+    title Lista de Cruza
+    style.
+      table {
+        border-collapse: collapse;
+        width: 50%;
+      }
+      th, td {
+        padding: 15px;
+        text-align: left;
+      }
+      td.buttons {
+        display: flex;
+        gap: 10px;
+      }
+  body
+    if (usuarioActual === "")
+        +bannerUsuario()
+    else 
+        +bannerCliente()
+    if !cruzas.length
+      h1 No hay cruzas cargadas en el sistema.
+    else
+      div
+        h1 Cruzas
+        form(action="/usuarios/visualizar-tablon-cruza", method="POST")
+          // raza
+          label(for="raza") Raza
+          select(id="raza", name="raza", required)
+            option(value="Cualquiera") Cualquiera
+            option(value="Chihuahua") Chihuahua
+            option(value="Caniche") Caniche
+            option(value="Boxer") Boxer
+            option(value="Pastor alemán") Pastor alemán
+            option(value="Dogo argentino") Dogo argentino
+          // sexo
+          label(for="sexo") Sexo
+          select(id="sexo", name="sexo", required)
+            option(value="Cualquiera") Cualquiera
+            option(value="macho") Macho
+            option(value="hembra") Hembra
+          // fecha de celo
+          label(for="fecha") Fecha de celo
+          input(type="date", id="fecha", name="fecha")
+          // edad
+          label(for="edad") Edad (años)
+          input(type="number", id="edad", name="edad")              
+          button(type="submit") Filtrar
+        table
+          tr
+            th Raza
+            th Sexo
+            th FechaDeCelo
+            th FechaDeNacimiento
+          each cruza in cruzas
+            if (!(usuarioActual == cruza.mail))
+                tr
+                    td= cruza.raza 
+                    td= cruza.sexo 
+                    if(fechaDeCelo)
+                      - let fechaDeCelo = `${cruza.fechaDeCelo.getUTCDate()}/${cruza.fechaDeCelo.getUTCMonth()+1}/${cruza.fechaDeCelo.getUTCFullYear()}`
+                      td= fechaDeCelo 
+                    else
+                      td -
+                    - let fechaDeNacimiento = `${cruza.fechaDeNacimiento.getUTCDate()}/${cruza.fechaDeNacimiento.getUTCMonth()+1}/${cruza.fechaDeNacimiento.getUTCFullYear()}`
+                    td= fechaDeNacimiento
+                    td.buttons
+                        form(action="/usuarios/cruza/solicitar", method="POST")
+                            input(type="hidden", name="mailPostulante", value=cruza.mail)
+                            button(type="submit") Cruzar        
+        button(onclick="window.history.go(-1)") Volver

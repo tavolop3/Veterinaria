@@ -8,6 +8,12 @@
 	line-height: 1.5em;
 }
 
+/* .dropdown-container {
+	position: absolute;
+	top: 0.5%;
+	right: 2%;
+  } */
+  
 
 #encabezado {
 	background: #9db6ce;
@@ -35,9 +41,13 @@
 /*
  * Navegación
  */
-#navBanner {
-	float: right;
+ #navBanner {
+	position: absolute;
+	top: 40px;
+	transform: translateY(-50%);
+	right: 1%;
 }
+
 	nav ul {
 		margin: 0;
 		padding: 0;

@@ -1,0 +1,15 @@
+include ../mixins/bannerCliente.pug
+
+doctype html
+
++bannerCliente()
+html
+  head
+    title Anuncios perdida/busqueda
+  body
+    form(action="/clientes/cargar-anuncio", method="GET")
+        button(type="submit") Cargar anuncio
+    form(action="/clientes/listar-anuncios", method="GET")
+        button(type="submit") Listar anuncios
+    form(action="/usuarios/visualizar-tablon-perdida", method="GET")
+        button(type="submit") Visualizar tablon 

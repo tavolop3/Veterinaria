@@ -10,7 +10,7 @@ mixin bannerCliente
         ul
           li
             select(title="Cuenta", onchange="redirectToPage(this)")
-              option Mi Cuenta
+              option(value='placeholder' disabled selected style="display: none;") Mi cuenta
               option(value="/clientes/mis-perros") Mis perros
               option(value='/clientes/modificar-datos') Modificar mis datos 
               option(value="/usuarios/cerrar-sesion") Cerrar sesion
@@ -22,15 +22,15 @@ mixin bannerCliente
           li
             a(href="/clientes/turnos") Turnos
           li
-            a(href="#") Búsqueda    
+            a(href="/clientes/anuncio") Búsqueda 
+          li
+            a(href="/clientes/cruza") Cruza   
           li
             a(href="/usuarios/visualizar-tablon-servicios") Servicios         
           li
-            a(href="#") Urgencias
+            a(href="/usuarios/visualizar-tablon-donaciones") Donaciones
           li
-            a(href="#") Donaciones
-          li
-            a(href="#") Urgencias
+            a(href="/urgencias") Urgencias
     script.
       function redirectToPage(selectElement) {
         var selectedValue = selectElement.value;

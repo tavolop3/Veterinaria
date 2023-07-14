@@ -19,7 +19,7 @@ html
       }
   +bannerCliente()
   body
-    if(!turnos)
+    if !turnos.length
       h1 No hay turnos cargados
     else 
       h1 Lista de turnos
@@ -48,3 +48,4 @@ html
                   form(action="/clientes/rechazar-modificacion", method="POST")
                     input(type="hidden", name="id", value=turno._id)
                     button(type="submit") Rechazar modificacion
+      button(onclick="window.history.go(-1)") Cancelar

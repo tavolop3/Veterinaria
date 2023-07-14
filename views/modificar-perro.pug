@@ -17,16 +17,22 @@ html
           label(for="nombre") Nombre:
           input(type="text", id="nombre", name="nombre", value=perro.nombre, required)
         li
-          label(for="sexo") sexo
-          select(id="sexo", name="sexo", required)
-            option(value="macho") Macho
-            option(value="hembra") Hembra
+          label(for="sexo") Sexo:
+          select(name="sexo", id="sexo", required)
+            option(value="macho", selected=perro.sexo==="macho") Macho
+            option(value="hembra", selected=perro.sexo==="hembra") Hembra
         li
-          label(for="fecha") Fecha de nacimiento:
-          input(type="date", id="fecha", name="fecha", value=perro.fecha)
+          label(for="fechaDeNacimiento") Fecha de nacimiento:
+          - const fechaDeNacimientoValue = perro.fechaDeNacimiento ? perro.fechaDeNacimiento.toISOString().split('T')[0] : '';
+          input(type="date", id="fechaDeNacimiento", name="fechaDeNacimiento", value=fechaDeNacimientoValue)  
         li
           label(for="raza") Raza:
-          input(type="text", id="raza", name="raza", value=perro.raza, required)
+          select(name="raza",value=perro.raza, id="raza", required)
+            option(value="Chihuahua", selected=perro.raza==="Chihuahua") Chihuahua
+            option(value="Caniche", selected=perro.raza==="Caniche") Caniche
+            option(value="Boxer", selected=perro.raza==="Boxer") Boxer
+            option(value="Pastor alemán", selected=perro.raza==="Pastor alemán") Pastor alemán
+            option(value="Dogo argentino", selected=perro.raza==="Dogo argentino") Dogo argentino
         li
           label(for="color") Color:
           input(type="text", id="color", name="color", value=perro.color, required)
@@ -38,6 +44,7 @@ html
           input(type="text", id="foto", name="foto", value=perro.foto)
         li.button
           button(type="submit") Modificar
+          button(type="button" onclick="window.history.go(-1)") Cancelar 
     script.
       document.addEventListener('DOMContentLoaded', function() {
         function setMaxDate() {

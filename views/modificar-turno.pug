@@ -31,5 +31,6 @@ html
         li.button
           input(type="hidden", name="id", value=id)
           button(type="submit") Guardar cambios
+          button(type="button" onclick="window.history.go(-1)") Cancelar 
     if error 
       li.error= error

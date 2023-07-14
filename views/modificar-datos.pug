@@ -1,3 +1,6 @@
+include mixins/bannerAdmin.pug
+include mixins/bannerCliente.pug
+
 doctype html
 html
   head
@@ -5,18 +8,28 @@ html
     title Modificar mis datos
     link(rel="stylesheet", href="/style/login.css")
   body
+    if (dato == true) 
+      +bannerAdmin()
+    else
+      +bannerCliente()
     form(action="/clientes/modificar-datos", method="post")
       ul
         li
-          label(for="contraseña1") Contraseña actual:
+          label(for="contraseña1") *Contraseña actual:
           input(type="password", id="contraseña1", name="contraseña1", required)
         li
           label(for="mailNuevo") Mail nuevo:
           input(type="email", id="mailNuevo", name="mailNuevo")
         li
-          label(for="contraseña2") Contraseña nueva:
-          input(type="password", id="contraseña2", name="contraseña2")
+          label(for="contraseñaNueva") Contraseña nueva:
+          input(type="password", id="contraseñaNueva", name="contraseñaNueva")
+        li
+          label(for="contraseñaNueva2") Repita la nueva contraseña:
+          input(type="password", id="contraseñaNueva2", name="contraseñaNueva2", required)
         li.button
           button(type="submit") Guardar cambios
+          button(type="button" onclick="window.history.go(-1)") Cancelar 
+        li 
+          p Los datos marcados con * son obligatorios
     if error 
       li.error= error

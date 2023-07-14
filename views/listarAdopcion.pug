@@ -44,3 +44,13 @@ else
             form(action="/clientes/modificar-adopcion", method="GET")
               input(type="hidden", name="dato", value=perro._id)
               button(type="submit") Modificar
+            if (!(perro.confirmado))
+              form(action="/clientes/confirmar-adopcion", method="POST" onsubmit="return confirm('¿Estás seguro de que deseas confirmar esta adopción?');")
+                input(type="hidden", name="id", value=perro._id)
+                button(type="submit") Confirmar adopcion            
+    button(onclick="window.history.go(-1)") Volver
+
+
+
+
+                            form(action="/clientes/confirmar-adopcion", method="POST")

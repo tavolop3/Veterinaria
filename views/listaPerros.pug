@@ -1,3 +1,5 @@
+include mixins/bannerAdmin.pug
+
 doctype html
 html
   head
@@ -16,7 +18,7 @@ html
         display: flex;
         gap: 10px;
       }
-
++bannerAdmin()
 if !perros.length
   h1 No tiene perros cargados todavía.
 else
@@ -45,8 +47,8 @@ else
                 input(type="hidden", name="id", value=perro._id)
                 input(type="hidden", name="mailUsuario", value=mailUsuario)
                 button(type="submit") Modificar perro
-              form(action="/admin/eliminar-perro", method="POST")
+              form(action="/admin/eliminar-perro", method="POST" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este perro?');")
                 input(type="hidden", name="id", value=perro._id)
-                input(type="hidden", name="mail", value=perro.mail)
+                input(type="hidden", name="userId", value=perro.userId)
                 button(type="submit") Eliminar perro
-                
+    button(onclick="window.history.go(-1)") Volver           

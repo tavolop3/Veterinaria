@@ -10,35 +10,39 @@ html
     form(action="/admin/registrar-perro", method="post")
       ul
         li
-          label(for="mail") Mail
-          input(type="email", id="mail", name="mail" , required)
-        li
-          label(for="nombre") Nombre
+          label(for="nombre") *Nombre
           input(type="text", id="nombre", name="nombre" ,required)
         li
-          label(for="sexo") sexo
+          label(for="sexo") *sexo
           select(id="sexo", name="sexo", required)
             option(value="macho") Macho
             option(value="hembra") Hembra
         li
-          label(for="fechaDeNacimiento") fechaDeNacimiento
+          label(for="fechaDeNacimiento") *fechaDeNacimiento
           input(type="Date", id="fechaDeNacimiento", name="fechaDeNacimiento" ,required)
         li
-          label(for="raza") raza
-          input(type="text", id="raza", name="raza",required)
+          label(for="raza") *Raza
+          select(name="raza", id="raza", required)
+              option(value="Chihuahua") Chihuahua
+              option(value="Caniche") Caniche
+              option(value="Boxer") Boxer
+              option(value="Pastor alemán") Pastor alemán
+              option(value="Dogo argentino") Dogo argentino
         li
-          label(for="color") color
+          label(for="color") *color
           input(type="text", id="color", name="color",required)
         li
           label(for="observaciones") observaciones
           input(type="text", id="observaciones", name="observaciones")
         li
-        li
           label(for="foto") foto
           input(type="String", id="foto", name="foto")
-        li
         li.button
+          input(type="hidden", id="mail", name="mail", value=mail)
           button(type="submit") Registrar
+          button(onclick="window.history.go(-1)") Cancelar
+        p Los datos marcados con * son obligatorios.
+        p El campo foto debe contener el URL de la misma. 
         if error
           li.error= error  
     script.

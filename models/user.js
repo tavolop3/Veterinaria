@@ -32,10 +32,15 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-    montoDescuento: Number,
+    montoDescuento: {
+        type: Number,
+        default: 0
+    },
     perrosId: [{ type : ObjectId, ref: 'Perro' }],
     turnosId: [{ type : ObjectId, ref: 'Turno' }],
-    perrosEnAdopcion: [{ type : ObjectId, ref: 'Adopcion'}]
+    perrosEnAdopcion: [{ type : ObjectId, ref: 'Adopcion'}],
+    perrosEnCruza: [{type : ObjectId, ref: 'Cruza'}],
+    anuncios: [{type : ObjectId, ref: 'Perdida'}]
 });
 
 const User = mongoose.model('User', userSchema);

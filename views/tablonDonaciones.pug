@@ -1,0 +1,50 @@
+include mixins/bannerCliente.pug
+include mixins/bannerUsuario.pug
+
+doctype html
+html
+  head
+    title Lista de Donaciones
+    style.
+      table {
+        border-collapse: collapse;
+        width: 50%;
+      }
+      th, td {
+        padding: 15px;
+        text-align: left;
+      }
+      td.buttons {
+        display: flex;
+        gap: 10px;
+      }
+  
+  body
+    if (usuarioActual === "")
+      +bannerUsuario()
+    else 
+      +bannerCliente()
+    if !donaciones.length
+      h1 No hay donaciones cargadas en el sistema.
+    else
+      div
+        h1 Lista de donaciones
+        table
+          tr
+            th Nombre
+            th Descripcion
+            th Monto objetivo
+            th Monto recaudado
+          each donacion in donaciones
+            tr
+              td= donacion.nombre
+              td= donacion.descripcion 
+              td= donacion.montoObjetivo
+              td= donacion.montoRecaudado
+              //td= adopcion.mail
+              //chequear, solo el cliente que realizo la publicacion puede darle al boton este
+              td.buttons
+                  form(action="/usuarios/realizar-donacion", method="GET")
+                    input(type="hidden", id="nombre", name="nombre", value=donacion.nombre)
+                    button(type="submit") Donar 
+      button(onclick="window.history.go(-1)") Volver

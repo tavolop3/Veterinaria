@@ -1,0 +1,30 @@
+include ../mixins/bannerAdmin.pug
+
+doctype html
+html
+  head
+    meta(charset="UTF-8")
+    title Cargar sucursal
+    link(rel="stylesheet", href="/style/registro.css")
+
++bannerAdmin()
+
+body
+  form(action="/admin/modificar-sucursal", method="POST")
+    ul
+      li
+        label(for="direccion") Direccion:
+        input(type="text", id="direccion", name="direccion", value= sucursal.direccion)
+      li
+        label(for="horarios") Horarios:
+        input(type="text", id="horarios", name="horarios", value=sucursal.horarios)
+      li
+        label(for="infoContacto") Info de contacto:
+        input(type="text", id="infoContacto", name="infoContacto", value= sucursal.infoContacto)
+      li.button
+        input(type="hidden", id="id", name="id" , value=sucursal._id)
+        button(type="submit") Modificar
+        button(type="button" onclick="window.history.go(-1)") Cancelar 
+
+      if error
+        li.error= error  

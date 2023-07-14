@@ -1,0 +1,56 @@
+include mixins/bannerCliente.pug
+include mixins/bannerUsuario.pug
+
+doctype html
+html
+  head
+    title Lista de Cruza
+    style.
+      table {
+        border-collapse: collapse;
+        width: 50%;
+      }
+      th, td {
+        padding: 15px;
+        text-align: left;
+      }
+      td.buttons {
+        display: flex;
+        gap: 10px;
+      }
+  body
+    if (usuarioActual === "")
+      +bannerUsuario()
+    else 
+      +bannerCliente()
+    if !perdidas.length
+      h1 No hay busquedas o perdidas cargadas en el sistema.
+    else
+      div
+        h1 Perdidas y busquedas
+        table
+          tr
+            th Nombre
+            th Sexo
+            th Foto
+            th Raza 
+            th Color 
+          each perdida in perdidas
+            if (!(usuarioActual == perdida.mail))
+              tr
+                td= perdida.nombre 
+                td= perdida.sexo 
+                td 
+                  img(src=perdida.foto, alt=perdida.foto, style='width:75px;height:75px;')
+                td= perdida.raza
+                td= perdida.color
+                td.buttons
+                  if perdida.confirmado
+                    button(type="button") Adoptado
+                  else
+                    form(action="/usuarios/anuncio/contactar", method="POST")
+                      input(type="hidden", name="mailPostulante", value=perdida.mail)
+                      button(type="submit") Contactar               
+        button(onclick="window.history.go(-1)") Volver
+
+  

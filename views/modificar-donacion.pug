@@ -1,0 +1,25 @@
+include mixins/bannerAdmin.pug
+doctype html
+html
+  head
+    meta(charset="utf-8")
+    title Modificar campaña
+    link(rel="stylesheet", href="/style/login.css")
+  +bannerAdmin()
+  body
+    form(action="/admin/modificar-donacion", method="post")
+      ul
+        li 
+          input(type="hidden", id="id", name="id", value=donacion._id, required)
+        li
+          label(for="nombre") Nombre:
+          input(type="text", id="nombre", name="nombre", value=donacion.nombre, required)
+        li
+          label(for="montoObjetivo") Monto objetivo:
+          input(type="number", id="montoObjetivo", name="montoObjetivo", value=donacion.montoObjetivo, min=0,required)
+        li
+          label(for="descripcion") Descripcion:
+          input(type="text", id="descripcion", name="descripcion", value=donacion.descripcion, required)
+        li.button
+          button(type="submit") Modificar
+          button(type="button" onclick="window.history.go(-1)") Cancelar   

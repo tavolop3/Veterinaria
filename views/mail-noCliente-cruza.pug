@@ -1,0 +1,23 @@
+include mixins/bannerUsuario.pug
+
+doctype html
+html
+  head
+    meta(charset="UTF-8")
+    title Ingresar mail
+    link(rel="stylesheet", href="/style/login.css")
+
++bannerUsuario()
+body
+    h1 Ingresar mail para solicitar la adopción 
+    form(action="/usuarios/cruza/mail-noCliente", method="post")
+        ul
+        li
+            label(for="mail") Mail:
+            input(type="email", id="mail", name="mailSolicitante", required)
+        li.button
+            input(type="hidden", name="mailPostulante", value=mailPostulante)
+            button(type="submit") Ingresar mail
+            button(type="button" onclick="window.history.go(-1)") Cancelar 
+    if error
+        li.error= error

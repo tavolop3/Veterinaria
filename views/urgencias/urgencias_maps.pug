@@ -1,0 +1,57 @@
+include ../mixins/bannerCliente.pug
+include ../mixins/bannerUsuario.pug
+
+head
+  title Urgencias
+  link(rel="stylesheet" type="text/css" href="/urgencias/estilo.css")
+
+script.
+  async function initMap() {
+    var puntos = !{JSON.stringify(puntos)};
+
+    var map = await new google.maps.Map(document.getElementById('map'),{
+      zoom: 15,
+      center: {lat:-34.921388 ,lng: -57.9544169} 
+    });
+
+  puntos = [{direccion: 'Calle 4 nro 1279 La Plata'}]
+  
+  const geocoder = new google.maps.Geocoder();
+
+  for(punto in puntos) {
+    const direccion = puntos[punto].direccion;
+
+    await geocoder.geocode( { 'address': direccion}, function(results, status) {
+      console.log("Results:", results );
+        
+      if (status == 'OK') {
+          console.log(results[0].geometry.location);
+      } else {
+        alert('Geocode was not successful for the following reason: ' + status);
+      }
+    })
+
+    //- var geocoder = await new google.maps.Geocoder().geocode(puntos[punto].direccion);
+    //- console.log(geocoder)
+    //- var result = geocoder.results[0];
+
+    var latitud = result.geometry.location.lat;
+    var longitud = result.geometry.location.lng;
+    var coord = {lat:latitud, lng:longitud}; 
+
+    new google.maps.Marker({
+      position: coord,
+      map: map
+    });
+  }
+
+  }
+
+if(rol == 'cliente')
+  +bannerCliente()
+else 
+  +bannerUsuario()
+
+body
+  div(id="map")
+  script(async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDTuJawSPsGtI7PhESfX7ZFjUxuOmVj8sY&callback=initMap")

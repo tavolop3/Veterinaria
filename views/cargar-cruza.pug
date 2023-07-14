@@ -1,0 +1,108 @@
+include mixins/bannerCliente.pug
+
+doctype html
+html
+  head
+    meta(charset="UTF-8")
+    title Cargar cruza
+    link(rel="stylesheet", href="/style/login.css")
+    script.
+      function toggleCamposOtro() {
+        var selectPerro = document.getElementById('id');
+        var camposOtro = document.getElementById('camposOtro');
+        var razaInput = document.getElementById('raza');
+        var fechaDeNacimiento = document.getElementById('fechaDeNacimiento');
+        var campoFechaDeCelo = document.getElementById('campoFechaDeCelo');
+        var fechaDeCelo = document.getElementById('fechaDeCelo');
+        var perros = !{JSON.stringify(perros)};
+
+        if (selectPerro.value === "otro") {
+          camposOtro.style.display = "block";
+          razaInput.setAttribute('required', '');
+          fechaDeNacimiento.setAttribute('required', '');
+        } else {
+          var perroSeleccionado = perros.find((perro) => {
+            return perro._id === selectPerro.value;
+          });
+          if(perroSeleccionado.sexo == 'hembra') {
+            fechaDeCelo.setAttribute('required', '');
+            campoFechaDeCelo.style.display = "block";
+          } else {
+            fechaDeCelo.removeAttribute('required');
+            campoFechaDeCelo.style.display = "none";
+          }
+          camposOtro.style.display = "none";
+          razaInput.removeAttribute('required');
+          fechaDeNacimiento.removeAttribute('required');
+        }
+      }
+      function toggleFechaCeloOtro() {
+        var campoSexo = document.getElementById('sexo');
+        var fechaDeCelo = document.getElementById('fechaDeCelo');
+        var campoFechaDeCelo = document.getElementById('campoFechaDeCelo');
+
+        console.log(fechaDeCelo)
+        if(campoSexo.value == 'hembra') {
+          campoFechaDeCelo.style.display = "block";
+          fechaDeCelo.setAttribute('required', '');
+        } else {
+          campoFechaDeCelo.style.display = "none";
+          fechaDeCelo.removeAttribute('required');
+        }
+      }
+      function setMaxDate() {
+        var today = new Date();
+        var year = today.getFullYear();
+        var month = String(today.getMonth() + 1).padStart(2, '0');
+        var day = String(today.getDate()).padStart(2, '0');
+        var todayDate = `${year}-${month}-${day}`;
+        var fechaInput = document.getElementById('fechaDeNacimiento');
+        fechaInput.setAttribute('max', todayDate);
+      }
+
+      window.addEventListener('load', function() {
+        setMaxDate();
+        toggleCamposOtro();
+        toggleFechaCeloOtro();
+
+        var selectPerro = document.getElementById('id');
+        selectPerro.addEventListener('change', toggleCamposOtro);
+        var selectSexo = document.getElementById('sexo');
+        selectSexo.addEventListener('change', toggleFechaCeloOtro);
+      });
+  body
+    +bannerCliente()
+    form(action="/clientes/cargar-cruza", method="POST")
+      ul
+        li
+          label(for="id") Perro:
+          select(name="id", id="id", required)
+            option(value="otro") Otro
+            each perro in perros
+              option(value=perro.id)= perro.nombre
+
+        div(id="camposOtro" style="display: none;")
+          li
+            label(for="sexo") sexo
+            select(id="sexo", name="sexo")
+              option(value="macho") Macho
+              option(value="hembra") Hembra
+          li
+            label(for="fechaDeNacimiento") Fecha de nacimiento:
+            input(type="Date", id="fechaDeNacimiento", name="fechaDeNacimiento")
+          li
+            label(for="raza") Raza:
+            select(name="raza", id="raza", required)
+              option(value="Chihuahua") Chihuahua
+              option(value="Caniche") Caniche
+              option(value="Boxer") Boxer
+              option(value="Pastor alemán") Pastor alemán
+              option(value="Dogo argentino") Dogo argentino
+        li(id="campoFechaDeCelo", style="display: none;")
+          label(for="fechaDeCelo") Fecha celo: 
+          input(type="Date", id="fechaDeCelo", name="fechaDeCelo")
+        li.button
+          button(type="submit") Cargar
+          button(onclick="window.history.go(-1)") Cancelar
+    if error
+      li.error= error
