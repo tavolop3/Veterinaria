@@ -12,14 +12,15 @@ html
         li 
           input(type="hidden", id="id", name="id", value=donacion._id, required)
         li
-          label(for="nombre") Nombre:
+          label(for="nombre") *Nombre:
           input(type="text", id="nombre", name="nombre", value=donacion.nombre, required)
         li
           label(for="montoObjetivo") Monto objetivo:
-          input(type="number", id="montoObjetivo", name="montoObjetivo", value=donacion.montoObjetivo, min=0,required)
+          input(type="number", id="montoObjetivo", name="montoObjetivo", value=donacion.montoObjetivo, min=0)
         li
           label(for="descripcion") Descripcion:
-          input(type="text", id="descripcion", name="descripcion", value=donacion.descripcion, required)
+          input(type="text", id="descripcion", name="descripcion", value=donacion.descripcion)
         li.button
           button(type="submit") Modificar
           button(type="button" onclick="window.history.go(-1)") Cancelar   
+        p Los datos marcados con * son obligatorios

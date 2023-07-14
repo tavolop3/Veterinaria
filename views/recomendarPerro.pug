@@ -42,8 +42,11 @@ html
             td= perroRecomendado.sexo
             - let fechaNac = `${perroRecomendado.fechaDeNacimiento.getUTCDate()}/${perroRecomendado.fechaDeNacimiento.getUTCMonth()+1}/${perroRecomendado.fechaDeNacimiento.getUTCFullYear()}`
             td= fechaNac
-            - let fechaCelo = `${perroRecomendado.fechaDeCelo.getUTCDate()}/${perroRecomendado.fechaDeCelo.getUTCMonth()+1}/${perroRecomendado.fechaDeCelo.getUTCFullYear()}`
-            td= fechaCelo
+            if(perroRecomendado.fechaDeCelo)
+              - let fechaCelo = `${perroRecomendado.fechaDeCelo.getUTCDate()}/${perroRecomendado.fechaDeCelo.getUTCMonth()+1}/${perroRecomendado.fechaDeCelo.getUTCFullYear()}`
+              td= fechaCelo
+            else
+              td -
             td.buttons
               form(action="/usuarios/cruza/solicitar", method="POST") 
                 input(type="hidden", name="mailPostulante", value=perroRecomendado.mail)

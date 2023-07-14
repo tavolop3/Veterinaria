@@ -46,7 +46,7 @@ html
                 td= perdida.color
                 td.buttons
                   if perdida.confirmado
-                    button(type="button") Adoptado
+                    p Encontrado🙋‍♂️
                   else
                     form(action="/usuarios/anuncio/contactar", method="POST")
                       input(type="hidden", name="mailPostulante", value=perdida.mail)

@@ -214,65 +214,65 @@ router.get('/yo', autenticado, async (req, res) => {
   })
 
 
-.post('/anuncio/contactar', async (req, res) => {
-  if (req.isAuthenticated()) {
-    // Activar para testear un par de veces o en demo para no gastar la cuota de mails (son 100)
-    await sendEmail(req.user.mail, 'OhMyDog - Solicitud de contacto enviada',
-      'Su información de contacto se ha enviado, contactese con ' + req.body.mailPostulante + ' para poder coordinar.'
-    );
+  .post('/anuncio/contactar', async (req, res) => {
+    if (req.isAuthenticated()) {
+      // Activar para testear un par de veces o en demo para no gastar la cuota de mails (son 100)
+      await sendEmail(req.user.mail, 'OhMyDog - Solicitud de contacto enviada',
+        'Su información de contacto se ha enviado, contactese con ' + req.body.mailPostulante + ' para poder coordinar.'
+      );
 
+      await sendEmail(req.body.mailPostulante, 'OhMyDog - Solicitud de contacto recibida',
+        'Ha recibido una solicitud de contacto por su anuncio, contactese con ' + req.user.mail + ' para poder coordinar.'
+      );
+      res.send('<script>alert("Se solicitó exitosamente, revisa tu mail."); window.location.href = "/";</script>');
+    } else {
+      res.render('mail-noCliente-anuncio', { mailPostulante: req.body.mailPostulante });
+    }
+  })
+
+  .post('/anuncio/mail-noCliente', async (req, res) => {
+    // Activar para testear un par de veces o en demo para no gastar la cuota de mails (son 100)
+    await sendEmail(req.body.mailSolicitante, 'OhMyDog - Solicitud de contacto enviada',
+      'Su información de contacto se ha enviado, contactese con ' + req.body.mailPostulante + ' para poder coordinar. Para tener acceso a más funcionalidades acercate a la veterinaria y registrate!'
+    );
     await sendEmail(req.body.mailPostulante, 'OhMyDog - Solicitud de contacto recibida',
-      'Ha recibido una solicitud de contacto por su anuncio, contactese con ' + req.user.mail + ' para poder coordinar.'
+      'Ha recibido una solicitud de contacto por su anuncio, contactese con ' + req.body.mailSolicitante + ' para poder coordinar.'
     );
     res.send('<script>alert("Se solicitó exitosamente, revisa tu mail."); window.location.href = "/";</script>');
-  } else {
-    res.render('mail-noCliente-anuncio', { mailPostulante: req.body.mailPostulante });
-  }
-})
+  })
 
-.post('/anuncio/mail-noCliente', async (req, res) => {
-  // Activar para testear un par de veces o en demo para no gastar la cuota de mails (son 100)
-  await sendEmail(req.body.mailSolicitante, 'OhMyDog - Solicitud de contacto enviada',
-    'Su información de contacto se ha enviado, contactese con ' + req.body.mailPostulante + ' para poder coordinar. Para tener acceso a más funcionalidades acercate a la veterinaria y registrate!'
-  );
-  await sendEmail(req.body.mailPostulante, 'OhMyDog - Solicitud de contacto recibida',
-    'Ha recibido una solicitud de contacto por su anuncio, contactese con ' + req.body.mailSolicitante + ' para poder coordinar.'
-  ); 
-  res.send('<script>alert("Se solicitó exitosamente, revisa tu mail."); window.location.href = "/";</script>');
-})
-
-.post('/realizar-donacion', async (req, res) => {
-  const { mail, nombre, monto, numero, fecha, codigo } = req.body;
-  try {
-    console.log(mail);
-    let campaña = await Donacion.findOne({nombre: nombre});
-    let donador = await User.findOne({mail: mail});
-    if (monto < 0)
-      return res.status(400).send('<script>alert("El monto no puede ser negativo."); window.location.href = "/usuarios/visualizar-tablon-donaciones";</script>');
-    if (numero.length != 16)
-      return res.status(400).send('<script>alert("El numero de la tarjeta debe de tener 16 digitos."); window.location.href = "/usuarios/visualizar-tablon-donaciones";</script>');
-    if (!/^([45])/.test(numero))
-      return res.status(400).send('<script>alert("El número de tarjeta debe comenzar con 4 o 5."); window.location.href = "/usuarios/visualizar-tablon-donaciones";</script>');
-    let hoy = new Date();
-    let fechaIngresada = new Date(fecha);
-    if (fechaIngresada.getTime() < hoy.getTime()) 
-      return res.status(400).send('<script>alert("La fecha no puede ser menor a hoy."); window.location.href = "/usuarios/visualizar-tablon-donaciones";</script>');
-    if (codigo.length != 3)
-      return res.status(400).send('<script>alert("El codigo de seguridad debe de tener 3 digitos."); window.location.href = "/usuarios/visualizar-tablon-donaciones";</script>');
-    campaña.montoRecaudado = parseFloat(campaña.montoRecaudado) + parseFloat(monto);
-    await campaña.save();
-    if (donador) {
-      console.log(donador.montoDescuento);
-      let nuevoMontoDescuento = donador.montoDescuento + (monto * 0.2);
-      donador.montoDescuento = nuevoMontoDescuento;
-      await donador.save();
-    } 
-    return res.status(400).send('<script>alert("El pago se realizo correctamente"); window.location.href = "/usuarios/visualizar-tablon-donaciones";</script>');
-  } catch (error) {
-    console.log(error);
-    return res.status(400).send('Error al realizar las donaciones');
-  }
-})
+  .post('/realizar-donacion', async (req, res) => {
+    const { mail, nombre, monto, numero, fecha, codigo } = req.body;
+    try {
+      console.log(mail);
+      let campaña = await Donacion.findOne({ nombre: nombre });
+      let donador = await User.findOne({ mail: mail });
+      if (monto < 0)
+        return res.status(400).send('<script>alert("El monto no puede ser negativo."); window.location.href = "/usuarios/visualizar-tablon-donaciones";</script>');
+      if (numero.length != 16)
+        return res.status(400).send('<script>alert("El numero de la tarjeta debe de tener 16 digitos."); window.location.href = "/usuarios/visualizar-tablon-donaciones";</script>');
+      if (!/^([45])/.test(numero))
+        return res.status(400).send('<script>alert("El número de tarjeta debe comenzar con 4 o 5."); window.location.href = "/usuarios/visualizar-tablon-donaciones";</script>');
+      let hoy = new Date();
+      let fechaIngresada = new Date(fecha);
+      if (fechaIngresada.getTime() < hoy.getTime())
+        return res.status(400).send('<script>alert("La fecha de vencimiento es incorrecta."); window.location.href = "/usuarios/visualizar-tablon-donaciones";</script>');
+      if (codigo.length != 3)
+        return res.status(400).send('<script>alert("El codigo de seguridad debe de tener 3 digitos."); window.location.href = "/usuarios/visualizar-tablon-donaciones";</script>');
+      campaña.montoRecaudado = parseFloat(campaña.montoRecaudado) + parseFloat(monto);
+      await campaña.save();
+      if (donador) {
+        console.log(donador.montoDescuento);
+        let nuevoMontoDescuento = donador.montoDescuento + (monto * 0.2);
+        donador.montoDescuento = nuevoMontoDescuento;
+        await donador.save();
+      }
+      return res.status(400).send('<script>alert("El pago se realizo correctamente"); window.location.href = "/usuarios/visualizar-tablon-donaciones";</script>');
+    } catch (error) {
+      console.log(error);
+      return res.status(400).send('Error al realizar las donaciones');
+    }
+  })
 
 module.exports = router;
 

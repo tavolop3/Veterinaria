@@ -296,19 +296,19 @@ router.post('/registrar-perro', async (req, res) => {
       const userId = ObjectId(req.body.userId);
 
       const usuario = await User.findById(userId);
-      if(!usuario) return res.status(400).send('El usuario no existe o no se encontró.');
+      if (!usuario) return res.status(400).send('El usuario no existe o no se encontró.');
 
       try {
         const session = await mongoose.startSession();
-        await session.withTransaction(async()=> {
+        await session.withTransaction(async () => {
           usuario.perrosId.pull({ _id: idPerro });
           await usuario.save();
 
           const perroEliminado = await Perro.findByIdAndDelete(idPerro);
-          if(!perroEliminado) return res.status(400).send('El perro no existe o no se encontró.');          
+          if (!perroEliminado) return res.status(400).send('El perro no existe o no se encontró.');
         });
         session.endSession();
-      } catch(err) {
+      } catch (err) {
         res.send('La transaccion falló, no se realizaron modificaciones.');
       }
 
@@ -459,28 +459,28 @@ router.post('/registrar-perro', async (req, res) => {
   })
 
   .post('/cargar-sucursal', async (req, res) => {
-    const sucursal = new PuntoUrgencia(_.pick(req.body, ['direccion','horarios','infoContacto']));
-    
+    const sucursal = new PuntoUrgencia(_.pick(req.body, ['direccion', 'horarios', 'infoContacto']));
+
     const latlng = JSON.parse(req.body.latlng);
-    sucursal.latlng.push(latlng[0],latlng[1]);
-    
+    sucursal.latlng.push(latlng[0], latlng[1]);
+
     await sucursal.save();
-  
+
     res.send('<script>alert("Se registró la sucursal."); window.location.href = "/admin/urgencias";</script>');
   })
 
   .get('/eliminar-sucursal', async (req, res) => {
     try {
-      const sucursal = await PuntoUrgencia.findByIdAndDelete(req.query.id);   
+      const sucursal = await PuntoUrgencia.findByIdAndDelete(req.query.id);
     } catch (error) {
       console.error(error)
     }
-  
+
     res.send('<script>alert("Se eliminó la sucursal exitosamente."); window.location.href = "/admin/urgencias";</script>');
   })
 
   .post('/modificar-sucursal', async (req, res) => {
-    var campos = ['direccion','horarios','infoContacto'];
+    var campos = ['direccion', 'horarios', 'infoContacto'];
     campos = _.pickBy(_.pick(req.body, campos), _.identity);
 
     const sucursal = await PuntoUrgencia.findByIdAndUpdate(req.body.id, campos);
@@ -539,10 +539,6 @@ router.post('/registrar-perro', async (req, res) => {
     }
   })
 
-
-
-
-
   .post('/cargar-donacion', async (req, res) => {
     let nuevaDonacion = {
       nombre: req.body.nombre,
@@ -576,7 +572,7 @@ router.post('/registrar-perro', async (req, res) => {
       let hoy = new Date();
       let fechaIngresada = new Date(fecha);
       if (fechaIngresada.getTime() < hoy.getTime())
-        return res.status(400).send('<script>alert("La fecha no puede ser menor a hoy."); window.location.href = "/admin/historial-turnos";</script>');
+        return res.status(400).send('<script>alert("La fecha de vencimiento es incorrecta."); window.location.href = "/admin/historial-turnos";</script>');
       if (codigo.length != 3)
         return res.status(400).send('<script>alert("El codigo de seguridad debe de tener 3 digitos."); window.location.href = "/admin/historial-turnos";</script>');
       let usuario = await User.findOne({ dni: turno.dni });

@@ -288,7 +288,8 @@ router.post('/solicitar-turno', async (req, res) => {
           _id: { $ne: cruzaUsuario._id },
           sexo: { $ne: cruzaUsuario.sexo },
           raza: cruzaUsuario.raza,
-          fechaDeNacimiento: { $lte: fechaLimite }
+          fechaDeNacimiento: { $lte: fechaLimite },
+          mail: { $ne: cruzaUsuario.mail }
         });
 
         if (perroRecomendado) {

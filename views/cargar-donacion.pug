@@ -10,7 +10,7 @@ html
     form(action="/admin/cargar-donacion", method="post")
       ul
         li
-          label(for="nombre:") Nombre:
+          label(for="nombre:") *Nombre:
           input(type="text", id="nombre", name="nombre" , required)
         li
         li
@@ -22,5 +22,6 @@ html
         li.button
           button(type="submit") Cargar
           button(onclick="window.history.go(-1)") Cancelar
+        p Los datos marcados con * son obligatorios
         if error
           li.error= error  

@@ -62,7 +62,7 @@ html
                 tr
                     td= cruza.raza 
                     td= cruza.sexo 
-                    if(fechaDeCelo)
+                    if(cruza.fechaDeCelo)
                       - let fechaDeCelo = `${cruza.fechaDeCelo.getUTCDate()}/${cruza.fechaDeCelo.getUTCMonth()+1}/${cruza.fechaDeCelo.getUTCFullYear()}`
                       td= fechaDeCelo 
                     else

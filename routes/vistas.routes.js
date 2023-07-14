@@ -126,14 +126,41 @@ router.get('', (req, res) => {
         }
     })
 
-    .get('/urgencias', async(req, res) => {
+    .get('/usuarios/visualizar-tablon-donaciones', async (req, res) => {
+        try {
+            let mail = "";
+            if (req.isAuthenticated())
+                mail = req.user.mail;
+            let donaciones = await Donacion.find({});
+            res.render('tablonDonaciones', { donaciones: donaciones, usuarioActual: mail });
+        } catch (error) {
+            console.log(error);
+            return res.status(400).send('Error al obtener las donaciones');
+        }
+    })
+
+    .get('/usuarios/realizar-donacion', async (req, res) => {
+        try {
+            let nombre = req.query.nombre;
+            console.log(nombre);
+            let mail = "";
+            if (req.isAuthenticated())
+                mail = req.user.mail;
+            res.render('realizar-donacion', { mail: mail, nombre: nombre })
+        } catch (error) {
+            console.log(error);
+            return res.status(400).send('Error la donar');
+        }
+    })
+
+    .get('/urgencias', async (req, res) => {
         var rol = '';
-        if(req.user)
+        if (req.user)
             rol = 'cliente'
-    
+
         puntos = await PuntoUrgencia.find({});
 
-        res.render('urgencias/urgencias', {puntos, rol});
+        res.render('urgencias/urgencias', { puntos, rol });
     })
 
     // ------------------- CLIENTES -------------------------
@@ -300,21 +327,21 @@ router.get('', (req, res) => {
         res.render('cargar-paseador-cuidador');
     })
 
-    .get('/admin/urgencias',[autenticado, esAdmin], async(req, res) => {    
+    .get('/admin/urgencias', [autenticado, esAdmin], async (req, res) => {
         puntos = await PuntoUrgencia.find({});
 
-        res.render('funcionesAdmin/urgencias', {puntos});
+        res.render('funcionesAdmin/urgencias', { puntos });
     })
 
-    .get('/admin/cargarSucursal', [autenticado, esAdmin], async(req, res) => {
+    .get('/admin/cargarSucursal', [autenticado, esAdmin], async (req, res) => {
         const lat = parseFloat(req.query.lat);
         const lng = parseFloat(req.query.lng);
-        res.render('funcionesAdmin/cargarSucursal', { latlng: [lat,lng] } );
+        res.render('funcionesAdmin/cargarSucursal', { latlng: [lat, lng] });
     })
 
-    .get('/admin/modificar-sucursal', [autenticado, esAdmin], async(req, res) => {
+    .get('/admin/modificar-sucursal', [autenticado, esAdmin], async (req, res) => {
         const sucursal = await PuntoUrgencia.findById(req.query.id);
-        res.render('funcionesAdmin/modificarSucursal', { sucursal } );
+        res.render('funcionesAdmin/modificarSucursal', { sucursal });
     })
 
     .get('/admin/cobrar-turno', [autenticado, esAdmin], async (req, res) => {

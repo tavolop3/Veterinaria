@@ -44,12 +44,11 @@ else
               form(action="/clientes/confirmar-anuncio", method="POST" onsubmit="return confirm('¿Estás seguro de que deseas confirmar este anuncio?');")
                 input(type="hidden", name="id", value=anuncio._id)
                 button(type="submit") Confirmar anuncio
-            form(action="/clientes/modificar-anuncio", method="GET")
-              input(type="hidden", name="dato", value=anuncio._id)
-              button(type="submit") Modificar
-            
-    button(onclick="window.history.go(-1)") Volver
-              
-                  
+              form(action="/clientes/modificar-anuncio", method="GET")
+                input(type="hidden", name="dato", value=anuncio._id)
+                button(type="submit") Modificar
+            if(anuncio.confirmado) 
+              p Encontrado🙋‍♂️
 
-                 // form(action="/clientes/confirmar-anuncio", method="POST")
+    button(onclick="window.history.go(-1)") Volver
+            
